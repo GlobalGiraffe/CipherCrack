@@ -1,0 +1,154 @@
+<resources>
+    <string name="app_name">CipherCrack</string>
+
+    <string name="caesar_shift">Shift</string>
+    <string name="affine_a_equals">A=</string>
+    <string name="affine_b_equals">B=</string>
+    <string name="railfence_rails">Rails</string>
+
+    <!-- Defaults -->
+    <string name="default_alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+
+    <!-- Text -->
+    <string name="crack">Crack</string>
+    <string name="analysis">Analysis</string>
+    <string name="settings">Settings</string>
+    <string name="camera">Camera</string>
+    <string name="encode">Encode</string>
+    <string name="decode">Decode</string>
+    <string name="back">Back</string>
+    <string name="close">Close</string>
+    <string name="frequency">Freq</string>
+    <string name="bigraph_frequency">Bigraph Freq</string>
+    <string name="trigraph_frequency">Trigraph Freq</string>
+    <string name="info_description">Cipher information</string>
+    <string name="result">Result</string>
+    <string name="entry_text_hint">Enter plain or cipher text</string>
+    <!--
+    <string name="initial_entry_text">To be, or not to be, that is the question:\nWhether \'tis nobler in the mind to suffer\nThe slings and arrows of outrageous fortune,\nOr to take arms against a sea of troubles\nAnd by opposing end them.</string>
+-->
+    <string name="initial_entry_text">DRPEORYAM SRVSNAEOF VEVENEIRD TNAHIZFEI OTDNVEDOS OWEPPALAE BOREWENFO
+OERTREDHE ASTIEHMNE RGPOSOTNS BITITYILS TEYTIWAHH DELEPOLVL ECHTONHET
+GOUYESOTL CARLIFUEN IASONASNS EYSRUONGE ESELEMCIR NANEHDTRI NHEEOWRPE
+OISFHCTRT VREEIDAPH EHADTTTTC ERGNRYEEH EEFAORLSE HISEISTFM OURFNANAO
+MCLNUEUUI ODBUOEWLS RMI1LLE0V NMETLSOII GTHENARRA AVATLIHAT LROEAMBFA
+PALIHCYCT ILRCAEMAE IWOOKRTNC HNAADNFHO RSMANATSS GSTGTSUES TEFTSIAHH
+ORONECIPS CLDOERSUS ASESOCEEL ANERTUDYN NOVSNIOMR TGHHPSAIG DHESESETE
+UONTASERN UIKNLEELR OTEIARTNY WHOIHTTTC NLEUHIRCE ERIVTFWEO YNBCSEEAH
+WDOENWODL FCIFNEUIS YENTHTLHT ETIANORCE UBELESODW STAUNIFSL GOFPEFNRI
+IDMAFYMNR ELENSOIDR LDAAERIRZ RNGKNOOIW EEOUAFHST ROREOMUFP RHIAETGPF
+TMOHEDSEA TGAIEGANR PFBRTOTON IERNAMEGH HEXAEPYSN MTEEWDINR HAPGIHTRI
+ACONCNEDT DTHETAUDL WTWOROTNI HGHORPTUK SLAZDRFIO ISTNEHHKT INISPMEAR
+IINTHTRYU RHIAETGPE RWHOCIONB BRBSTSAOH MYOATFONO SWNLUEEOH OTONEGRST
+EITRFHHWT MEIIWSRHE KGOIONRNO AINIAGTNB PYOPPFULS EAPGIHRRU BAUEESECT
+BHEORSFTO USDLEISTE CMIHTSLEA AALROMNEE CTAENITRS CCEOTNYNL TGOITNANR
+UOFSEDEEH EUMRDITIU HRTEAHDAI EENIEBHST SLCCLUGAR ISSOOHTNA HEEEFDTNW
+ASSMFORAO ODTUIHRNA ETHEUOTNR NILDGOAKS MFTSEHAOR OPETRUSOI ITWUTONMA
+EIVEIERFH RRTDIOOEN TTEINAIAN UAISTNSTD RAWUYAENH AIOCNNETR DTOEAMEDE
+AMBBOSEOK MBEAOWEYW YGUINNRNR EARSLICSE BTTOEHAUY NRSGHTAED EWEHEVROE
+AOLMTDITR TPEOHNAPH MHAEASIRE EYOATURDL NTHEDEIDL IOFGPASNE CCATDLAIR
+IUSCNIVEE RIUADMUNG TIDEXEURE</string>
+    <string name="initial_entry_text1">DUSIO JUGOO JUOBS KJVYK IIPIJ OZMSI RKYYP JOIJO HYSIJ BVTUJ MVJUA CZDYO JOIKA AOIIM OISVY OHMVJ UVBRC KGUKB HGOHZ OJGOI CRJUO JSGTO JSBHZ CBVJC GOHSY YGSHV CJGSR RVARC GJMCU CKGIM VJUBC IVTBJ USJMO MOGOE OVBTM SJAUO HCGMO GOOLO BBCJV AOHMO JUOBA CBHKA JOHSR KYYGS HSGIM OODCR JUOSG OSSBH RCKBH JUGOO HOSHI DCJIM UOGOM OACKY HMCGX CBJUO IUVDM VJUCK JHOJO AJVCB SIDYS BBOHM OACBL OGJOH JUOJM CSHWS AOBJO ZDJPA CBJSV BOGIV BJUOZ VHHYO CRJUO IJSAX VBJCS YSGTO MCGXI UCDSG OSSBH ASGGV OHCKJ SRKYY VBIDO AJVCB HGVYY BCMOL OBVRM OSGOE CSGHO HCKGM CGXIU CKYHG OZSVB KBHOJ OAJOH MOGOJ GVOLO HIOSU CGIOR GCZJU OJUVG HACBJ SVBOG SBHAS GGVOH CKJIJ STOCB OCRJU OSIIO ZEYP</string>
+    <string name="initial_entry_text2">qvgyp vlthr rnzof hpnzh rnzog aeonz altvp ypmnm oqogn oogga gonwo ayznf wehlt
+vefay znwyh tzvmi eommo tzamf vbomn wmvlf magnz oevno ivnne oiwvy lovnq acnhl
+whqol nzore oonhr nzoog ofwsz hfavn nvcdo tvnmp gmonh gnzor almnh rvpyp mnhrr
+nzofh pnzhr nzoga eoanf vwion lpovm lofvl dotiw svema gyzvf agzam evmnn zvnfv
+dwgyo svliw fovgm hrfhg owamh rpnfh mnafj hlnip niwyv tmalf vdagy svliw ralov
+gtsag tkpac dogmn zomja lanvg tghnz agych petsa nzmnv gtnzo mkpvt lhgwh plehl
+tmzaj tatfo nzozh ghpln hjevc opgto lfwch ffvgt nzoal zayzm nvnoh rtamc ajeag
+oamso eedgh sgnhw hpvgt sanzn zobpt yfogn hrnzo cvjnv agmnh yonzo lsanz nzoal
+qvehp lvgtn zvnhr nzohr racol mvgtf oghro qolwt omcla jnahg ansvm vimhe pnoew
+allom amnai eochp etvgw nzagy rlhff wjogv ttnhn zoczv lvcno lhrnz ocvjn vagma
+shpet slano ansan zjeov mploi pnnzv namaf jhmma ieonz oogof wsolo fhhlo tagvm
+nlhgy eagoh rivnn eorhl torog tagyn zoogn lvgco hrnzo ivwre vgdot iwgpf olhpm
+ypgih vnmrh plrla yvnom vgtvi vnnol whryp gmvgt fhlnv lmhgv gamev gtagn zoalq
+vgpgt olhpl ypgmn zomza jmhrn zoogo fwvee ipnnz oalns hlovl mzajm solog ovlew
+tamfv mnotv gtfog hrihn zmato msvnc zotag vsovm ehlao gnieo szolj hstol lhhfn
+vdagy sanza nveen zozhj omhrn zvnto qaegv jheoh gnzhp yzfog reotn zomza jfvgw
+soloe hmnnh nzosv nolhl nzora lovgt veenl vcohr nzoch gmjal vcwsv mchgm aygot
+nhnzo toojj lommo mchag mvgtn zovyo gnmhr nzohl aognv eeehm nagnz vnfhm nvjne
+wgvfo tqomm oecvj nvagi ollws aeejl omogn whpsa nznzo revyh rnzom ochgt agchf
+fvgtn zvnhr nzoch ffvgt olagc zaori oagyi plgnf vlnag svmfh mnafj lommo tiwnz
+ocpgg agyfo nzhtm ofjeh wotiw svema gyzvf agnza mzame vmneo nnolo gcajz oloti
+wfovg mhrnz ovpnh cevqo nzoag anave dowrh lnzof ommvy omzhs mfpcz cevmm acvej
+lomca ogcoy aqogn zorvn ohrfv lehso anmoo fmnzv nnzoa lmnhl wogtm ivtew vmanv
+jjovl mthnz oeaqo mhrnz oczag omovy ognmh gehla ogneo npmjl vwnzv nhplm ogtms
+oeema lzhlv nahgo emhgd ilovl vtfal vehrn zoiep oonca gvcna hgsan znzor logcz
+vnvgc zhlhg nzora lmnhr vpypm nmoqo gnoog gagon woayz nhrrn zofhp nzhrn zogae
+o</string>
+    <!-- names for labels for radio buttons for Keyword Extend types -->
+    <string name="keyword">Keyword</string>
+    <string name="or_length">or Length:</string>
+    <string name="keyword_or_columns">Keyword or Column Permutations:</string>
+    <string name="extend_explain">Keyword fills from letter that is:</string>
+    <string name="use_read_across">Use Read Across</string>
+    <string name="extend_first">First</string>
+    <string name="extend_min">Min</string>
+    <string name="extend_max">Max</string>
+    <string name="extend_last">Last</string>
+    <string name="crack_method">Crack Method:</string>
+    <string name="crack_dictionary">Dictionary</string>
+    <string name="crack_word_count">Word Count</string>
+    <string name="crack_ioc">Index of Coincidence</string>
+    <string name="crack_brute_force">Brute Force</string>
+
+    <!-- Menus -->
+    <string name="info">Info</string>
+    <string name="edit">Edit</string>
+    <string name="undo">Undo</string>
+    <string name="uppercase">Uppercase</string>
+    <string name="lowercase">Lowercase</string>
+    <string name="remove_punctuation">Remove Punctuation</string>
+    <string name="remove_padding">Remove Padding</string>
+    <string name="reverse">Reverse</string>
+    <string name="reverse_words">Reverse Words</string>
+    <string name="reflect_col_row">Reflect Col/Row</string>
+    <string name="clear">Clear</string>
+
+    <!-- Preferences -->
+    <string name="pref_cribs">pref_cribs</string>
+    <string name="pref_alphabet_plain">pref_alphabet_plain</string>
+    <string name="pref_alphabet_cipher">pref_alphabet_cipher</string>
+    <string name="pref_language">pref_language</string>
+    <string name="pref_padding_chars">pref_padding_chars</string>
+
+    <!-- Frequency Table -->
+    <string name="trigraph">Trigraph</string>
+    <string name="count">Count</string>
+    <string name="percent_sign">%</string>
+    <string name="normal">Normal</string>
+
+    <!-- camera related -->
+    <string name="ok">OK</string>
+    <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
+    <string name="no_camera_permission">This application cannot run because it does not have the camera permission. The application will now exit.</string>
+    <string name="low_storage_error">Ocr dependencies cannot be downloaded due to low device storage</string>
+    <string name="title_activity_main">Ocr Detector Sample</string>
+    <string name="ocr_header">Click "Detect Text" to detect text</string>
+    <string name="read_text">Detect Text</string>
+    <string name="auto_focus">Auto Focus</string>
+    <string name="use_flash">Use Flash</string>
+    <string name="ocr_success">Text read successfully</string>
+    <string name="ocr_failure">No text captured</string>
+    <string name="ocr_error">"Error reading text: %1$s"</string>
+
+    <!-- list of possible ciphers -->
+    <string-array name="cipher_array">
+        <item>Caesar</item>
+        <item>ROT13</item>
+        <item>Atbash</item>
+        <item>Affine</item>
+        <item>Keyword Substitution</item>
+        <item>Vigenere</item>
+        <item>Beaufort</item>
+        <item>Railfence</item>
+        <item>Permutation</item>
+        <!--
+        <item>Permutation</item>
+        <item>Morse Code</item>
+        <item>Bifid</item>
+        <item>Playfair</item>
+        <item>Hill</item>
+        -->
+    </string-array>
+</resources>

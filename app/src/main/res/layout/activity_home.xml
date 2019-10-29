@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<FrameLayout tools:context="mnh.game.ciphercrack.HomeActivity"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+        <LinearLayout android:background="@color/black_overlay"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            tools:ignore="UselessParent"
+            android:padding="6sp"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:id="@+id/home_main_layout">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/home_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                android:elevation="4dp"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+            <Spinner
+                android:id="@+id/home_spinner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="10sp"/>
+
+            <EditText
+                android:id="@+id/home_entrytext"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:hint="@string/entry_text_hint"
+                android:importantForAutofill="no"
+                android:textColorHint="#50A0F0"
+                android:background="@drawable/entrytext_border"
+                android:textColor="@color/entrytext_text"
+                android:gravity="top|start"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:inputType="textMultiLine|textNoSuggestions"
+                android:scrollIndicators="right"
+                android:scrollbarAlwaysDrawHorizontalTrack="true"
+                android:text="@string/initial_entry_text"
+                />
+        </LinearLayout>
+</FrameLayout>

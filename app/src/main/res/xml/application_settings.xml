@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Decipher Assists">
+        <EditTextPreference android:title="Cribs" android:summary="Known or suspected words in the plain text" android:defaultValue="and,the,have"
+            android:key="@string/pref_cribs"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Alpha">
+        <ListPreference android:title="Language" android:summary="Language defaults" android:defaultValue="English (UK)" android:key="@string/pref_language"
+            android:entryValues="@array/languageValues" android:entries="@array/languageEntries"/>
+        <EditTextPreference android:title="Plain Alphabet" android:summary="Symbols used in the plain text" android:defaultValue="@string/default_alphabet"
+            android:key="@string/pref_alphabet_plain"/>
+        <EditTextPreference android:title="Cipher Alphabet" android:summary="Symbols used in the cipher text" android:defaultValue="@string/default_alphabet"
+            android:key="@string/pref_alphabet_cipher"/>
+        <EditTextPreference android:title="Padding Characters" android:summary="Symbols used as spaces" android:defaultValue=" "
+            android:key="@string/pref_padding_chars"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

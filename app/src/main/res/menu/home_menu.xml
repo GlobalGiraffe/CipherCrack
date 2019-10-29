@@ -1,0 +1,80 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- "Crack", should appear as action button if possible -->
+    <item android:id="@+id/action_home_crack"
+        android:icon="@android:drawable/ic_menu_compass"
+        android:title="@string/crack"
+        app:showAsAction="ifRoom"/>
+
+    <!-- "Edit", should appear as action button if possible -->
+    <item android:id="@+id/action_home_edit"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="@string/edit"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/action_home_edit_uppercase"
+                android:title="@string/uppercase"
+                app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/action_home_edit_lowercase"
+                android:title="@string/lowercase"
+                app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/action_home_edit_remove_padding"
+                android:title="@string/remove_padding"
+                app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/action_home_edit_remove_punctuation"
+                android:title="@string/remove_punctuation"
+                app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/action_home_edit_reverse"
+                android:title="@string/reverse"
+                app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/action_home_edit_reverse_words"
+                android:title="@string/reverse_words"
+                app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/action_home_edit_reflect_col_row"
+                android:title="@string/reflect_col_row"
+                android:icon="@android:drawable/ic_menu_always_landscape_portrait"
+                app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/action_home_edit_clear"
+                android:title="@string/clear"
+                android:icon="@android:drawable/ic_notification_clear_all"
+                app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/action_home_edit_undo"
+                android:title="@string/undo"
+                android:icon="@android:drawable/ic_menu_revert"
+                app:showAsAction="ifRoom" />
+        </menu>
+    </item>
+
+    <!-- "Statistics", should appear as action button if possible -->
+    <item
+        android:id="@+id/action_home_analysis"
+        android:icon="@android:drawable/ic_menu_zoom"
+        android:title="@string/analysis"
+        app:showAsAction="ifRoom"/>
+
+    <!-- "Camera", should appear as action button if possible -->
+    <item
+        android:id="@+id/action_home_camera"
+        android:icon="@android:drawable/ic_menu_camera"
+        android:title="@string/camera"
+        app:showAsAction="ifRoom"/>
+
+    <!-- "Settings", should appear as action button if possible -->
+    <item
+        android:id="@+id/action_home_settings"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/settings"
+        app:showAsAction="ifRoom"/>
+
+    <!-- Next, should always be in the overflow [never] -->
+</menu>
