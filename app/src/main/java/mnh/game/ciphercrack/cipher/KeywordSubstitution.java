@@ -241,7 +241,7 @@ public class KeywordSubstitution extends Cipher {
 
         EditText keyword = new EditText(context);
         keyword.setText("");
-        keyword.setTextColor(ContextCompat.getColor(context, R.color.white));
+        keyword.setTextColor(ContextCompat.getColor(context, R.color.entrytext_text));
         keyword.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
         keyword.setId(ID_SUBSTITUTION_KEYWORD);
         keyword.setBackground(context.getDrawable(R.drawable.entrytext_border));

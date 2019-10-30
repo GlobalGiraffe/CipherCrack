@@ -1,9 +1,19 @@
 package mnh.game.ciphercrack.util;
 
+import android.content.Context;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import mnh.game.ciphercrack.transform.RemovePadding;
+import mnh.game.ciphercrack.transform.RemovePunctuation;
+import mnh.game.ciphercrack.transform.Transform;
+
 public class StaticAnalysis {
+
+    // used during bigram and trigram analysis
+    private static final Transform removePadding = new RemovePadding();
+    private static final Transform removePunctuation = new RemovePunctuation();
 
     /**
      * Compute the frequency of letters in a string
@@ -31,6 +41,38 @@ public class StaticAnalysis {
                     } else {
                         frequency.put(letter, count + 1);
                     }
+                }
+            }
+        }
+        return frequency;
+    }
+
+    /**
+     * Compute the frequency of bi-grams or tri-grams
+     * @param text the text to be analysed
+     * @param gramSize the number of chars in a gram (2 or 3)
+     * @param context the context in which we're running, used to determine punctuation
+     * @return a map of the count for each gram
+     */
+    public static HashMap<String, Integer> collectGramFrequency(String text, int gramSize, Context context) {
+        HashMap<String, Integer> frequency = new HashMap<>(500);
+        if (text != null) {
+
+            // just keep the alpha/numeric characters, make upper case
+            String textToUse = removePunctuation.apply(context, removePadding.apply(context, text.toUpperCase()));
+
+            // scan the symbols in the text to collect frequency of grams
+            for (int i = 0; i <= textToUse.length()-gramSize; i++) {
+
+                // get the bi- or tri-gram
+                String gram = textToUse.substring(i, i+gramSize);
+
+                // we want to see how many times the letter occurs regardless of case
+                Integer count = frequency.get(gram);
+                if (count == null) {
+                    frequency.put(gram, 1);
+                } else {
+                    frequency.put(gram, count + 1);
                 }
             }
         }
@@ -66,9 +108,31 @@ public class StaticAnalysis {
             // scan the symbols in the text to collect number in the alphabet
             for (int i = 0; i < text.length(); i++) {
 
-                // check the letter is in the alphabet, if not, we don't count frequency (punctuation)
+                // check the letter is in the alphabet, if not, we don't count it (e.g. punctuation)
                 char letter = textToUse.charAt(i);
                 if (alphabet.indexOf(Character.toUpperCase(letter)) >= 0) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Count the number of symbols in the text that are not padding characters
+     * @param text the text to be scanned for letters
+     * @param paddingChars the characters to treat as padding
+     * @return the number of non-padding symbols in the text
+     */
+    public static int countNonPadding(String text, String paddingChars) {
+        int count = 0;
+        if (text != null) {
+            // scan the symbols in the text to collect number that are non-padding
+            for (int i = 0; i < text.length(); i++) {
+
+                // check the letter is padding, if it is then we don't count it
+                char ch = text.charAt(i);
+                if (paddingChars.indexOf(ch) < 0) {
                     count++;
                 }
             }
@@ -89,7 +153,7 @@ public class StaticAnalysis {
     }
 
     /**
-     * Calculate IOC from the hash map of counts
+     * Calculate Index of Coincidence from the hash map of counts
      * @param frequency the map of character counts
      * @param alphabet the possible letters in the alphabet
      * @return the index of coincidence
@@ -102,10 +166,21 @@ public class StaticAnalysis {
             for (int i = 0; i < alphabet.length(); i++) {
                 Integer freq = frequency.get(alphabet.charAt(i));
                 if (freq != null) {
-                    calc = calc + (freq * (freq - 1));
+                    calc += freq * (freq - 1);
                 }
             }
             return ((double) calc) / (textLen * (textLen - 1));
         }
+    }
+
+    /**
+     * Calculate Index of Coincidence from the hash map of counts
+     * @param text the text whose IOC is to be calculated
+     * @param alphabet the possible letters in the alphabet
+     * @return the index of coincidence
+     */
+    public static double getIOC(String text, int textLen, String alphabet) {
+        HashMap<Character, Integer> freqUpper = StaticAnalysis.collectFrequency(text, true, alphabet);
+        return getIOC(freqUpper, textLen, alphabet);
     }
 }

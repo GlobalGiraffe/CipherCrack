@@ -55,8 +55,8 @@ public abstract class Language {
     }
 
     abstract protected String getDictionaryResourceId();
-    abstract protected Map<Character, Float> getLetterFrequencies();
-    abstract protected Map<String, Float> getDigramFrequencies();
+    abstract protected Map<String, Float> getLetterFrequencies();
+    abstract protected Map<String, Float> getBigramFrequencies();
     abstract protected Map<String, Float> getTrigramFrequencies();
     abstract public double getExpectedIOC();
 
@@ -75,25 +75,35 @@ public abstract class Language {
      * E and T may be first while Q or Z will probably be last
      */
     public List<Character> lettersOrderedByFrequency() {
-        Map<Character, Float> freqLetters = getLetterFrequencies();
+        Map<String, Float> freqLetters = getLetterFrequencies();
         List<Character> chars = freqLetters
                 .entrySet()
                 .stream()
                 .sorted(comparingByValue())
                 .map(Map.Entry::getKey)
+                .map(a -> a.charAt(0))
                 .collect(toList());
         Collections.reverse(chars);
         return chars;
     }
 
     /**
-     * Used by subclasses, given char and a frequency map, return the frequency of that char
-     * @param textChar the symbol whose frequency is required
-     * @return the char's frequency or 0.0 if not recorded in the map
+     * Given short string, return the usual frequency of that string in the language
+     * @param gram the gram whose frequency is required
+     * @return the string's frequency or 0.0 if not recorded in the map
      */
-    public float frequencyOf(char textChar) {
-        Map<Character, Float> freqLetters = getLetterFrequencies();
-        Float value = freqLetters.get(Character.toUpperCase(textChar));
+    public float frequencyOf(String gram) {
+        Map<String,Float> frequencies;
+        if (gram.length() == 3) {
+            frequencies = getTrigramFrequencies();
+        } else {
+            if (gram.length() == 2) {
+                frequencies = getBigramFrequencies();
+            } else {
+                frequencies = getLetterFrequencies();
+            }
+        }
+        Float value = frequencies.get(gram.toUpperCase());
         if (value == null) {
             return 0.0f;
         }
@@ -109,7 +119,7 @@ public abstract class Language {
     }
 
     /**
-     * Return the dictionary for this language, loading it if necessary
+     * Load the dictionary if necessary, it will be set to null if not found or can't be loaded
      */
     private void loadDictionary() {
         if (dictionary == null) {

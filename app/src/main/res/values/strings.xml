@@ -113,10 +113,12 @@ o</string>
     <string name="pref_padding_chars">pref_padding_chars</string>
 
     <!-- Frequency Table -->
-    <string name="trigraph">Trigraph</string>
+    <string name="letter">Letter</string>
+    <string name="bigram">Bigram</string>
+    <string name="trigram">Trigram</string>
     <string name="count">Count</string>
-    <string name="percent_sign">%</string>
-    <string name="normal">Normal</string>
+    <string name="percent_sign">Text %</string>
+    <string name="normal">Normal %</string>
 
     <!-- camera related -->
     <string name="ok">OK</string>

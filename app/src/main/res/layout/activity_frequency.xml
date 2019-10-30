@@ -30,7 +30,7 @@
                 <TableRow>
                     <TextView
                         android:layout_column="1"
-                        android:text="@string/trigraph"
+                        android:text="@string/trigram"
                         android:gravity="start"
                         android:padding="3dip"/>
                     <TextView
@@ -49,25 +49,6 @@
                 <View
                     android:layout_height="2dip"
                     android:background="#FF909090" />
-                <TableRow>
-                    <TextView
-                        android:layout_column="1"
-                        android:text="THE"
-                        android:gravity="start"
-                        android:padding="3dip"/>
-                    <TextView
-                        android:text="12"
-                        android:gravity="start"
-                        android:padding="3dip"/>
-                    <TextView
-                        android:text="17.3%"
-                        android:gravity="center"
-                        android:padding="3dip"/>
-                    <TextView
-                        android:text="8.2%"
-                        android:gravity="end"
-                        android:padding="3dip"/>
-                </TableRow>
             </TableLayout>
         </LinearLayout>
 </FrameLayout>

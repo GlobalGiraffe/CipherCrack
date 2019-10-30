@@ -151,7 +151,7 @@ public class Permutation extends Cipher {
 
         EditText keywordOrColumns = new EditText(context);
         keywordOrColumns.setText("");
-        keywordOrColumns.setTextColor(ContextCompat.getColor(context, R.color.white));
+        keywordOrColumns.setTextColor(ContextCompat.getColor(context, R.color.entrytext_text));
         keywordOrColumns.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
         keywordOrColumns.setId(ID_PERMUTATION_KEYWORD);
         keywordOrColumns.setBackground(context.getDrawable(R.drawable.entrytext_border));

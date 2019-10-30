@@ -6,70 +6,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-        <LinearLayout android:background="@color/black_overlay"
-            android:layout_height="match_parent"
+    <LinearLayout android:background="@color/black_overlay"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        tools:ignore="UselessParent"
+        android:padding="6sp"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:id="@+id/static_general_layout">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/static_analysis_toolbar"
             android:layout_width="match_parent"
-            tools:ignore="UselessParent"
-            android:padding="6sp"
-            android:orientation="vertical"
-            android:layout_gravity="center"
-            android:id="@+id/stats_main_layout">
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/stats_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                android:elevation="4dp"
-                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-            <TextView
-                android:id="@+id/stats_text"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:background="@drawable/entrytext_border"
-                android:padding="10sp"
-                android:text="@string/analysis"
-                android:textColor="@color/entrytext_text"
-                android:textIsSelectable="true"
-                android:textSize="16sp" />
-            <!--
-            <LinearLayout android:background="@color/black_overlay"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:id="@+id/crack_button_layout"
-                android:orientation="horizontal"
-                android:layout_gravity="center_horizontal"
-                tools:ignore="UselessParent"
-                style="?android:attr/buttonBarStyle">
-                <Button android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:id="@+id/stats_button_letter_freq"
-                    android:onClick="showFrequency"
-                    android:layout_weight="1"
-                    android:text="@string/frequency"
-                    style="?android:attr/buttonBarButtonStyle"/>
-                <Button android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:id="@+id/stats_button_bigraph_freq"
-                    android:onClick="showBigraphFrequency"
-                    android:layout_weight="1"
-                    android:text="@string/bigraph_frequency"
-                    style="?android:attr/buttonBarButtonStyle"/>
-                <Button android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:id="@+id/stats_button_trigraph_freq"
-                    android:onClick="showTrigraphFrequency"
-                    android:layout_weight="1"
-                    android:text="@string/trigraph_frequency"
-                    style="?android:attr/buttonBarButtonStyle"/>
-            </LinearLayout>
-            -->
-        </LinearLayout>
-<!--
-    </FrameLayout>
--->
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/static_analysis_tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/static_analysis_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </androidx.viewpager.widget.ViewPager>
+    </LinearLayout>
 </FrameLayout>

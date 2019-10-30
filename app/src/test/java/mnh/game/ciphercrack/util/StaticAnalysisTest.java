@@ -68,6 +68,21 @@ public class StaticAnalysisTest {
     }
 
     @Test
+    public void testNonPaddingCount() {
+        int count = StaticAnalysis.countNonPadding("ABC% def, GHI: jkl MNO pqr", " ");
+        assertEquals("Count NP Mixed Text", 21, count);
+        String text = "ABC def, GHI: jkl MNO pqr-|";
+        count = StaticAnalysis.countNonPadding(text+text, " ");
+        assertEquals("Count NP Double Text", 44, count);
+        count = StaticAnalysis.countNonPadding("", " ");
+        assertEquals("Count NP Empty", 0, count);
+        count = StaticAnalysis.countNonPadding(null, " ");
+        assertEquals("Count NP null", 0, count);
+        count = StaticAnalysis.countNonPadding("albatros", "ab");
+        assertEquals("Count NP pad=ab", 5, count);
+    }
+
+    @Test
     public void testGetIOC() {
         double delta = 1e-3;
         Language english = Language.instanceOf("English");

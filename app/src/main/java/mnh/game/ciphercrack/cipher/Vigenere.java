@@ -25,7 +25,7 @@ import mnh.game.ciphercrack.util.StaticAnalysis;
 
 /**
  * Class that contains methods to assist with Vigenere Cipher operations
- * This polyalphabetic cipher shifts each letter within the text by a
+ * This poly-alphabetic cipher shifts each letter within the text by a
  *   an amount based on a keyword
  */
 public class Vigenere extends Cipher {
@@ -119,7 +119,7 @@ public class Vigenere extends Cipher {
 
         EditText keyword = new EditText(context);
         keyword.setText("");
-        keyword.setTextColor(ContextCompat.getColor(context, R.color.white));
+        keyword.setTextColor(ContextCompat.getColor(context, R.color.entrytext_text));
         keyword.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
         keyword.setId(ID_VIGENERE_KEYWORD);
         keyword.setBackground(context.getDrawable(R.drawable.entrytext_border));
@@ -138,7 +138,7 @@ public class Vigenere extends Cipher {
 
         EditText length = new EditText(context);
         length.setText("");
-        length.setTextColor(ContextCompat.getColor(context, R.color.white));
+        length.setTextColor(ContextCompat.getColor(context, R.color.entrytext_text));
         length.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
         length.setId(ID_VIGENERE_LENGTH);
         length.setBackground(context.getDrawable(R.drawable.entrytext_border));
