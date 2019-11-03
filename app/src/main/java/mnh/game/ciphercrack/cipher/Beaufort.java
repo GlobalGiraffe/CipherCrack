@@ -45,7 +45,7 @@ import mnh.game.ciphercrack.util.Directives;
  */
 public class Beaufort extends Vigenere {
 
-    public Beaufort(Context context) { super(context); }
+    Beaufort(Context context) { super(context, "Beaufort"); }
 
     /**
      * Describe what this cipher is and does
@@ -66,7 +66,7 @@ public class Beaufort extends Vigenere {
      */
     @Override
     public String getInstanceDescription() {
-        return "Beaufort cipher (keyword="+keyword+")";
+        return getCipherName()+" cipher (keyword="+keyword+")";
     }
 
     /**

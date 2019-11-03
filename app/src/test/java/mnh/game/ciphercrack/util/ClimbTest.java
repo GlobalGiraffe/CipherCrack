@@ -1,14 +1,18 @@
 package mnh.game.ciphercrack.util;
 
+import android.content.Context;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.util.Properties;
 
+import mnh.game.ciphercrack.cipher.Cipher;
 import mnh.game.ciphercrack.cipher.Vigenere;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -51,7 +55,7 @@ public class ClimbTest {
         props.setProperty(Climb.CLIMB_ALPHABET, defaultAlphabet);
         props.setProperty(Climb.CLIMB_CRIBS, "contacts,again");
 
-        boolean success = Climb.doClimb(text, new Vigenere(null), props);
+        boolean success = Climb.doClimb(text, Cipher.instanceOf("Vigenere", (Context)null), props);
         String bestKeyword = props.getProperty(Climb.CLIMB_BEST_KEYWORD);
         String bestDecode = props.getProperty(Climb.CLIMB_BEST_DECODE);
         String activity = props.getProperty(Climb.CLIMB_ACTIVITY);
@@ -62,5 +66,14 @@ public class ClimbTest {
 
         String expected = "mytimeaboardtheweatherstationwasinterestingtosaytheleastweobtainedphotosofthenewciphermachineandbelieveitornotafullsetofwiringdiagramstogetherwiththesettingsforthenextmonthasfarasiknowourpresencewasnotdetectedtherewasnosignoflifeandiguessourdiversionworkedthelowvisibilityontheicehelpedthemachineistudiedwasremarkablyunsophisticatedandborelittleresemblancetothetenwheelrotormachineourcontactshadledustoexpectitmaybethatasaweatherstationmodelithasbeenkeptsimpletheymayalsohavebeenworriedthatitwouldfallintoenemyhandsandthereforehaveissuedonlythisprototypenonethelesstheyseemconvincedofitssecuritytimewilltelliwillgiveafullerreportonthestructureofthemachineitsoperationanditscurrentsettingsinmynextmessagebythewayifoundtheenclosedplaintextnexttothemachineanditlookedasthoughitwasabouttobesentitmaybeworthlisteningoutforthenextweatherstationtransmissioninthemeantimeiwillattackthelatestsovietmessagetheyseemtohavescaledupthesecurityagainthoughidontthinkthisoneusestherotormachinesoitshouldntbetoosteep";
         assertEquals("Climb Cracked text", expected, bestDecode.toLowerCase());
+    }
+
+    @Test
+    public void testMutateKey() {
+        String startKey = "ABCDEFG";
+        String result = Climb.mutateKey(startKey, 1);
+        assertNotEquals("MutateKey 1", startKey, result);
+        result = Climb.mutateKey(startKey, 9);
+        assertNotEquals("MutateKey 9s", startKey, result); // very remote possible back to start!
     }
 }

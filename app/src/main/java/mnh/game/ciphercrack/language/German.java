@@ -9,6 +9,7 @@ public class German extends Language {
     private static final String GERMAN_ALPHABET = "AÄBCDEFGHIJKLMNOÖPQRSßTUÜVWXYZ";
 
     // frequency of individual letters
+    // TODO - adjust to be like English with static initialisers - to run on old phones
     // http://practicalcryptography.com/cryptanalysis/letter-frequencies-various-languages/german-letter-frequencies/
     private static final Map<String, Float> freqLetters = Stream.of(new Object[][] {
             { "A", 6.34f },

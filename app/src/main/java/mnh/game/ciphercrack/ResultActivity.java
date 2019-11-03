@@ -10,39 +10,55 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import mnh.game.ciphercrack.cipher.Cipher;
+import mnh.game.ciphercrack.util.Directives;
 
 import static android.view.View.GONE;
 
 public class ResultActivity extends AppCompatActivity {
+
+    public static final String EXTRA_TEXT = "Txt";
+    public static final String EXTRA_RESULT = "Res";
+    public static final String EXTRA_EXPLAIN = "Exp";
+    public static final String EXTRA_CIPHER = "Cyp";
+    public static final String EXTRA_DIRECTIVES = "Dir";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
+        String text = getIntent().getStringExtra(EXTRA_TEXT);
+        String result = getIntent().getStringExtra(EXTRA_RESULT);
+        String explain  = getIntent().getStringExtra(EXTRA_EXPLAIN);
+        String cipherName = getIntent().getStringExtra(EXTRA_CIPHER);
+        Directives dirs = (Directives)getIntent().getParcelableExtra((EXTRA_DIRECTIVES));
+
         Toolbar toolbar = findViewById(R.id.result_toolbar);
-        String cipherDescription = getIntent().getStringExtra("CIPHER_DESCRIPTION");
-        toolbar.setTitle(cipherDescription);
         setSupportActionBar(toolbar);
 
+        // create a cipher object so we can get a description [with parameters to the cipher]
+        Cipher cipher = Cipher.instanceOf(cipherName, this);
+        if (cipher != null) {
+            cipher.canParametersBeSet(dirs);
+            toolbar.setTitle(cipher.getCipherDescription());
+        }
+
         // put the text on the screen
-        String text = getIntent().getStringExtra("TEXT");
         TextView textView = findViewById(R.id.result_input_text);
         textView.setText(text);
 
         // put the result on the screen
-        text = getIntent().getStringExtra("RESULT");
         textView = findViewById(R.id.result_result_text);
-        textView.setText(text);
+        textView.setText(result);
 
         // put the explanation of the result on the screen
         // but only if there is any explanation: only used for Crack
-        text = getIntent().getStringExtra("EXPLAIN");
         textView = findViewById(R.id.result_explain_text);
-        if (text == null || text.length() == 0) {
+        if (explain == null || explain.length() == 0) {
             textView.setVisibility(GONE);
         } else {
-            textView.setText(text);
+            textView.setText(explain);
         }
     }
 

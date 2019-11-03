@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<FrameLayout tools:context="mnh.game.ciphercrack.AnalysisActivity"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:theme="@style/Theme.AppCompat"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout android:background="@color/black_overlay"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        tools:ignore="UselessParent"
+        android:padding="6sp"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:id="@+id/static_general_layout">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/static_analysis_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        <LinearLayout android:background="@color/black_overlay"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            tools:ignore="UselessParent"
+            android:padding="0sp"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:id="@+id/static_general_inner_layout">
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/static_analysis_tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabMode="scrollable"/>
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/static_analysis_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/static_analysis_bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_gravity="start"
+            app:itemIconTint="@color/bottom_text"
+            app:itemTextColor="@color/bottom_text"
+            app:menu="@menu/bottom_menu" />
+    </LinearLayout>
+</FrameLayout>

@@ -3,6 +3,7 @@ package mnh.game.ciphercrack.cipher;
 import android.content.Context;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -21,7 +22,7 @@ import mnh.game.ciphercrack.util.Climb;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
 import mnh.game.ciphercrack.util.Directives;
-import mnh.game.ciphercrack.util.StaticAnalysis;
+import mnh.game.ciphercrack.staticanalysis.StaticAnalysis;
 
 /**
  * Class that contains methods to assist with Vigenere Cipher operations
@@ -32,7 +33,10 @@ public class Vigenere extends Cipher {
 
     String keyword = "";
 
-    public Vigenere(Context context) { super(context); }
+    Vigenere(Context context) { super(context, "Vigenere"); }
+
+    // needed for subclasses (Beaufort)
+    Vigenere(Context context, String name) { super(context, name); }
 
     /**
      * Describe what this cipher does
@@ -53,7 +57,7 @@ public class Vigenere extends Cipher {
      */
     @Override
     public String getInstanceDescription() {
-        return "Vigenere cipher (keyword="+keyword+")";
+        return getCipherName()+" cipher (keyword="+keyword+")";
     }
 
     /**
@@ -100,7 +104,7 @@ public class Vigenere extends Cipher {
     }
 
     @Override
-    public void layoutExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public void addExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
 
         // Create this:
         // Keyword:
@@ -131,18 +135,40 @@ public class Vigenere extends Cipher {
         newFilters[editFilters.length] = new InputFilter.AllCaps();   // ensures capitals
         keyword.setFilters(newFilters);
 
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
+        layout.addView(keywordLabel);
+        layout.addView(keyword);
+    }
+
+    @Override
+    public void fetchExtraControls(LinearLayout layout, Directives dirs) {
+        EditText keywordField = layout.findViewById(ID_VIGENERE_KEYWORD);
+        String keyword = keywordField.getText().toString();
+        dirs.setKeyword(keyword);
+    }
+
+    /**
+     * Add crack controls for this cipher: type of crack to be done
+     * @param context the context
+     * @param layout the layout to add any crack controls to
+     * @param alphabet the current alphabet
+     * @return true if controls added, else false
+     */
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
         TextView lengthLabel = new TextView(context);
-        lengthLabel.setText(context.getString(R.string.or_length));
+        lengthLabel.setText(context.getString(R.string.length));
         lengthLabel.setTextColor(ContextCompat.getColor(context, R.color.white));
         lengthLabel.setLayoutParams(WRAP_CONTENT_BOTH);
 
-        EditText length = new EditText(context);
-        length.setText("");
-        length.setTextColor(ContextCompat.getColor(context, R.color.entrytext_text));
-        length.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
-        length.setId(ID_VIGENERE_LENGTH);
-        length.setBackground(context.getDrawable(R.drawable.entrytext_border));
-        length.setInputType(InputType.TYPE_CLASS_NUMBER);
+        EditText keywordLength = new EditText(context);
+        keywordLength.setText("");
+        keywordLength.setPadding(3,3,3,3);
+        keywordLength.setTextColor(ContextCompat.getColor(context, R.color.entrytext_text));
+        keywordLength.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
+        keywordLength.setId(ID_VIGENERE_LENGTH);
+        keywordLength.setBackground(context.getDrawable(R.drawable.entrytext_border));
+        keywordLength.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         TextView crackLabel = new TextView(context);
         crackLabel.setText(context.getString(R.string.crack_method));
@@ -172,20 +198,21 @@ public class Vigenere extends Cipher {
 
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
-        layout.addView(keywordLabel);
-        layout.addView(keyword);
         layout.addView(lengthLabel);
-        layout.addView(length);
+        layout.addView(keywordLength);
         layout.addView(crackLabel);
         layout.addView(crackButtonGroup);
+
+        return true;
     }
 
-    @Override
-    public void fetchExtraControls(LinearLayout layout, Directives dirs) {
-        EditText keywordField = layout.findViewById(ID_VIGENERE_KEYWORD);
-        String keyword = keywordField.getText().toString();
-        dirs.setKeyword(keyword);
-
+    /**
+     * Fetch the details of the extra crack controls for this cipher
+     * @param layout the layout that could contains some crack controls
+     * @param dirs the directives to add to
+     * @return the crack method to use
+     */
+    public CrackMethod fetchCrackControls(LinearLayout layout, Directives dirs) {
         dirs.setKeywordLength(-2);
         EditText keywordLengthField = layout.findViewById(ID_VIGENERE_LENGTH);
         String keywordLengthStr = keywordLengthField.getText().toString();
@@ -200,18 +227,10 @@ public class Vigenere extends Cipher {
         } catch (NumberFormatException ex) {
             dirs.setKeywordLength(-1);
         }
-    }
 
-    /**
-     * Query the extra layout to find which crack method we're using
-     * @param layout layout that may have indication of crack type
-     * @return the crack method the user chose
-     */
-    @Override
-    public CrackMethod getCrackMethod(LinearLayout layout) {
         // locate the kind of crack we've been asked to do
         RadioButton dictButton = layout.findViewById(ID_BUTTON_DICTIONARY);
-        return (dictButton.isChecked()) ? CrackMethod.DICTIONARY : CrackMethod.IOC;
+        return (dictButton.isChecked()) ? CrackMethod.DICTIONARY : CrackMethod.WORD_COUNT;
     }
 
     /**
@@ -323,7 +342,10 @@ public class Vigenere extends Cipher {
         } else { // do dictionary search
             Set<String> cribs = Cipher.getCribSet(cribString);
             Dictionary dict = dirs.getLanguage().getDictionary();
+            int wordsRead = 0;
             for (String word : dict) {
+                if (wordsRead++ % 1000 == 0)
+                    Log.i("CipherCrack", "Cracking "+getCipherName()+" Dict: "+wordsRead+" words tried");
                 word = word.toUpperCase();
                 dirs.setKeyword(word);
                 String plainText = decode(cipherText, dirs);
@@ -359,6 +381,6 @@ public class Vigenere extends Cipher {
      */
     @Override
     public double getFitness(String text, Directives dirs) {
-        return StaticAnalysis.getIOC(text, dirs.getAlphabet());
+        return StaticAnalysis.calculateIOC(text, dirs.getAlphabet());
     }
 }

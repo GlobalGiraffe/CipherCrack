@@ -4,13 +4,20 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Spanned;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.HashSet;
 import java.util.List;
@@ -32,25 +39,9 @@ import mnh.game.ciphercrack.util.CrackResult;
 import mnh.game.ciphercrack.util.Directives;
 import mnh.game.ciphercrack.util.KeywordExtend;
 import mnh.game.ciphercrack.util.Settings;
-import mnh.game.ciphercrack.util.StaticAnalysis;
+import mnh.game.ciphercrack.staticanalysis.StaticAnalysis;
 
 public class KeywordSubstitution extends Cipher {
-
-    /**
-     * Look at the keyword and extend method on screen and apply the extension
-     * with the current alphabet to produce a new FULL keyword
-     * This is to keep it updated as the user changes them
-     * @param rootView the view being adjusted
-     */
-    private static void adjustFullKeyword(View rootView) {
-        EditText keywordView = rootView.findViewById(ID_SUBSTITUTION_KEYWORD);
-        KeywordExtend keywordExtend = getKeywordExtend(rootView);
-        String alphabet = Settings.instance().getString(rootView.getContext(),R.string.pref_alphabet_plain);
-        String fullKeyword = applyKeywordExtend(keywordExtend, keywordView.getText().toString(), alphabet);
-
-        TextView fullKeywordView = rootView.findViewById(ID_SUBSTITUTION_FULL_KEYWORD);
-        fullKeywordView.setText(fullKeyword);
-    }
 
     // when the radio button changes, adjust the full keyword to match new method
     private static final View.OnClickListener EXTEND_BUTTON_CLICK_LISTENER = new View.OnClickListener() {
@@ -63,7 +54,7 @@ public class KeywordSubstitution extends Cipher {
 
     private String keyword = "";
 
-    public KeywordSubstitution(Context context) { super(context); }
+    KeywordSubstitution(Context context) { super(context, "Keyword Substitution"); }
 
     /**
      * Describe what this cipher does
@@ -83,7 +74,23 @@ public class KeywordSubstitution extends Cipher {
      */
     @Override
     public String getInstanceDescription() {
-        return "Keyword Substitution cipher (keyword="+keyword+")";
+        return getCipherName()+" cipher (keyword="+keyword+")";
+    }
+
+    /**
+     * Look at the keyword and extend method on screen and apply the extension
+     * with the current alphabet to produce a new FULL keyword
+     * This is to keep it updated as the user changes them
+     * @param rootView the view being adjusted
+     */
+    private static void adjustFullKeyword(View rootView) {
+        EditText keywordView = rootView.findViewById(ID_SUBSTITUTION_KEYWORD);
+        KeywordExtend keywordExtend = getKeywordExtend(rootView);
+        String alphabet = Settings.instance().getString(rootView.getContext(),R.string.pref_alphabet_plain);
+        String fullKeyword = applyKeywordExtend(keywordExtend, keywordView.getText().toString(), alphabet);
+
+        TextView fullKeywordView = rootView.findViewById(ID_SUBSTITUTION_FULL_KEYWORD);
+        fullKeywordView.setText(fullKeyword);
     }
 
     /**
@@ -210,14 +217,14 @@ public class KeywordSubstitution extends Cipher {
     }
 
     @Override
-    public void layoutExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public void addExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
 
         // Create this:
         // Keyword:
-        // [--------------------] EditText
+        // [----------------------] EditText
         // Keyword Extend from
         // [o] Min Letter [o] Max letter [o] Final letter      RadioButtons
-        // [----- RESULT -------] TextView
+        // [---EXTENDED KEYWORD---] TextView
         //
         // The first can be 1-26, the second 0-26
         TextView keywordLabel = new TextView(context);
@@ -225,7 +232,7 @@ public class KeywordSubstitution extends Cipher {
         keywordLabel.setTextColor(ContextCompat.getColor(context, R.color.white));
         keywordLabel.setLayoutParams(WRAP_CONTENT_BOTH);
 
-        // when the radio button changes, adjust the full keyword
+        // when the radio button or keyword text changes, adjust the full-keyword
         final TextWatcher TEXT_CHANGED_LISTENER = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -239,20 +246,63 @@ public class KeywordSubstitution extends Cipher {
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         };
 
-        EditText keyword = new EditText(context);
+        TextInputLayout keywordLayout = new TextInputLayout(context);
+        keywordLayout.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
+        keywordLayout.setOrientation(LinearLayout.HORIZONTAL);
+        keywordLayout.setHint(context.getString(R.string.keyword));
+
+        TextInputEditText keyword = new TextInputEditText(context);
+        //EditText keyword = new EditText(context);
         keyword.setText("");
+        keyword.setPadding(3,3,3,3);
         keyword.setTextColor(ContextCompat.getColor(context, R.color.entrytext_text));
         keyword.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
         keyword.setId(ID_SUBSTITUTION_KEYWORD);
         keyword.setBackground(context.getDrawable(R.drawable.entrytext_border));
         keyword.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         keyword.addTextChangedListener(TEXT_CHANGED_LISTENER);
+        keyword.setHint(R.string.keyword);
+        keyword.setHintTextColor(context.getResources().getColor(R.color.darkgrey, null));
         // ensure input is in capitals
         InputFilter[] editFilters = keyword.getFilters();
-        InputFilter[] newFilters = new InputFilter[editFilters.length + 1];
+        InputFilter[] newFilters = new InputFilter[editFilters.length + 3];
         System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
-        newFilters[editFilters.length] = new InputFilter.AllCaps();   // ensures capitals
+        // ensures capitals
+        newFilters[editFilters.length] = new InputFilter.AllCaps();
+        // limits text length
+        newFilters[editFilters.length+1] = new InputFilter.LengthFilter(alphabet.length());
+        // ensures we type only what's in the alphabet
+        newFilters[editFilters.length+2] = new InputFilter() {
+            public CharSequence filter(CharSequence source, int start, int end,
+                                       Spanned dest, int dstart, int dend) {
+                // only allow chars in the alphabet to be added
+                for (int i = start; i < end; i++) {
+                    String letter = String.valueOf(source.charAt(i));
+                    if (!alphabet.contains(letter)) {
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
         keyword.setFilters(newFilters);
+
+        Button keywordDelete = new Button(context);
+        keywordDelete.setLayoutParams(
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                                              LinearLayout.LayoutParams.WRAP_CONTENT));
+        keywordDelete.setGravity(Gravity.END|Gravity.CENTER_VERTICAL);
+        keywordDelete.setBackground(context.getResources().getDrawable(android.R.drawable.ic_delete, null));
+        keywordDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText k = keywordLayout.findViewById(ID_SUBSTITUTION_KEYWORD);
+                k.setText("");
+            }
+        });
+
+        keywordLayout.addView(keyword);
+        keywordLayout.addView(keywordDelete);
 
         TextView extendLabel = new TextView(context);
         extendLabel.setText(context.getString(R.string.extend_explain));
@@ -306,6 +356,38 @@ public class KeywordSubstitution extends Cipher {
         extendButtonGroup.addView(maxButton);
         extendButtonGroup.addView(lastButton);
 
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
+        layout.addView(keywordLabel);
+        layout.addView(keywordLayout);
+        layout.addView(extendLabel);
+        layout.addView(extendButtonGroup);
+        layout.addView(fullKeywordLabel);
+    }
+
+    @Override
+    public void fetchExtraControls(LinearLayout layout, Directives dirs) {
+        EditText keywordField = layout.findViewById(ID_SUBSTITUTION_KEYWORD);
+        String keyword = keywordField.getText().toString();
+        KeywordExtend keywordExtend = getKeywordExtend(layout);
+
+        // build the extended keyword
+        String alphabet = Settings.instance().getString(layout.getContext(), R.string.pref_alphabet_plain);
+        String fullKeyword = KeywordSubstitution.applyKeywordExtend(keywordExtend, keyword, alphabet);
+        dirs.setKeyword(fullKeyword);
+        String languageName = Settings.instance().getString(layout.getContext(), R.string.pref_language);
+        Language language = Language.instanceOf(languageName);
+        dirs.setLanguage(language);
+    }
+
+    /**
+     * Add crack controls for this cipher: type of crack to be done
+     * @param context the context
+     * @param layout the layout to add any crack controls to
+     * @param alphabet the current alphabet
+     * @return true if controls added, else false
+     */
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
         TextView crackLabel = new TextView(context);
         crackLabel.setText(context.getString(R.string.crack_method));
         crackLabel.setTextColor(ContextCompat.getColor(context, R.color.white));
@@ -334,37 +416,19 @@ public class KeywordSubstitution extends Cipher {
 
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
-        layout.addView(keywordLabel);
-        layout.addView(keyword);
-        layout.addView(extendLabel);
-        layout.addView(extendButtonGroup);
-        layout.addView(fullKeywordLabel);
         layout.addView(crackLabel);
         layout.addView(crackButtonGroup);
-    }
 
-    @Override
-    public void fetchExtraControls(LinearLayout layout, Directives dirs) {
-        EditText keywordField = layout.findViewById(ID_SUBSTITUTION_KEYWORD);
-        String keyword = keywordField.getText().toString();
-        KeywordExtend keywordExtend = getKeywordExtend(layout);
-
-        // build the extended keyword
-        String alphabet = Settings.instance().getString(layout.getContext(), R.string.pref_alphabet_plain);
-        String fullKeyword = KeywordSubstitution.applyKeywordExtend(keywordExtend, keyword, alphabet);
-        dirs.setKeyword(fullKeyword);
-        String languageName = Settings.instance().getString(layout.getContext(), R.string.pref_language);
-        Language language = Language.instanceOf(languageName);
-        dirs.setLanguage(language);
+        return true;
     }
 
     /**
-     * Query the extra layout to find which crack method we're using
-     * @param layout layout that may have indication of crack type
-     * @return the crack method the user chose
+     * Fetch the details of the extra crack controls for this cipher
+     * @param layout the layout that could contains some crack controls
+     * @param dirs the directives to add to
+     * @return the crack method to be used
      */
-    @Override
-    public CrackMethod getCrackMethod(LinearLayout layout) {
+    public CrackMethod fetchCrackControls(LinearLayout layout, Directives dirs) {
         // locate the kind of crack we've been asked to do
         RadioButton dictButton = layout.findViewById(ID_BUTTON_DICTIONARY);
         return (dictButton.isChecked()) ? CrackMethod.DICTIONARY : CrackMethod.WORD_COUNT;
@@ -489,6 +553,7 @@ public class KeywordSubstitution extends Cipher {
         // returns true if found all cribs, unlikely on first scan
         String firstActivity = "";
         boolean success = Climb.doSimulatedAnealing(cipherText, this, crackProps);
+        Log.i("CipherCrack", "Cracking "+getCipherName()+" Climb, finished first pass");
         if (!success) {
             // scan with higher temperature, should not wander too far
             firstActivity = crackProps.getProperty(Climb.CLIMB_ACTIVITY);
@@ -542,7 +607,10 @@ public class KeywordSubstitution extends Cipher {
         // and results in a plain text with all the cribs in it
         Dictionary dict = language.getDictionary();
         Set<String> triedKeywords = new HashSet<>(2000);
+        int wordsRead = 0;
         for (String word : dict) {
+            if (wordsRead++ % 1000 == 0)
+                Log.i("CipherCrack", "Cracking Substitution Dict: "+wordsRead+" words tried");
             if (word.length() > 1) {
                 word = word.toUpperCase();
 

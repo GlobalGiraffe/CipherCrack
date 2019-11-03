@@ -24,7 +24,10 @@ public class Caesar extends Cipher {
 
     private int shift = -1;
 
-    public Caesar(Context context) { super(context); }
+    Caesar(Context context) { super(context, "Caesar"); }
+
+    // needed for subclasses (ROT13)
+    Caesar(Context context, String name) { super(context, name); }
 
     /**
      * Describe what this cipher does
@@ -44,7 +47,7 @@ public class Caesar extends Cipher {
      */
     @Override
     public String getInstanceDescription() {
-        return "Caesar cipher (shift="+shift+")";
+        return getCipherName()+" cipher (shift="+shift+")";
     }
 
     /**
@@ -74,7 +77,7 @@ public class Caesar extends Cipher {
 
 
     @Override
-    public void layoutExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public void addExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
         // create an array of possible cipher shifts for the user to choose from
         Integer[] shiftArray = new Integer[alphabet.length()];
         for (int i = 0; i < alphabet.length(); i++) {
@@ -138,7 +141,11 @@ public class Caesar extends Cipher {
         if (pos < 0) { // not in the alphabet - just leave as is
             return input;
         }
-        pos = Math.floorMod((pos-shift),alphabet.length());
+        // Java8 : pos = Math.floorMod((pos-shift),alphabet.length());
+        pos = pos-shift;
+        if (pos < 0)
+            pos += alphabet.length();
+
         boolean isLower = (input >= 'a' && input <= 'z');
         return isLower ? alphabet.toLowerCase().charAt(pos)
                 : alphabet.toUpperCase().charAt(pos);

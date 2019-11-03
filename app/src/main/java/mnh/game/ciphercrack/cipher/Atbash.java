@@ -12,7 +12,7 @@ import mnh.game.ciphercrack.util.Directives;
 
 public class Atbash extends Cipher {
 
-    public Atbash(Context context) { super(context); }
+    Atbash(Context context) { super(context, "Atbash"); }
 
     /**
      * Describe what this cipher does
@@ -31,7 +31,7 @@ public class Atbash extends Cipher {
      */
     @Override
     public String getInstanceDescription() {
-        return "Atbash cipher";
+        return getCipherName()+" cipher";
     }
 
     /**
@@ -57,7 +57,7 @@ public class Atbash extends Cipher {
     }
 
     @Override
-    public void layoutExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public void addExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
         // Nothing to create - no parameters
     }
 

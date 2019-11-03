@@ -1,17 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- "Crack", should appear as action button if possible -->
-    <item android:id="@+id/action_home_crack"
-        android:icon="@android:drawable/ic_menu_compass"
-        android:title="@string/crack"
-        app:showAsAction="ifRoom"/>
-
     <!-- "Edit", should appear as action button if possible -->
     <item android:id="@+id/action_home_edit"
         android:icon="@android:drawable/ic_menu_edit"
         android:title="@string/edit"
-        app:showAsAction="ifRoom">
+        app:showAsAction="always">
         <menu>
             <item
                 android:id="@+id/action_home_edit_uppercase"
@@ -20,6 +14,10 @@
             <item
                 android:id="@+id/action_home_edit_lowercase"
                 android:title="@string/lowercase"
+                app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/action_home_edit_keep_alphabetic"
+                android:title="@string/keep_alphabetic"
                 app:showAsAction="ifRoom" />
             <item
                 android:id="@+id/action_home_edit_remove_padding"
@@ -55,26 +53,17 @@
         </menu>
     </item>
 
-    <!-- "Statistics", should appear as action button if possible -->
-    <item
-        android:id="@+id/action_home_analysis"
-        android:icon="@android:drawable/ic_menu_zoom"
-        android:title="@string/analysis"
-        app:showAsAction="ifRoom"/>
+    <!-- Info, should appear as action button if possible -->
+    <item android:id="@+id/action_home_info"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:title="@string/info"
+        app:showAsAction="always"/>
 
     <!-- "Camera", should appear as action button if possible -->
     <item
         android:id="@+id/action_home_camera"
         android:icon="@android:drawable/ic_menu_camera"
         android:title="@string/camera"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 
-    <!-- "Settings", should appear as action button if possible -->
-    <item
-        android:id="@+id/action_home_settings"
-        android:icon="@android:drawable/ic_menu_preferences"
-        android:title="@string/settings"
-        app:showAsAction="ifRoom"/>
-
-    <!-- Next, should always be in the overflow [never] -->
 </menu>

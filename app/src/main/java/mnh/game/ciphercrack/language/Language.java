@@ -5,18 +5,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
+import java.util.SortedSet;
+import java.util.TreeMap;
+
+import mnh.game.ciphercrack.util.Settings;
 
 import static java.util.Map.Entry.comparingByValue;
 import static java.util.stream.Collectors.toList;
 
 public abstract class Language {
-
-    // static global constants
-    private static final String DEFAULT_LANGUAGE = "English";
-    private static final String DEFAULT_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     // keep track of created Languages, we just want one of each so dictionary only loaded once
     private static final HashMap<String, Language> instances = new HashMap<>();
@@ -26,7 +29,9 @@ public abstract class Language {
     private final String name;
 
     // don't instantiate this root class, but subclasses can call this
-    Language(String name) { this.name = name; }
+    Language(String name) {
+        this.name = name;
+    }
 
     /**
      * Return an instance of a language object, for letter frequencies and dictionaries
@@ -48,7 +53,11 @@ public abstract class Language {
                     language = null;
                 }
             } catch (NoClassDefFoundError | ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-                language = instanceOf(DEFAULT_LANGUAGE);
+                if (!Settings.DEFAULT_LANGUAGE.equals(name)) { // avoid infinite loop
+                    language = instanceOf(Settings.DEFAULT_LANGUAGE);
+                } else {
+                    throw new RuntimeException("Default Language could not be used", ex);
+                }
             }
         }
         return language;
@@ -62,7 +71,7 @@ public abstract class Language {
 
     // some languages with other letters may override this
     public String getAlphabet() {
-        return DEFAULT_ALPHABET;
+        return Settings.DEFAULT_ALPHABET;
     }
 
     public String getName() {
@@ -75,16 +84,40 @@ public abstract class Language {
      * E and T may be first while Q or Z will probably be last
      */
     public List<Character> lettersOrderedByFrequency() {
-        Map<String, Float> freqLetters = getLetterFrequencies();
-        List<Character> chars = freqLetters
+        Map<String, Float> freqLetterStrings = getLetterFrequencies();
+        Map<Character, Float> freqLetters = new HashMap<>();
+        for (Map.Entry<String,Float> entry : freqLetterStrings.entrySet()) {
+            freqLetters.put(entry.getKey().charAt(0), entry.getValue());
+        }
+        // now create ordered list of letters, sorted based on the float value, high-to-low
+        LinkedList<Character> orderedChars = new LinkedList<>();
+        for(Map.Entry<Character, Float> entry : freqLetters.entrySet()) {
+            char thisChar = entry.getKey();
+            float thisValue = entry.getValue();
+            boolean added = false;
+            // find position in the sorted list where this char will get added
+            for (int pos=0; pos < orderedChars.size(); pos++) {
+                if (thisValue > freqLetters.get(orderedChars.get(pos))) {
+                    orderedChars.add(pos, thisChar);
+                    added = true;
+                    break;
+                }
+            }
+            if (!added) {
+                orderedChars.add(thisChar);
+            }
+        }
+        /** Java 8 Streams do not run on SDK 23 (needs 24)
+        List<Character> orderedChars = freqLetters
                 .entrySet()
                 .stream()
                 .sorted(comparingByValue())
                 .map(Map.Entry::getKey)
                 .map(a -> a.charAt(0))
                 .collect(toList());
-        Collections.reverse(chars);
-        return chars;
+         Collections.reverse(chars);
+         **/
+        return orderedChars;
     }
 
     /**

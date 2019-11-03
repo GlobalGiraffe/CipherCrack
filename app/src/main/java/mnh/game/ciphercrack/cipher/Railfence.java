@@ -26,7 +26,7 @@ public class Railfence extends Cipher {
 
     private int rails = -1;
 
-    public Railfence(Context context) { super(context); }
+    Railfence(Context context) { super(context, "Railfence"); }
 
     /**
      * Describe what this cipher does
@@ -49,7 +49,7 @@ public class Railfence extends Cipher {
      */
     @Override
     public String getInstanceDescription() {
-        return "Railfence cipher (rails="+rails+")";
+        return getCipherName()+" cipher (rails="+rails+")";
     }
 
     /**
@@ -75,10 +75,10 @@ public class Railfence extends Cipher {
 
 
     @Override
-    public void layoutExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public void addExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
         // create an array of possible rails for the user to choose from: 2 to 20
-        Integer[] railArray = new Integer[alphabet.length()];
-        for (int i = 0; i < 19; i++) {
+        Integer[] railArray = new Integer[MAX_RAILS-2];
+        for (int i = 0; i < MAX_RAILS-2; i++) {
             railArray[i] = i+2;
         }
 

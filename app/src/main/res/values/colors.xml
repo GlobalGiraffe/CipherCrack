@@ -11,8 +11,11 @@
     <color name="darkgrey">#999999</color>
     <color name="black">#000000</color>
 
+    <color name="bottom_text">#FFFFFF</color>
+
     <color name="topbar_bg">#B3B3B3</color>
     <color name="topbar_text">#FFFFFF</color>
+    <color name="hint">#50A0F0</color>
 
     <color name="entrytext_bg">#80FF80</color>
     <color name="entrytext_text">#000000</color>

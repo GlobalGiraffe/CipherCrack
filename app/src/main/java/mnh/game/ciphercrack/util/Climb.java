@@ -1,5 +1,7 @@
 package mnh.game.ciphercrack.util;
 
+import android.util.Log;
+
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Properties;
@@ -105,6 +107,7 @@ public class Climb {
             // see if anything changed after the above 2 loops, if not, we're done
             finished = startKey.equals(String.valueOf(dynamicKey));
             startKey = String.valueOf(bestKey); // prepare to go around again
+            Log.i("Climb","Completed a climb loop, bestMeasure="+bestMeasure+", bestKey="+startKey+".");
         }
 
         // report the best key/measure we found overall
@@ -155,7 +158,7 @@ public class Climb {
      * @param temp how many letters to swap around
      * @return the new key with the letters swapped around
      */
-    private static String mutateKey(String startKey, int temp) {
+    public static String mutateKey(String startKey, int temp) {
         char[] newKey = startKey.toCharArray();
         int first, second;
         ThreadLocalRandom rand = ThreadLocalRandom.current();
@@ -216,6 +219,7 @@ public class Climb {
         String dynamicKey = startKey;
         for (int temp = startTemp; temp > 0; temp--) {
 
+            Log.i("Anealing","Starting a simulated anealing loop, temp="+temp+", cycles="+cycles+", bestMeasure="+bestMeasure+", bestKey="+bestKey);
             // this does thousands of checks, mutating key as we go
             for (int cycle = 0; cycle < cycles; cycle++) {
 

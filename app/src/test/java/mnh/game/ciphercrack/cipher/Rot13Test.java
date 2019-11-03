@@ -7,6 +7,7 @@ import org.junit.runners.JUnit4;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
 import mnh.game.ciphercrack.util.Directives;
+import mnh.game.ciphercrack.util.Settings;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -17,7 +18,7 @@ import static org.junit.Assert.assertNull;
 @RunWith(JUnit4.class)
 public class Rot13Test {
 
-    private static final String defaultAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String defaultAlphabet = Settings.DEFAULT_ALPHABET;
     private static final Rot13 rot13 = new Rot13(null);
 
     @Test

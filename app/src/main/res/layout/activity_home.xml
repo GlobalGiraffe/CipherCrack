@@ -24,19 +24,13 @@
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-            <Spinner
-                android:id="@+id/home_spinner"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:padding="10sp"/>
-
             <EditText
                 android:id="@+id/home_entrytext"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:hint="@string/entry_text_hint"
                 android:importantForAutofill="no"
-                android:textColorHint="#50A0F0"
+                android:textColorHint="@color/hint"
                 android:background="@drawable/entrytext_border"
                 android:textColor="@color/entrytext_text"
                 android:gravity="top|start"
@@ -45,7 +39,61 @@
                 android:inputType="textMultiLine|textNoSuggestions"
                 android:scrollIndicators="right"
                 android:scrollbarAlwaysDrawHorizontalTrack="true"
-                android:text="@string/initial_entry_text"
-                />
+                android:text="@string/initial_entry_text" />
+
+            <!-- this is where we programmatically put the extra controls for each cipher type -->
+            <LinearLayout
+                android:id="@+id/home_extra_controls"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/black_overlay"
+                android:orientation="vertical"
+                tools:ignore="UselessParent" />
+
+            <Spinner
+                android:id="@+id/home_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10sp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/home_button_encode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/encode"
+                    android:onClick="performEncode"
+                    />
+                <Button
+                    android:id="@+id/home_button_decode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/decode"
+                    android:onClick="performDecode"
+                    />
+                <Button
+                    android:id="@+id/home_button_crack"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/crack"
+                    android:onClick="performCrack"
+                    />
+            </LinearLayout>
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/home_bottom_navigation"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_gravity="start"
+                app:itemIconTint="@color/bottom_text"
+                app:itemTextColor="@color/bottom_text"
+                app:menu="@menu/bottom_menu" />
+
         </LinearLayout>
 </FrameLayout>

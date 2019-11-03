@@ -27,7 +27,7 @@ public class Affine extends Cipher {
 
     private int a = -1, b = -1;
 
-    public Affine(Context context) { super(context); }
+    Affine(Context context) { super(context, "Affine"); }
 
     /**
      * Describe what this cipher does
@@ -48,10 +48,10 @@ public class Affine extends Cipher {
      */
     @Override
     public String getInstanceDescription() {
-        return "Affine cipher (a="+a+", b="+b+")";
+        return getCipherName()+" cipher (a="+a+", b="+b+")";
     }
 
-    public void layoutExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public void addExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
         // create an array of possible values for 'a' and 'b' values for Affine cipher
         // The first can be 1-26, the second 0-26
         Integer[] aArray = new Integer[alphabet.length() - 1];

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
+import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -11,11 +12,14 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashSet;
 import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import mnh.game.ciphercrack.R;
@@ -68,7 +72,7 @@ public class Permutation extends Cipher {
     private int[] permutation = null;
     private boolean readAcross = true;
 
-    public Permutation(Context context) { super(context); }
+    Permutation(Context context) { super(context, "Permutation"); }
 
     /**
      * Describe what this cipher does
@@ -98,7 +102,7 @@ public class Permutation extends Cipher {
      */
     @Override
     public String getInstanceDescription() {
-        return "Permutation cipher ("+permutationToString(permutation)+":"+(readAcross?"across":"down")+")";
+        return getCipherName()+" cipher ("+permutationToString(permutation)+":"+(readAcross?"across":"down")+")";
     }
 
     /**
@@ -140,9 +144,8 @@ public class Permutation extends Cipher {
         return null;
     }
 
-
     @Override
-    public void layoutExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public void addExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
 
         TextView keywordLabel = new TextView(context);
         keywordLabel.setText(context.getString(R.string.keyword_or_columns));
@@ -151,6 +154,7 @@ public class Permutation extends Cipher {
 
         EditText keywordOrColumns = new EditText(context);
         keywordOrColumns.setText("");
+        keywordOrColumns.setPadding(3,3,3,3);
         keywordOrColumns.setTextColor(ContextCompat.getColor(context, R.color.entrytext_text));
         keywordOrColumns.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
         keywordOrColumns.setId(ID_PERMUTATION_KEYWORD);
@@ -158,10 +162,11 @@ public class Permutation extends Cipher {
         keywordOrColumns.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         // ensure input is in capitals, and "A-Z0-9,"
         InputFilter[] editFilters = keywordOrColumns.getFilters();
-        InputFilter[] newFilters = new InputFilter[editFilters.length + 2];
+        InputFilter[] newFilters = new InputFilter[editFilters.length + 3];
         System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
         newFilters[editFilters.length] = new InputFilter.AllCaps();   // ensures capitals
-        newFilters[editFilters.length+1] = PERM_INPUT_FILTER;
+        newFilters[editFilters.length+1] = new InputFilter.LengthFilter(200); // limits text length
+        newFilters[editFilters.length+2] = PERM_INPUT_FILTER;
         keywordOrColumns.setFilters(newFilters);
 
         CheckBox checkReadAcross = new CheckBox(context);
@@ -171,38 +176,11 @@ public class Permutation extends Cipher {
         checkReadAcross.setTextColor(ContextCompat.getColor(context, R.color.white));
         checkReadAcross.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
 
-        TextView crackLabel = new TextView(context);
-        crackLabel.setText(context.getString(R.string.crack_method));
-        crackLabel.setTextColor(ContextCompat.getColor(context, R.color.white));
-        crackLabel.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
-
-        RadioButton dictButton = new RadioButton(context);
-        dictButton.setId(ID_BUTTON_DICTIONARY);
-        dictButton.setText(context.getString(R.string.crack_dictionary));
-        dictButton.setChecked(true);
-        dictButton.setTextColor(ContextCompat.getColor(context, R.color.white));
-        dictButton.setLayoutParams(WRAP_CONTENT_BOTH);
-
-        RadioButton bruteForceButton = new RadioButton(context);
-        bruteForceButton.setId(ID_BUTTON_BRUTE_FORCE);
-        bruteForceButton.setText(context.getString(R.string.crack_brute_force));
-        bruteForceButton.setChecked(false);
-        bruteForceButton.setTextColor(ContextCompat.getColor(context, R.color.white));
-        bruteForceButton.setLayoutParams(WRAP_CONTENT_BOTH);
-
-        RadioGroup crackButtonGroup = new RadioGroup(context);
-        crackButtonGroup.check(ID_BUTTON_DICTIONARY);
-        crackButtonGroup.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
-        crackButtonGroup.setOrientation(LinearLayout.HORIZONTAL);
-        crackButtonGroup.addView(dictButton);
-        crackButtonGroup.addView(bruteForceButton);
-
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
         layout.addView(keywordLabel);
         layout.addView(keywordOrColumns);
         layout.addView(checkReadAcross);
-        layout.addView(crackButtonGroup);
     }
 
     @Override
@@ -231,12 +209,54 @@ public class Permutation extends Cipher {
     }
 
     /**
-     * Query the extra layout to find which crack method we're using
-     * @param layout layout that may have indication of crack type
-     * @return the crack method the user chose
+     * Add crack controls for this cipher: type of crack to be done
+     * @param context the context
+     * @param layout the layout to add any crack controls to
+     * @param alphabet the current alphabet
+     * @return true if controls added, else false
      */
-    @Override
-    public CrackMethod getCrackMethod(LinearLayout layout) {
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+        TextView crackLabel = new TextView(context);
+        crackLabel.setText(context.getString(R.string.crack_method));
+        crackLabel.setTextColor(ContextCompat.getColor(context, R.color.white));
+        crackLabel.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
+
+        RadioButton dictButton = new RadioButton(context);
+        dictButton.setId(ID_BUTTON_DICTIONARY);
+        dictButton.setText(context.getString(R.string.crack_dictionary));
+        dictButton.setChecked(true);
+        dictButton.setTextColor(ContextCompat.getColor(context, R.color.white));
+        dictButton.setLayoutParams(WRAP_CONTENT_BOTH);
+
+        RadioButton bruteForceButton = new RadioButton(context);
+        bruteForceButton.setId(ID_BUTTON_BRUTE_FORCE);
+        bruteForceButton.setText(context.getString(R.string.crack_brute_force));
+        bruteForceButton.setChecked(false);
+        bruteForceButton.setTextColor(ContextCompat.getColor(context, R.color.white));
+        bruteForceButton.setLayoutParams(WRAP_CONTENT_BOTH);
+
+        RadioGroup crackButtonGroup = new RadioGroup(context);
+        crackButtonGroup.check(ID_BUTTON_DICTIONARY);
+        crackButtonGroup.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
+        crackButtonGroup.setOrientation(LinearLayout.HORIZONTAL);
+        crackButtonGroup.addView(dictButton);
+        crackButtonGroup.addView(bruteForceButton);
+
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
+        layout.addView(crackLabel);
+        layout.addView(crackButtonGroup);
+
+        return true;
+    }
+
+    /**
+     * Fetch the details of the extra crack controls for this cipher
+     * @param layout the layout that could contains some crack controls
+     * @param dirs the directives to add to
+     * @return the crack method to be used
+     */
+    public CrackMethod fetchCrackControls(LinearLayout layout, Directives dirs) {
         // locate the kind of crack we've been asked to do
         RadioButton dictButton = layout.findViewById(ID_BUTTON_DICTIONARY);
         return (dictButton.isChecked()) ? CrackMethod.DICTIONARY : CrackMethod.BRUTE_FORCE;
@@ -379,38 +399,13 @@ public class Permutation extends Cipher {
         }
     }
 
-    /* TODO - remove this once next one tested
-    **
-     * Take an input set and add all possible permutations to a List, recursively
-     * @param start the start in input to commence from, starts at 0 and increases recursively
-     * @param input the possible integers in the permutations, e.g. [0,1,2,3,4,5]
-     * @param possiblePerms the List that will get added
-    private void createPossiblePermutations(int start, int[] input, List<int[]> possiblePerms) {
-        if (start == input.length) {
-            possiblePerms.add(Arrays.copyOf(input, input.length));
-        } else {
-            for (int i = start; i < input.length; i++) {
-                // swapping
-                int temp = input[i];
-                input[i] = input[start];
-                input[start] = temp;
-                // swap(input[i], input[start]);
-                createPossiblePermutations(start + 1, input, possiblePerms);
-                // swap(input[i],input[start]);
-                temp = input[i];
-                input[i] = input[start];
-                input[start] = temp;
-            }
-        }
-    }
-    */
-
     /**
      * Crack a permutation cipher by either Brute Force or Dictionary check
      * @param cipherText the text to try to crack
      * @param dirs the directives with alphabet and cribs
      * @return the result of the crack attempt
      */
+    @NotNull
     public CrackResult crack(String cipherText, Directives dirs) {
         CrackMethod method = dirs.getCrackMethod();
         if (method == CrackMethod.BRUTE_FORCE) {
@@ -425,12 +420,15 @@ public class Permutation extends Cipher {
      * @param dirs the directives with alphabet and cribs
      * @return the result of the crack attempt
      */
+    @NotNull
     private CrackResult crackDictionary(String cipherText, Directives dirs) {
         String cribString = dirs.getCribs();
         Set<String> cribSet = Cipher.getCribSet(cribString);
         Dictionary dictionary = dirs.getLanguage().getDictionary();
-        int wordsChecked = 0;
+        int wordsChecked = 0, wordsRead = 0;
         for (String word : dictionary) {
+            if (wordsRead++ % 1000 == 0)
+                Log.i("CipherCrack", "Cracking Permutation Dict: "+wordsRead+" words tried");
             String keyword = word.toUpperCase();
             int[] possiblePerm = convertKeywordToColumns(keyword);
             if (possiblePerm != null) {
@@ -482,7 +480,9 @@ public class Permutation extends Cipher {
      * @param cipherText the cipher text to be decoded
      * @param cribSet the set of cribs to check for in any decoded text
      * @param dirs the Directives to use to guide the decoding
+     * @return the result of a successful crack finding all cribs, or null if crack was not successful
      */
+    @Nullable
     private CrackResult checkPossiblePermutations(int start, int[] input, String cipherText, Set<String> cribSet, Directives dirs) {
         if (start == input.length) {
             dirs.setPermutation(input);
@@ -502,17 +502,13 @@ public class Permutation extends Cipher {
         } else {
             for (int i = start; i < input.length; i++) {
                 // swapping
-                int temp = input[i];
-                input[i] = input[start];
-                input[start] = temp;
+                int temp = input[i]; input[i] = input[start]; input[start] = temp;
                 // swap(input[i], input[start]);
                 CrackResult result = checkPossiblePermutations(start + 1, input, cipherText, cribSet, dirs);
                 if (result != null)
                     return result;
                 // swap(input[i],input[start]);
-                temp = input[i];
-                input[i] = input[start];
-                input[start] = temp;
+                temp = input[i]; input[i] = input[start]; input[start] = temp;
             }
         }
         return null;
@@ -524,11 +520,13 @@ public class Permutation extends Cipher {
      * @param dirs the directives with alphabet and cribs
      * @return the result of the crack attempt
      */
+    @NotNull
     private CrackResult crackBruteForce(String cipherText, Directives dirs) {
         String cribString = dirs.getCribs();
         Set<String> cribSet = Cipher.getCribSet(cribString);
 
         for (int columns = 1; columns <= MAX_CRACK_COLUMNS; columns++) {
+            Log.i("CipherCrack", "Cracking Permutation with "+columns+" columns");
             int[] input = new int[columns];
             for (int a=0; a < columns; a++) {
                 input[a] = a;
@@ -553,6 +551,7 @@ public class Permutation extends Cipher {
      * @param perm permutation integers, e.g. [1,2,0,3]
      * @return the equivalent permutation as a comma-separated string, e.g. "1,2,0,3"
      */
+    @NotNull
     static String permutationToString(int[] perm) {
         if (perm == null)
             return "null";

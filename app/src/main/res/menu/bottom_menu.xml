@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/bottom_analysis"
+        android:icon="@drawable/ic_action_analyse"
+        android:title="@string/analysis"/>
+    <item
+        android:id="@+id/bottom_history"
+        android:icon="@drawable/ic_acton_history"
+        android:title="@string/history" />
+
+    <item
+        android:id="@+id/bottom_cipher"
+        android:icon="@drawable/ic_action_cipher"
+        android:title="@string/cipher"/>
+
+    <item
+        android:id="@+id/bottom_info"
+        android:icon="@drawable/ic_action_info"
+        android:title="@string/info"/>
+
+    <item android:id="@+id/bottom_settings"
+        android:icon="@drawable/ic_action_settings"
+        android:title="@string/settings"/>
+
+</menu>

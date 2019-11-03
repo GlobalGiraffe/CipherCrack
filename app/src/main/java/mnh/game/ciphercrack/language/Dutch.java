@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 public class Dutch extends Language {
 
     // frequency of individual letters
+    // TODO - adjust to be like English with static initialisers - to run on old phones
     // https://www.sttmedia.com/characterfrequency-dutch
     private static final Map<String, Float> freqLetters = Stream.of(new Object[][] {
             { "A", 7.79f },

@@ -22,22 +22,25 @@ import java.util.Locale;
 import java.util.Map;
 
 import androidx.fragment.app.Fragment;
+import mnh.game.ciphercrack.AnalysisActivity;
 import mnh.game.ciphercrack.R;
 import mnh.game.ciphercrack.language.Language;
 import mnh.game.ciphercrack.util.Settings;
-import mnh.game.ciphercrack.util.StaticAnalysis;
 
 public class FrequencyFragment extends Fragment {
 
     private static final int MAX_GRAMS_IN_VIEW = 40;
 
+    private final AnalysisActivity analysis;
     private final String text;
     private final String alphabet;
     private final int gramSize;
     private final int overallLayoutId;
     private final int tableLayoutId;
 
-    FrequencyFragment(String text, String alphabet, int gramSize, int overallLayoutId, int tableLayoutId) {
+    FrequencyFragment(AnalysisActivity analysis, String text, String alphabet,
+                      int gramSize, int overallLayoutId, int tableLayoutId) {
+        this.analysis = analysis;
         this.text = text;
         this.alphabet = alphabet;
         this.gramSize = gramSize;

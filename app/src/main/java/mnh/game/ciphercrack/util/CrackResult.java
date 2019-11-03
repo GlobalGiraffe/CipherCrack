@@ -7,12 +7,12 @@ package mnh.game.ciphercrack.util;
  */
 public class CrackResult {
 
+    private final String cipherText;
+    private final String explain;
+    private final boolean isSuccess;
     private Directives directives = null;
     private String plainText = null;
-    private String cipherText;
-    private String explain;
-    private boolean isSuccess;
-    private long milliseconds;
+    private long milliseconds = 0L;
 
     // this is called for a successful crack
     public CrackResult(Directives directives, String cipherText, String plainText, String explain) {
@@ -33,48 +33,25 @@ public class CrackResult {
     public String getExplain() {
         return explain;
     }
-
-    public void setExplain(String explain) {
-        this.explain = explain;
-    }
-
-    public String getPlainText() {
-        return plainText;
-    }
-
-    public void setPlainText(String plainText) {
-        this.plainText = plainText;
-    }
-
-    public String getCipherText() {
-        return cipherText;
-    }
-
-    public void setCipherText(String cipherText) {
-        this.cipherText = cipherText;
-    }
-
+    public String getPlainText() { return plainText; }
+    public String getCipherText() { return cipherText; }
     public Directives getDirectives() {
         return directives;
     }
-
-    public void setDirectives(Directives directives) {
-        this.directives = directives;
-    }
-
     public long getMilliseconds() {
         return milliseconds;
     }
-
-    public void setMilliseconds(long milliseconds) {
-        this.milliseconds = milliseconds;
-    }
-
     public boolean isSuccess() {
         return isSuccess;
     }
 
-    public void setSuccess(boolean isSuccess) {
-        this.isSuccess = isSuccess;
-    }
+    public void setMilliseconds(long milliseconds) { this.milliseconds = milliseconds; }
+    // these are probably never used - above methods probably suffice
+    /*
+    public void setExplain(String explain) { this.explain = explain; }
+    public void setPlainText(String plainText) { this.plainText = plainText; }
+    public void setCipherText(String cipherText) { this.cipherText = cipherText; }
+    public void setDirectives(Directives directives) { this.directives = directives; }
+    public void setSuccess(boolean isSuccess) { this.isSuccess = isSuccess; }
+     */
 }

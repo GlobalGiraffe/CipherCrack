@@ -8,6 +8,7 @@ import mnh.game.ciphercrack.language.Language;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
 import mnh.game.ciphercrack.util.Directives;
+import mnh.game.ciphercrack.util.Settings;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -21,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(JUnit4.class)
 public class BeaufortTest {
 
-    private static final String defaultAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String defaultAlphabet = Settings.DEFAULT_ALPHABET;
     private final Beaufort cipher = new Beaufort(null);
 
     @Test

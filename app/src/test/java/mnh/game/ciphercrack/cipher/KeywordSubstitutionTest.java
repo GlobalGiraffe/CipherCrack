@@ -11,6 +11,7 @@ import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
 import mnh.game.ciphercrack.util.Directives;
 import mnh.game.ciphercrack.util.KeywordExtend;
+import mnh.game.ciphercrack.util.Settings;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -23,8 +24,8 @@ import static org.junit.Assert.assertTrue;
 @RunWith(JUnit4.class)
 public class KeywordSubstitutionTest {
 
-    private static final String defaultAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static final Language defaultLanguage = Language.instanceOf("English");
+    private static final String defaultAlphabet = Settings.DEFAULT_ALPHABET;
+    private static final Language defaultLanguage = Language.instanceOf(Settings.DEFAULT_LANGUAGE);
 
     private final KeywordSubstitution keySub = new KeywordSubstitution(null);
 

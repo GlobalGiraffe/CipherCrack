@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout tools:context="mnh.game.ciphercrack.StatisticActivity"
+<FrameLayout tools:context="mnh.game.ciphercrack.AnalysisActivity"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:theme="@style/Theme.AppCompat"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <LinearLayout android:background="@color/black_overlay"
+    <LinearLayout
+        android:id="@+id/static_general_layout"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
+        android:background="@color/black_overlay"
         tools:ignore="UselessParent"
         android:padding="6sp"
         android:orientation="vertical"
-        android:layout_gravity="center"
-        android:id="@+id/static_general_layout">
+        android:layout_gravity="center">
         <TextView
             android:id="@+id/stats_general_text"
             android:layout_width="match_parent"

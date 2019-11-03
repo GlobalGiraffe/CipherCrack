@@ -17,7 +17,7 @@ public class Rot13 extends Caesar {
 
     private static final int ROT13_SHIFT = 13;
 
-    public Rot13(Context context) { super(context); }
+    Rot13(Context context) { super(context, "ROT13"); }
 
     /**
      * Describe what this cipher does
@@ -36,7 +36,7 @@ public class Rot13 extends Caesar {
      */
     @Override
     public String getInstanceDescription() {
-        return "ROT13 cipher";
+        return getCipherName()+" cipher";
     }
 
     /**
@@ -61,7 +61,7 @@ public class Rot13 extends Caesar {
     }
 
     @Override
-    public void layoutExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public void addExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
         // Nothing to create - shift is always 13
     }
 

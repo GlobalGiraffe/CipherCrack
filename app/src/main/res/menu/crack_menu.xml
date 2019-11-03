@@ -22,12 +22,6 @@
         android:title="@string/crack"
         app:showAsAction="ifRoom"/>
 
-    <!-- Info, should appear as action button if possible -->
-    <item android:id="@+id/action_crack_info"
-        android:icon="@android:drawable/ic_dialog_info"
-        android:title="@string/info"
-        app:showAsAction="ifRoom"/>
-
     <!-- Settings, should appear as action button if possible -->
     <item android:id="@+id/action_crack_settings"
         android:icon="@android:drawable/ic_menu_preferences"
