@@ -8,6 +8,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import mnh.game.ciphercrack.HomeActivity;
 import mnh.game.ciphercrack.R;
 import mnh.game.ciphercrack.SettingsActivity;
 import mnh.game.ciphercrack.AnalysisActivity;
@@ -17,25 +18,34 @@ import mnh.game.ciphercrack.AnalysisActivity;
  */
 public class BottomNavigationListener implements BottomNavigationView.OnNavigationItemSelectedListener {
 
-    private AppCompatActivity activity;
+    private final AppCompatActivity activity;
+    private final int textFieldId;
 
-    public BottomNavigationListener(AppCompatActivity activity) { this.activity = activity; }
+    public BottomNavigationListener(AppCompatActivity activity, int textFieldId) {
+        this.activity = activity;
+        this.textFieldId = textFieldId;
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        Intent i;
         switch (menuItem.getItemId()) {
             case R.id.bottom_analysis:
-                Intent i = new Intent(activity, AnalysisActivity.class);
-                EditText textField = activity.findViewById(R.id.home_entrytext);
+                i = new Intent(activity, AnalysisActivity.class);
+                EditText textField = activity.findViewById(textFieldId);
                 i.putExtra("TEXT", textField.getText().toString());
                 activity.startActivity(i);
                 return true;
-            case R.id.bottom_cipher:
-                break;
+            case R.id.bottom_history:
+//                i = new Intent(activity, HomeActivity.class);
+//                activity.startActivity(i);
+                return true;
+                /*
             case R.id.bottom_history:
                 break;
             case R.id.bottom_info:
                 break;
+                 */
             case R.id.bottom_settings:
                 Intent si = new Intent(activity, SettingsActivity.class);
                 activity.startActivity(si);

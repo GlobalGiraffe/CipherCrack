@@ -49,7 +49,7 @@ public class Binary extends Cipher {
      */
     @Override
     public String getInstanceDescription() {
-        return getCipherName()+" cipher (["+digits+"]"+((separator.length()!=0)?(",sep="+separator):"")+")";
+        return getCipherName()+" cipher (["+digits+"]"+((separator.length()!=0)?(",sep="+separator):((numberSize!=0)?(",size="+numberSize):""))+")";
     }
 
     /**
@@ -80,6 +80,7 @@ public class Binary extends Cipher {
                 }
             }
             digits = binaryDigits;
+
             String binarySep = dirs.getSeparator();
             if (binarySep == null)
                 binarySep = "";
@@ -89,6 +90,17 @@ public class Binary extends Cipher {
                 }
             }
             separator = binarySep;
+
+            if (separator.length() == 0) {
+                int size = dirs.getNumberSize();
+                if (size <= 0)
+                    return "Number size " + size + " too small";
+                if (size > 50)
+                    return "Number size " + size + " too large";
+                numberSize = size;
+            } else {
+                numberSize = 0;
+            }
         } else { // crack via Brute Force, i.e. look at text and work out digits and separator, etc
             Language language = dirs.getLanguage();
             if (language == null)

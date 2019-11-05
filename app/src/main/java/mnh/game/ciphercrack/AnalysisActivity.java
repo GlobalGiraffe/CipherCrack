@@ -61,11 +61,6 @@ public class AnalysisActivity extends AppCompatActivity implements AnalysisProvi
         viewPager.setCurrentItem(1);
         tabLayout.setupWithViewPager(viewPager);
 
-        // the bottom navigation bar
-        BottomNavigationView bottom = findViewById(R.id.static_analysis_bottom_navigation);
-        bottom.setOnNavigationItemSelectedListener(new BottomNavigationListener(this));
-        bottom.setSelectedItemId(R.id.bottom_cipher);
-
         // gather initial analysis
         isAllNumeric = StaticAnalysis.isAllNumeric(text);
         countAlphabetic = StaticAnalysis.countAlphabetic(text, alphabet);

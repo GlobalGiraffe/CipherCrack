@@ -10,7 +10,6 @@ import android.preference.PreferenceManager;
 /**
  * Allow user to change preferences
  */
-@SuppressWarnings("deprecation")
 public class SettingsActivity extends PreferenceActivity {
 
     @Override

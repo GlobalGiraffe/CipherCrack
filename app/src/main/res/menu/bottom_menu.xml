@@ -4,24 +4,31 @@
     <item
         android:id="@+id/bottom_analysis"
         android:icon="@drawable/ic_action_analyse"
-        android:title="@string/analysis"/>
-    <item
-        android:id="@+id/bottom_history"
-        android:icon="@drawable/ic_acton_history"
-        android:title="@string/history" />
+        android:title="@string/analysis"
+        app:labelVisibilityMode="labeled"/>
 
+    <!--
     <item
         android:id="@+id/bottom_cipher"
         android:icon="@drawable/ic_action_cipher"
-        android:title="@string/cipher"/>
-
+        android:title="@string/cipher"
+        app:labelVisibilityMode="labeled"/>
+        -->
+    <item
+        android:id="@+id/bottom_history"
+        android:icon="@drawable/ic_action_history"
+        android:title="@string/history"
+        app:labelVisibilityMode="labeled"/>
+    <!--
     <item
         android:id="@+id/bottom_info"
         android:icon="@drawable/ic_action_info"
-        android:title="@string/info"/>
+        android:title="@string/info"
+        app:labelVisibilityMode="labeled"/>
+    -->
 
     <item android:id="@+id/bottom_settings"
         android:icon="@drawable/ic_action_settings"
-        android:title="@string/settings"/>
-
+        android:title="@string/settings"
+        app:labelVisibilityMode="labeled"/>
 </menu>

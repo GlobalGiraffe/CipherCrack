@@ -24,19 +24,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.Locale;
 import java.util.Stack;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import mnh.game.ciphercrack.cipher.Affine;
-import mnh.game.ciphercrack.cipher.Atbash;
-import mnh.game.ciphercrack.cipher.Beaufort;
-import mnh.game.ciphercrack.cipher.Caesar;
+
+import androidx.drawerlayout.widget.DrawerLayout;
 import mnh.game.ciphercrack.cipher.Cipher;
-import mnh.game.ciphercrack.cipher.KeywordSubstitution;
-import mnh.game.ciphercrack.cipher.Permutation;
-import mnh.game.ciphercrack.cipher.Railfence;
-import mnh.game.ciphercrack.cipher.Rot13;
-import mnh.game.ciphercrack.cipher.Vigenere;
 import mnh.game.ciphercrack.language.Language;
 import mnh.game.ciphercrack.transform.Clear;
 import mnh.game.ciphercrack.transform.LowerCase;
@@ -58,13 +52,16 @@ import mnh.game.ciphercrack.util.Settings;
 public class HomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     // when going to new Activities, on return this is used to get the results back
-    private static final int CRACK_REQUEST_CODE = 1000;
     private static final int CAMERA_REQUEST_CODE = 1001;
 
     // keep track of history of edits, in case user wants to Undo
     private static final Stack<String> priorEdits = new Stack<>();
 
     private Cipher cipher;
+
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout drawerLayout;
+    private String[] drawerItemTitles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +71,14 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
         Toolbar toolbar = findViewById(R.id.home_toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.app_name);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        // the bottom navigation bar
+        BottomNavigationView bottom = findViewById(R.id.home_bottom_navigation);
+        //bottom.setSelectedItemId(R.id.bottom_cipher);
+        bottom.setOnNavigationItemSelectedListener(new BottomNavigationListener(this, R.id.home_entry_text));
 
         // the drop-down list of ciphers
         Spinner spinner = findViewById(R.id.home_spinner);
@@ -85,11 +90,6 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
-
-        // the bottom navigation bar
-        BottomNavigationView bottom = findViewById(R.id.home_bottom_navigation);
-        bottom.setOnNavigationItemSelectedListener(new BottomNavigationListener(this));
-        bottom.setSelectedItemId(R.id.bottom_cipher);
     }
 
     /**
@@ -156,7 +156,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        EditText textField = findViewById(R.id.home_entrytext); // used for Edits
+        EditText textField = findViewById(R.id.home_entry_text); // used for Edits
         switch (item.getItemId()) {
             case R.id.action_home_info:
                 showCipherDescription(null);
@@ -228,7 +228,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     /**
-     * Apply a user-requested transform
+     * Apply a user-requested transform, e.g. remove padding or convert to upper case
      * @param transform the transform the user wants to do
      * @param textField the resulting text after transform
      */
@@ -251,7 +251,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
      * @return the text from the screen
      */
     private String getInputText() {
-        TextView textView = findViewById(R.id.home_entrytext);
+        TextView textView = findViewById(R.id.home_entry_text);
         return textView.getText().toString();
     }
 
@@ -467,7 +467,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 String capturedString = data.getStringExtra("CAMERA_TEXT");
-                EditText editText = findViewById(R.id.home_entrytext);
+                EditText editText = findViewById(R.id.home_entry_text);
                 editText.setText(capturedString);
             }
         }

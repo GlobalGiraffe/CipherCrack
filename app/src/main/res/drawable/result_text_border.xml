@@ -3,18 +3,20 @@
 
     <!-- this is the background for the whole shape -->
     <solid
-        android:color="@color/entrytext_bg" >
+        android:color="@color/crackPrimaryLight" >
     </solid>
 
     <!-- colour of the border itself, and its width -->
     <stroke
         android:width="1dp"
-        android:color="@color/border_edge" >
+        android:color="@color/crackPrimaryVDark" >
     </stroke>
 
     <!-- Round out the corners-->
+    <!--
     <corners
         android:radius="2dp"   >
     </corners>
+    -->
 
 </shape>

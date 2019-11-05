@@ -6,8 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -21,33 +25,12 @@ import mnh.game.ciphercrack.util.Directives;
 abstract public class Cipher {
 
     // used to locate programmatically added controls on the screen
-    static final int ID_CAESAR_SPINNER = 9001;
-
-    static final int ID_AFFINE_A_SPINNER = 9010;
-    static final int ID_AFFINE_B_SPINNER = 9011;
-
-    static final int ID_VIGENERE_KEYWORD = 9020;
     static final int ID_VIGENERE_LENGTH = 9021;
-
-    static final int ID_SUBSTITUTION_KEYWORD = 9030;
-    static final int ID_SUBSTITUTION_FULL_KEYWORD = 9031;
-    static final int ID_BUTTON_FIRST = 9032;
-    static final int ID_BUTTON_MIN = 9033;
-    static final int ID_BUTTON_MAX = 9034;
-    static final int ID_BUTTON_LAST = 9035;
 
     static final int ID_BUTTON_DICTIONARY = 9040;
     static final int ID_BUTTON_WORD_COUNT = 9041;
     static final int ID_BUTTON_IOC = 9042;
     static final int ID_BUTTON_BRUTE_FORCE = 9043;
-
-    static final int ID_RAILFENCE_SPINNER = 9050;
-
-    static final int ID_PERMUTATION_KEYWORD = 9060;
-    static final int ID_PERMUTATION_READ_ACROSS = 9061;
-
-//    static final int ID_BINARY_DIGITS = 9071;
-//    static final int ID_BINARY_SEPARATOR = 9072;
 
     static final LinearLayout.LayoutParams WRAP_CONTENT_BOTH = new LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,

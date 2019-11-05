@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="black_overlay">#66000000</color>
     <color name="palegreen">#80FF80</color>
-    <color name="white">#FFFFFF</color>
     <color name="lightgrey">#CCCCCC</color>
     <color name="midgrey">#B3B3B3</color>
     <color name="darkgrey">#999999</color>
@@ -16,12 +15,28 @@
     <color name="topbar_bg">#B3B3B3</color>
     <color name="topbar_text">#FFFFFF</color>
     <color name="hint">#50A0F0</color>
+-->
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black_overlay">#66000000</color>
 
-    <color name="entrytext_bg">#80FF80</color>
-    <color name="entrytext_text">#000000</color>
+    <color name="entry_text_text">#000000</color>
+    <color name="result_text_text">#000000</color>
+    <color name="explain_text_text">#000000</color>
 
-    <color name="resulttext_bg">#FFFFFF</color>
-    <color name="resulttext_text">#000000</color>
+    <color name="crackPrimaryLightest">#E3E3EF</color>
+    <color name="crackPrimaryVVLight">#D0D1E5</color>
+    <color name="crackPrimaryVLight">#BEBEDA</color>
+    <color name="crackPrimaryLight">#ABACD0</color>
+    <color name="crackPrimary">#999AC6</color>
+    <color name="crackPrimaryDark">#707191</color>
+    <color name="crackPrimaryVDark">#54546C</color>
+    <color name="crackPrimaryVVDark">#2A2A36</color>
+    <color name="crackPrimaryDarkest">#1C1C24</color>
 
-    <color name="border_edge">#000000</color>
+    <color name="crackAccentVLight">#BCEADC</color>
+    <color name="crackAccentLight">#A9E4D2</color>
+    <color name="crackAccent">#97DEC8</color>
+    <color name="crackAccentDark">#7CB6A4</color>
+    <color name="crackAccentVDark">#618E80</color>
 </resources>

@@ -76,6 +76,9 @@ public class Railfence extends Cipher {
 
     @Override
     public void addExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+        // this extracts the layout from the XML resource
+        super.addExtraControls(context, layout, R.layout.extra_railfence);
+
         // create an array of possible rails for the user to choose from: 2 to 20
         Integer[] railArray = new Integer[MAX_RAILS-2];
         for (int i = 0; i < MAX_RAILS-2; i++) {
@@ -87,24 +90,13 @@ public class Railfence extends Cipher {
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Create a spinner and apply the adapter to it
-        Spinner spinner = new Spinner(context, Spinner.MODE_DROPDOWN);
+        Spinner spinner = layout.findViewById(R.id.extra_railfence_spinner);
         spinner.setAdapter(adapter);
-        spinner.setId(ID_RAILFENCE_SPINNER);
-        spinner.setLayoutParams(WRAP_CONTENT_BOTH);
-
-        // create a text view to show 'Shift'
-        TextView textView = new TextView(context);
-        textView.setText(R.string.railfence_rails);
-        //textView.setBackgroundColor(ContextCompat.getColor(context, R.color.darkgrey));
-        textView.setTextColor(ContextCompat.getColor(context, R.color.white));
-        layout.setOrientation(LinearLayout.HORIZONTAL);
-        layout.addView(textView);
-        layout.addView(spinner);
     }
 
     @Override
     public void fetchExtraControls(LinearLayout layout, Directives dirs) {
-        Spinner spinner = layout.findViewById(ID_RAILFENCE_SPINNER);
+        Spinner spinner = layout.findViewById(R.id.extra_railfence_spinner);
         int rails = (int) spinner.getSelectedItem();
         dirs.setRails(rails);
     }

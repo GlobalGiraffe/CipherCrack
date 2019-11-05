@@ -56,6 +56,17 @@ public class BinaryTest {
         assertEquals("BadParam dupe digits", "Character 0 is duplicated in the digits", reason);
 
         p.setDigits("AB");
+        p.setNumberSize(-1);
+        reason = binary.canParametersBeSet(p);
+        assertEquals("BadParam numberSize", "Number size -1 too small", reason);
+        p.setNumberSize(0);
+        reason = binary.canParametersBeSet(p);
+        assertEquals("BadParam numberSize", "Number size 0 too small", reason);
+        p.setNumberSize(100);
+        reason = binary.canParametersBeSet(p);
+        assertEquals("BadParam numberSize", "Number size 100 too large", reason);
+
+        p.setNumberSize(5);
         p.setSeparator("B");
         reason = binary.canParametersBeSet(p);
         assertEquals("BadParam ", "Separator contains a digit", reason);
@@ -98,6 +109,7 @@ public class BinaryTest {
         p.setAlphabet(defaultAlphabet);
         p.setDigits("AB");
         p.setSeparator("");
+        p.setNumberSize(5);
         String reason = binary.canParametersBeSet(p);
         assertNull("Encoding other digits", reason);
         String encoded = binary.encode("A0d C!z.", p);
@@ -161,11 +173,12 @@ public class BinaryTest {
         Directives p = new Directives();
         p.setAlphabet(defaultAlphabet);
         p.setDigits("01");
+        p.setNumberSize(5);
         String reason = binary.canParametersBeSet(p);
         assertNull("Null reason", reason);
         String desc = binary.getInstanceDescription();
         assertNotNull("Instance Description", desc);
-        assertEquals("Instance Description", "Binary cipher ([01])", desc);
+        assertEquals("Instance Description", "Binary cipher ([01],size=5)", desc);
 
         p.setSeparator("/");
         reason = binary.canParametersBeSet(p);

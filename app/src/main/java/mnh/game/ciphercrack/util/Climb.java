@@ -256,6 +256,7 @@ public class Climb {
                 .append(" after ")
                 .append(iteration)
                 .append(" iterations\n");
+        Log.i("Anealing","Completed simulated anealing after "+iteration+" iterations, bestMeasure="+bestMeasure+", bestKey="+bestKey);
 
         // now find the one with plain containing the cribs, if not use the one already found
         props.setProperty(Climb.CLIMB_BEST_KEYWORD, bestKey);

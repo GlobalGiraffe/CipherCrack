@@ -1,11 +1,42 @@
 <resources>
 
     <!-- Base application theme. -->
+    <!--
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    -->
+    <style name="Crack.Toolbar" parent="Theme.AppCompat.NoActionBar">
+    </style>
+    <style name="Crack.Toolbar2" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorPrimary">@color/crackPrimaryVVDark</item>"
+        <item name="android:textColor">@color/white</item>
+        <item name="colorAccent">@color/crackAccent</item>"
+    </style>
 
+    <style name="CrackTheme" parent="Theme.AppCompat.NoActionBar">
+    </style>
+    <style name="CrackTheme2" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/crackPrimaryDark</item>
+        <item name="android:panelColorForeground">@color/crackPrimaryLight</item>
+        <item name="android:panelColorBackground">@color/crackPrimaryDark</item>
+        <item name="android:textColor">@color/crackPrimaryDarkest</item>
+        <item name="android:textColorHint">@color/crackPrimaryVLight</item>
+        <item name="android:actionMenuTextColor">@color/black</item>
+        <item name="android:panelBackground">@drawable/entry_text_border</item>
+        <item name="android:padding">3dp</item>
+    </style>
+
+    <!--
+    <style name="Crack.EntryText" parent="CrackTheme">
+        <item name="android:color">@color/crackPrimaryVDark</item>"
+        <item name="android:background">@drawable/entry_text_border</item>"
+        <item name="android:textColor">@color/crackPrimaryVLight</item>
+        <item name="android:textColorHint">@color/crackPrimaryDark</item>
+        <item name="android:padding">3dp</item>
+    </style>
+    -->
 </resources>

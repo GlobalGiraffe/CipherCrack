@@ -78,6 +78,9 @@ public class Caesar extends Cipher {
 
     @Override
     public void addExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+        // this extracts the layout from the XML resource
+        super.addExtraControls(context, layout, R.layout.extra_caesar);
+
         // create an array of possible cipher shifts for the user to choose from
         Integer[] shiftArray = new Integer[alphabet.length()];
         for (int i = 0; i < alphabet.length(); i++) {
@@ -89,25 +92,14 @@ public class Caesar extends Cipher {
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Create a spinner and apply the adapter to it
-        Spinner spinner = new Spinner(context, Spinner.MODE_DROPDOWN);
+        Spinner spinner = layout.findViewById(R.id.extra_caesar_spinner);
         spinner.setAdapter(adapter);
-        spinner.setId(ID_CAESAR_SPINNER);
-        spinner.setLayoutParams(WRAP_CONTENT_BOTH);
-
-        // create a text view to show 'Shift'
-        TextView textView = new TextView(context);
-        textView.setText(R.string.caesar_shift);
-        //textView.setBackgroundColor(ContextCompat.getColor(context, R.color.darkgrey));
-        textView.setTextColor(ContextCompat.getColor(context, R.color.white));
-        layout.setOrientation(LinearLayout.HORIZONTAL);
-        layout.addView(textView);
-        layout.addView(spinner);
     }
 
     @Override
     public void fetchExtraControls(LinearLayout layout, Directives dirs) {
-        Spinner spinner = layout.findViewById(ID_CAESAR_SPINNER);
-        int shift = (int) spinner.getSelectedItem();
+        Spinner spinner = layout.findViewById(R.id.extra_caesar_spinner);
+        int shift = (int)spinner.getSelectedItem();
         dirs.setShift(shift);
     }
 

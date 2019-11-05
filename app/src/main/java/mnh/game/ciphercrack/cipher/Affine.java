@@ -52,6 +52,10 @@ public class Affine extends Cipher {
     }
 
     public void addExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+        // this extracts the layout from the XML resource
+        super.addExtraControls(context, layout, R.layout.extra_affine);
+
+        // now attach the values to the spinners
         // create an array of possible values for 'a' and 'b' values for Affine cipher
         // The first can be 1-26, the second 0-26
         Integer[] aArray = new Integer[alphabet.length() - 1];
@@ -65,46 +69,25 @@ public class Affine extends Cipher {
 
         // Create an ArrayAdapter and default layout for the spinner for A
         ArrayAdapter<Integer> adapterA = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, aArray);
-        // Specify the layout to use when the list of choices appears
+        // Specify the layout to use for the list of choices
         adapterA.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Create a spinner and apply the adapter to it
-        Spinner spinnerA = new Spinner(context, Spinner.MODE_DROPDOWN);
+        Spinner spinnerA = layout.findViewById(R.id.extra_affine_spinner_a);
         spinnerA.setAdapter(adapterA);
-        spinnerA.setId(ID_AFFINE_A_SPINNER);
-        spinnerA.setLayoutParams(WRAP_CONTENT_BOTH);
 
         // Create an ArrayAdapter and default layout for the spinner for B
         ArrayAdapter<Integer> adapterB = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, bArray);
         // Specify the layout to use when the list of choices appears
         adapterB.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Spinner spinnerB = new Spinner(context, Spinner.MODE_DROPDOWN);
+        Spinner spinnerB = layout.findViewById(R.id.extra_affine_spinner_b);
         spinnerB.setAdapter(adapterB);
-        spinnerB.setId(ID_AFFINE_B_SPINNER);
-        spinnerB.setLayoutParams(WRAP_CONTENT_BOTH);
-
-        // create text views to show 'A=' and 'B='
-        TextView textViewA = new TextView(context);
-        textViewA.setText(R.string.affine_a_equals);
-        //textViewA.setBackgroundColor(ContextCompat.getColor(this, R.color.darkgrey));
-        textViewA.setTextColor(ContextCompat.getColor(context, R.color.white));
-
-        TextView textViewB = new TextView(context);
-        textViewB.setText(R.string.affine_b_equals);
-        //textViewB.setBackgroundColor(ContextCompat.getColor(this, R.color.darkgrey));
-        textViewB.setTextColor(ContextCompat.getColor(context, R.color.white));
-
-        layout.setOrientation(LinearLayout.HORIZONTAL);
-        layout.addView(textViewA);
-        layout.addView(spinnerA);
-        layout.addView(textViewB);
-        layout.addView(spinnerB);
     }
 
     public void fetchExtraControls(LinearLayout layout, Directives dirs) {
-        Spinner affineSpinner = layout.findViewById(ID_AFFINE_A_SPINNER);
+        Spinner affineSpinner = layout.findViewById(R.id.extra_affine_spinner_a);
         int a = (int) affineSpinner.getSelectedItem();
         dirs.setValueA(a);
-        affineSpinner = layout.findViewById(ID_AFFINE_B_SPINNER);
+        affineSpinner = layout.findViewById(R.id.extra_affine_spinner_b);
         int b = (int) affineSpinner.getSelectedItem();
         dirs.setValueB(b);
     }

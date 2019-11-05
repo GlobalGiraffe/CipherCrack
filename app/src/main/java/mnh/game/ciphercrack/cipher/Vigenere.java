@@ -3,7 +3,10 @@ package mnh.game.ciphercrack.cipher;
 import android.content.Context;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Spanned;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -30,6 +33,15 @@ import mnh.game.ciphercrack.staticanalysis.StaticAnalysis;
  *   an amount based on a keyword
  */
 public class Vigenere extends Cipher {
+
+    // delete the keyword if 'X' is pressed
+    private static final View.OnClickListener VIGENERE_ON_CLICK_DELETE = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            EditText k = v.getRootView().findViewById(R.id.extra_vigenere_keyword);
+            k.setText("");
+        }
+    };
 
     String keyword = "";
 
@@ -105,45 +117,38 @@ public class Vigenere extends Cipher {
 
     @Override
     public void addExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+        // this extracts the layout from the XML resource
+        super.addExtraControls(context, layout, R.layout.extra_vigenere);
 
-        // Create this:
-        // Keyword:
-        // [--------------------] EditText
-        // Keyword Extend from
-        // [o] Min Letter [o] Max letter [o] Final letter      RadioButtons
-        // [----- RESULT -------] TextView
-        // or Length
-        // [----] EditText
-        //
-        // The first can be 1-26, the second 0-26
-        TextView keywordLabel = new TextView(context);
-        keywordLabel.setText(context.getString(R.string.keyword));
-        keywordLabel.setTextColor(ContextCompat.getColor(context, R.color.white));
-        keywordLabel.setLayoutParams(WRAP_CONTENT_BOTH);
-
-        EditText keyword = new EditText(context);
-        keyword.setText("");
-        keyword.setTextColor(ContextCompat.getColor(context, R.color.entrytext_text));
-        keyword.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
-        keyword.setId(ID_VIGENERE_KEYWORD);
-        keyword.setBackground(context.getDrawable(R.drawable.entrytext_border));
-        keyword.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         // ensure input is in capitals
+        EditText keyword = layout.findViewById(R.id.extra_vigenere_keyword);
         InputFilter[] editFilters = keyword.getFilters();
-        InputFilter[] newFilters = new InputFilter[editFilters.length + 1];
+        InputFilter[] newFilters = new InputFilter[editFilters.length + 2];
         System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
         newFilters[editFilters.length] = new InputFilter.AllCaps();   // ensures capitals
+        newFilters[editFilters.length+1] = new InputFilter() {
+            public CharSequence filter(CharSequence source, int start, int end,
+                                       Spanned dest, int dstart, int dend) {
+                // only allow chars in the alphabet to be added
+                for (int i = start; i < end; i++) {
+                    String letter = String.valueOf(source.charAt(i));
+                    if (!alphabet.contains(letter)) {
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
         keyword.setFilters(newFilters);
 
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
-        layout.addView(keywordLabel);
-        layout.addView(keyword);
+        // ensure we 'delete' the keyword text when the delete button is pressed
+        Button keywordDelete = layout.findViewById(R.id.extra_vigenere_keyword_delete);
+        keywordDelete.setOnClickListener(VIGENERE_ON_CLICK_DELETE);
     }
 
     @Override
     public void fetchExtraControls(LinearLayout layout, Directives dirs) {
-        EditText keywordField = layout.findViewById(ID_VIGENERE_KEYWORD);
+        EditText keywordField = layout.findViewById(R.id.extra_vigenere_keyword);
         String keyword = keywordField.getText().toString();
         dirs.setKeyword(keyword);
     }
@@ -164,10 +169,10 @@ public class Vigenere extends Cipher {
         EditText keywordLength = new EditText(context);
         keywordLength.setText("");
         keywordLength.setPadding(3,3,3,3);
-        keywordLength.setTextColor(ContextCompat.getColor(context, R.color.entrytext_text));
+        keywordLength.setTextColor(ContextCompat.getColor(context, R.color.entry_text_text));
         keywordLength.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
         keywordLength.setId(ID_VIGENERE_LENGTH);
-        keywordLength.setBackground(context.getDrawable(R.drawable.entrytext_border));
+        keywordLength.setBackground(context.getDrawable(R.drawable.entry_text_border));
         keywordLength.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         TextView crackLabel = new TextView(context);

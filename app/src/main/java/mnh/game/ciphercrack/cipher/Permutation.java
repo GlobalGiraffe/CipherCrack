@@ -2,9 +2,10 @@ package mnh.game.ciphercrack.cipher;
 
 import android.content.Context;
 import android.text.InputFilter;
-import android.text.InputType;
 import android.text.Spanned;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -39,7 +40,7 @@ public class Permutation extends Cipher {
     // need some limit when cracking to avoid running too long
     private static final int MAX_CRACK_COLUMNS = 9;
 
-    // only allow A-Z, 0-9 and ','
+    // only allow A-Z, 0-9 and ',' in the keyword field
     private static final InputFilter PERM_INPUT_FILTER = new InputFilter() {
         public CharSequence filter(CharSequence source, int start, int end,
         Spanned dest, int dstart, int dend) {
@@ -66,6 +67,15 @@ public class Permutation extends Cipher {
                     && Character.isAlphabetic(dest.charAt(dest.length()-1)))
                 return "";
             return null;
+        }
+    };
+
+    // delete the keyword if 'X' is pressed
+    private static final View.OnClickListener PERM_ON_CLICK_DELETE = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            EditText k = v.getRootView().findViewById(R.id.extra_permutation_keyword);
+            k.setText("");
         }
     };
 
@@ -146,20 +156,10 @@ public class Permutation extends Cipher {
 
     @Override
     public void addExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+        // this extracts the layout from the XML resource
+        super.addExtraControls(context, layout, R.layout.extra_permutation);
 
-        TextView keywordLabel = new TextView(context);
-        keywordLabel.setText(context.getString(R.string.keyword_or_columns));
-        keywordLabel.setTextColor(ContextCompat.getColor(context, R.color.white));
-        keywordLabel.setLayoutParams(WRAP_CONTENT_BOTH);
-
-        EditText keywordOrColumns = new EditText(context);
-        keywordOrColumns.setText("");
-        keywordOrColumns.setPadding(3,3,3,3);
-        keywordOrColumns.setTextColor(ContextCompat.getColor(context, R.color.entrytext_text));
-        keywordOrColumns.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
-        keywordOrColumns.setId(ID_PERMUTATION_KEYWORD);
-        keywordOrColumns.setBackground(context.getDrawable(R.drawable.entrytext_border));
-        keywordOrColumns.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        EditText keywordOrColumns = layout.findViewById(R.id.extra_permutation_keyword);
         // ensure input is in capitals, and "A-Z0-9,"
         InputFilter[] editFilters = keywordOrColumns.getFilters();
         InputFilter[] newFilters = new InputFilter[editFilters.length + 3];
@@ -169,23 +169,14 @@ public class Permutation extends Cipher {
         newFilters[editFilters.length+2] = PERM_INPUT_FILTER;
         keywordOrColumns.setFilters(newFilters);
 
-        CheckBox checkReadAcross = new CheckBox(context);
-        checkReadAcross.setId(ID_PERMUTATION_READ_ACROSS);
-        checkReadAcross.setText(context.getString(R.string.use_read_across));
-        checkReadAcross.setChecked(true);
-        checkReadAcross.setTextColor(ContextCompat.getColor(context, R.color.white));
-        checkReadAcross.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
-
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
-        layout.addView(keywordLabel);
-        layout.addView(keywordOrColumns);
-        layout.addView(checkReadAcross);
+        // ensure we 'delete' the keyword text when the delete button is pressed
+        Button keywordDelete = layout.findViewById(R.id.extra_permutation_keyword_delete);
+        keywordDelete.setOnClickListener(PERM_ON_CLICK_DELETE);
     }
 
     @Override
     public void fetchExtraControls(LinearLayout layout, Directives dirs) {
-        EditText keywordView = layout.findViewById(ID_PERMUTATION_KEYWORD);
+        EditText keywordView = layout.findViewById(R.id.extra_permutation_keyword);
         String entry = keywordView.getText().toString();
         int[] columns;
         if (entry.contains(",")) {
@@ -204,7 +195,7 @@ public class Permutation extends Cipher {
             columns = convertKeywordToColumns(entry);
         }
         dirs.setPermutation(columns);
-        CheckBox useReadAcross = layout.findViewById(ID_PERMUTATION_READ_ACROSS);
+        CheckBox useReadAcross = layout.findViewById(R.id.extra_permutation_read_across);
         dirs.setReadAcross(useReadAcross.isChecked());
     }
 

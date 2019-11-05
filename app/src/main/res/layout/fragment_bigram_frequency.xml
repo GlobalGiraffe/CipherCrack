@@ -2,7 +2,7 @@
 <FrameLayout tools:context="mnh.game.ciphercrack.AnalysisActivity"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:theme="@style/Theme.AppCompat"
+    android:theme="@style/CrackTheme"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
@@ -21,7 +21,7 @@
                 android:id="@+id/freq_bigram_layout"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:background="@color/black_overlay"
+                android:background="@color/crackPrimaryVVDark"
                 android:isScrollContainer="true"
                 android:stretchColumns="1">
                 <TableRow>
