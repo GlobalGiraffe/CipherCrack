@@ -32,7 +32,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import mnh.game.ciphercrack.R;
 import mnh.game.ciphercrack.camera.CameraSourcePreview;
 import mnh.game.ciphercrack.camera.GraphicOverlay;
 import mnh.game.ciphercrack.camera.OcrDetectorProcessor;

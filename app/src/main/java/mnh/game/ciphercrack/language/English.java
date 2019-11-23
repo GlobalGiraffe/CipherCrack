@@ -2,8 +2,6 @@ package mnh.game.ciphercrack.language;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class English extends Language {
 
@@ -97,7 +95,7 @@ public class English extends Language {
     public double getExpectedIOC() { return 0.066895; } // https://elec5616.com/static/lectures/2016/03_ciphers.pdf
 
     @Override
-    public String getDictionaryResourceId() { return "dictionary_english"; }
+    public String getDictionaryResourceName() { return "dictionary_english"; }
 
     @Override
     public Map<String, Float> getLetterFrequencies() {

@@ -25,7 +25,7 @@ public class Rot13 extends Caesar {
      */
     @Override
     public String getCipherDescription() {
-        return "The ROT13 cipher is a monoalphabtic substitution cipher where each letter of the plain text is shifted by 13 places. " +
+        return "The ROT13 cipher is a mono-alphabetic substitution cipher where each letter of the plain text is shifted by 13 places. " +
                 "To decipher, the shift is reversed.\n\n"+
                 "This is very easy to break since there is only one possible encoding for any piece of text.";
     }
@@ -46,13 +46,16 @@ public class Rot13 extends Caesar {
      */
     @Override
     public String canParametersBeSet(Directives dirs) {
+        String reason = super.canParametersBeSet(dirs);
+        if (reason != null)
+            return reason;
         String alphabet = dirs.getAlphabet();
-        if (alphabet == null || alphabet.length() == 0)
-            return "Alphabet is empty or too short";
         if (alphabet.length() != 26)
             return "Alphabet has length "+alphabet.length()+" but has to be 26 chars long";
         CrackMethod crackMethod = dirs.getCrackMethod();
         if (crackMethod != null && crackMethod != CrackMethod.NONE) {
+            if (crackMethod != CrackMethod.BRUTE_FORCE)
+                return "Invalid crack method";
             String cribs = dirs.getCribs();
             if (cribs == null || cribs.length() == 0)
                 return "Some cribs must be provided";
@@ -68,6 +71,12 @@ public class Rot13 extends Caesar {
     @Override
     public void fetchExtraControls(LinearLayout layout, Directives dirs) {
         // Nothing to find - shift is always 13
+    }
+
+    // we don't add any extra controls, and we don't need to allow change of cribs
+    @Override
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+        return false;
     }
 
     /**
@@ -102,17 +111,24 @@ public class Rot13 extends Caesar {
      * @param dirs the directives with alphabet and cribs
      * @return the result of the crack attempt
      */
-    public CrackResult crack(String cipherText, Directives dirs) {
+    @Override
+    public CrackResult crack(String cipherText, Directives dirs, int crackId) {
         String cribString = dirs.getCribs();
         Set<String> cribSet = Cipher.getCribSet(cribString);
         String plainText = decode(cipherText, dirs);
         if (Cipher.containsAllCribs(plainText, cribSet)) {
             dirs.setShift(ROT13_SHIFT);
-            String explain = "Success: Brute force approach: Applied shift "+ROT13_SHIFT+" and found all cribs.";
-            return new CrackResult(dirs, cipherText, plainText, explain);
+            String explain = "Success: Brute force approach: Applied shift "
+                    + ROT13_SHIFT
+                    + " and found all cribs.\n";
+            return new CrackResult(dirs.getCrackMethod(), this, dirs, cipherText, plainText, explain);
         }
         dirs.setShift(-1);
-        String explain = "Fail: Brute force approach: Applied shift "+ROT13_SHIFT+" looking for the cribs ["+cribString+"] in the decoded text but did not find them.";
-        return new CrackResult(cipherText, explain);
+        String explain = "Fail: Brute force approach: Applied shift "
+                + ROT13_SHIFT
+                + " looking for the cribs ["
+                + cribString
+                + "] in the decoded text but did not find them.\n";
+        return new CrackResult(dirs.getCrackMethod(), this, cipherText, explain);
     }
 }

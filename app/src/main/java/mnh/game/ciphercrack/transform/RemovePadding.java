@@ -10,12 +10,13 @@ import mnh.game.ciphercrack.util.Settings;
  */
 public class RemovePadding implements Transform {
 
+    @Override
     public String apply(Context context, String text) {
         if (text == null)
             return null;
         // what are the padding characters? Context == null => unit test
         String paddingChars = (context == null)
-                ? " "
+                ? Settings.DEFAULT_PADDING_CHARS
                 : Settings.instance().getString(context, R.string.pref_padding_chars);
 
         // rebuild the string without any padding characters

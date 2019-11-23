@@ -23,4 +23,5 @@ public class CipherTest {
         boolean present = Cipher.containsAllCribs(text, cribs);
         assertTrue("Contains all cribs with case/spaces", present);
     }
+
 }

@@ -9,7 +9,6 @@ import org.junit.runners.JUnit4;
 import java.util.Properties;
 
 import mnh.game.ciphercrack.cipher.Cipher;
-import mnh.game.ciphercrack.cipher.Vigenere;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -19,7 +18,8 @@ import static org.junit.Assert.assertTrue;
 @RunWith(JUnit4.class)
 public class ClimbTest {
 
-    private static final String defaultAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String defaultAlphabet = Settings.DEFAULT_ALPHABET;
+    private static final String defaultPaddingChars = Settings.DEFAULT_PADDING_CHARS;
 
     @Test
     public void testClimb() {
@@ -54,8 +54,10 @@ public class ClimbTest {
         props.setProperty(Climb.CLIMB_START_KEYWORD, "AAAAA");
         props.setProperty(Climb.CLIMB_ALPHABET, defaultAlphabet);
         props.setProperty(Climb.CLIMB_CRIBS, "contacts,again");
+        props.setProperty(Climb.CLIMB_PADDING_CHARS, defaultPaddingChars);
 
-        boolean success = Climb.doClimb(text, Cipher.instanceOf("Vigenere", (Context)null), props);
+        // the instanceOf is needed since Vigenere constructor is package protected
+        boolean success = Climb.doClimb(text, Cipher.instanceOf("Vigenere", null), props, 0);
         String bestKeyword = props.getProperty(Climb.CLIMB_BEST_KEYWORD);
         String bestDecode = props.getProperty(Climb.CLIMB_BEST_DECODE);
         String activity = props.getProperty(Climb.CLIMB_ACTIVITY);

@@ -19,7 +19,7 @@
             android:importantForAutofill="no"
             android:maxWidth="50dp"
             android:singleLine="true"
-            android:inputType="textNoSuggestions"
+            android:inputType="textNoSuggestions|textCapCharacters"
             android:padding="3dp"
             android:layout_gravity="center"
             android:textColor="@color/entry_text_text"

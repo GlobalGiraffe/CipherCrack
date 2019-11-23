@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/menu_list_cancel"
+        android:icon="@android:drawable/ic_menu_zoom"
+        android:title="@string/details" />
+
+    <item android:id="@+id/menu_list_delete"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="@string/delete" />
+
+    <item android:id="@+id/menu_list_details"
+        android:icon="@android:drawable/ic_menu_zoom"
+        android:title="@string/details" />
+
+</menu>

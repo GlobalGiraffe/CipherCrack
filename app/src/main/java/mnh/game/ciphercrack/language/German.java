@@ -9,7 +9,7 @@ public class German extends Language {
     private static final String GERMAN_ALPHABET = "AÄBCDEFGHIJKLMNOÖPQRSßTUÜVWXYZ";
 
     // frequency of individual letters
-    // TODO - adjust to be like English with static initialisers - to run on old phones
+    // TODO - adjust to be like English with static initializer - to run on old phones
     // http://practicalcryptography.com/cryptanalysis/letter-frequencies-various-languages/german-letter-frequencies/
     private static final Map<String, Float> freqLetters = Stream.of(new Object[][] {
             { "A", 6.34f },
@@ -98,13 +98,10 @@ public class German extends Language {
     public German() { super("German"); }
 
     @Override
-        public String getAlphabet() { return GERMAN_ALPHABET; } // 30 letters
+    public String getAlphabet() { return GERMAN_ALPHABET; } // 30 letters
 
     @Override
     public double getExpectedIOC() { return 0.076667; } // https://elec5616.com/static/lectures/2016/03_ciphers.pdf
-
-    @Override
-    public String getDictionaryResourceId() { return Dictionary.NONE; }
 
     @Override
     public Map<String, Float> getLetterFrequencies() { return freqLetters; }

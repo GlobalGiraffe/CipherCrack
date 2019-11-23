@@ -11,12 +11,13 @@ import mnh.game.ciphercrack.util.Settings;
  */
 public class RemoveNonAlphabetic implements Transform {
 
+    @Override
     public String apply(Context context, String text) {
         if (text == null)
             return null;
         // what are the alphabetic characters? Context == null => unit test
         String alphabet = (context == null)
-                ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                ? Settings.DEFAULT_ALPHABET
                 : Settings.instance().getString(context, R.string.pref_alphabet_cipher);
 
         // rebuild the string with only alphabetical characters

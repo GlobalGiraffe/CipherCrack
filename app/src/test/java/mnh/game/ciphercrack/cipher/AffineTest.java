@@ -28,7 +28,6 @@ public class AffineTest {
     public void testWikiExample() {
         // encode and then decode a mixed case cipher
         Directives dirs = new Directives();
-        dirs.setAlphabet(defaultAlphabet);
         dirs.setValueA(5);
         dirs.setValueB(8);
         String encoded = affine.encode("Affine Cipher.", dirs);
@@ -40,12 +39,17 @@ public class AffineTest {
     @Test
     public void testBadParameters() {
         Directives p = new Directives();
+        p.setAlphabet(null);
         String reason = affine.canParametersBeSet(p);
         assertEquals("Bad Param Alphabet", "Alphabet is empty or too short", reason);
         reason = affine.canParametersBeSet(p);
         p.setAlphabet("");
         assertEquals("Bad Param Alphabet", "Alphabet is empty or too short", reason);
         p.setAlphabet(defaultAlphabet);
+        p.setPaddingChars(null);
+        reason = affine.canParametersBeSet(p);
+        assertEquals("Bad Param Padding missing", "Set of padding chars is missing", reason);
+        p.setPaddingChars(Settings.DEFAULT_PADDING_CHARS);
         p.setValueA(-2);
         reason = affine.canParametersBeSet(p);
         assertEquals("Bad Param ValueB Wrong", "Values for A (-2) and B (0) must be greater than zero", reason);
@@ -64,7 +68,9 @@ public class AffineTest {
 
         // try for Cracking now
         p = new Directives();
-        p.setAlphabet(defaultAlphabet);
+        p.setCrackMethod(CrackMethod.IOC);
+        reason = affine.canParametersBeSet(p);
+        assertEquals("Bad Param Method", "Invalid crack method", reason);
         p.setCrackMethod(CrackMethod.BRUTE_FORCE);
         reason = affine.canParametersBeSet(p);
         assertEquals("Bad Param Cribs", "Some cribs must be provided", reason);
@@ -77,7 +83,6 @@ public class AffineTest {
     public void testCrack() {
         String plain = "Now can we see that ALL are fine and dandy.";
         Directives p = new Directives();
-        p.setAlphabet(defaultAlphabet);
         p.setCribs("fine");
         p.setValueA(5);
         p.setValueB(8);
@@ -85,43 +90,50 @@ public class AffineTest {
         p.setCribs("are,fine");
         p.setValueA(-1);
         p.setValueB(-1);
-        CrackResult result = affine.crack(encoded, p);
+        p.setCrackMethod(CrackMethod.BRUTE_FORCE);
+        String reason = affine.canParametersBeSet(p);
+        assertNull("Affine parameter", reason);
+        CrackResult result = affine.crack(encoded, p, 0);
         assertTrue("Crack affine success", result.isSuccess());
-        assertEquals("Crack affines text", plain, result.getPlainText());
+        assertEquals("Crack affine text", plain, result.getPlainText());
         assertEquals("Crack affine A", 5, result.getDirectives().getValueA());
         assertEquals("Crack affine B", 8, result.getDirectives().getValueB());
         assertNotNull("Crack affine explain", result.getExplain());
+        assertEquals("Crack affine cipher name", "Affine cipher (a=5, b=8)", result.getCipher().getInstanceDescription());
+        assertEquals("Crack affine crack method", CrackMethod.BRUTE_FORCE, result.getCrackMethod());
     }
 
     @Test
     public void testCrackZeroB() {
         String plain = "When all are done then we find it correct.";
         Directives p = new Directives();
-        p.setAlphabet(defaultAlphabet);
         p.setCribs("done");
         p.setCrackMethod(CrackMethod.BRUTE_FORCE);
         String reason = affine.canParametersBeSet(p);
         assertNull("Null reason", reason);
-        CrackResult result = affine.crack(plain, p);
+        CrackResult result = affine.crack(plain, p, 0);
         assertTrue("Crack affine success", result.isSuccess());
         assertEquals("Crack affines text", plain, result.getPlainText());
         assertEquals("Crack affine A", 1, result.getDirectives().getValueA());
         assertEquals("Crack affine B", 0, result.getDirectives().getValueB());
         assertNotNull("Crack affine explain", result.getExplain());
+        assertEquals("Crack affine cipher name", "Affine cipher (a=1, b=0)", result.getCipher().getInstanceDescription());
+        assertEquals("Crack affine crack method", CrackMethod.BRUTE_FORCE, result.getCrackMethod());
     }
 
     @Test
     public void testCrackFail() {
         String cipherText = "HGEUDKowKWUWYUHWKIOWIJJSIKWIJSKWLpOWOIWNWIUW";
         Directives p = new Directives();
-        p.setAlphabet(defaultAlphabet);
         p.setCribs("done");
         p.setCrackMethod(CrackMethod.BRUTE_FORCE);
-        CrackResult result = affine.crack(cipherText, p);
+        CrackResult result = affine.crack(cipherText, p, 0);
         assertFalse("Crack affine success", result.isSuccess());
         assertNull("CrackFail affine text", result.getPlainText());
         assertNull("CrackFail affine Directives", result.getDirectives());
         assertNotNull("CrackFail affine explain", result.getExplain());
+        assertEquals("CrackFail affine cipher name", "Affine cipher (n/a)", result.getCipher().getInstanceDescription());
+        assertEquals("CrackFail affine crack method", CrackMethod.BRUTE_FORCE, result.getCrackMethod());
     }
 
     @Test
@@ -133,7 +145,6 @@ public class AffineTest {
     @Test
     public void testInstanceDescription() {
         Directives p = new Directives();
-        p.setAlphabet(defaultAlphabet);
         p.setValueA(12);
         p.setValueB(7);
         String reason = affine.canParametersBeSet(p);

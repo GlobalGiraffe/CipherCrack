@@ -25,7 +25,6 @@ public class AtbashTest {
     public void testDefaultAlphabet() {
         // encode and then decode a mixed case cipher
         Directives p = new Directives();
-        p.setAlphabet(defaultAlphabet);
         String encoded = atbash.encode("Hello", p);
         assertEquals("Encoding default Alphabet mixed case", "Svool", encoded);
         String decoded = atbash.decode(encoded, p);
@@ -47,6 +46,7 @@ public class AtbashTest {
     @Test
     public void testBadParameters() {
         Directives p = new Directives();
+        p.setAlphabet(null);
         String reason = atbash.canParametersBeSet(p); // alphabet is null
         assertEquals("Encoding null alphabet", "Alphabet is empty or too short", reason);
         p.setAlphabet("");
@@ -56,18 +56,25 @@ public class AtbashTest {
         reason = atbash.canParametersBeSet(p);
         assertEquals("Encoding null alphabet", "Alphabet has odd length (7) but needs to be even", reason);
         p.setAlphabet(defaultAlphabet);
+        p.setPaddingChars(null);
+        reason = atbash.canParametersBeSet(p);
+        assertEquals("Encoding missing padding", "Set of padding chars is missing", reason);
+        p.setPaddingChars(Settings.DEFAULT_PADDING_CHARS);
         reason = atbash.canParametersBeSet(p);
         assertNull("Encoding params okay", reason);
 
+        p.setCrackMethod(CrackMethod.DICTIONARY);
+        reason = atbash.canParametersBeSet(p);
+        assertEquals("Bad Param Method", "Invalid crack method", reason);
         p.setCrackMethod(CrackMethod.BRUTE_FORCE);
         reason = atbash.canParametersBeSet(p);
-        assertEquals("Crack cribs null", "Some cribs must be provided", reason);
+        assertEquals("Bad param cribs null", "Some cribs must be provided", reason);
         p.setCribs("");
         reason = atbash.canParametersBeSet(p);
-        assertEquals("Crack missing cribs", "Some cribs must be provided", reason);
+        assertEquals("Bad param missing cribs", "Some cribs must be provided", reason);
         p.setCribs("the,and");
         reason = atbash.canParametersBeSet(p);
-        assertNull("Crack params okay", reason);
+        assertNull("Bad param params okay", reason);
     }
 
     @Test
@@ -76,12 +83,14 @@ public class AtbashTest {
         String text = "Yzybolm yfimh.";
         Directives p = new Directives();
         p.setCribs("burn");
-        p.setAlphabet(defaultAlphabet);
-        CrackResult result = atbash.crack(text, p);
+        p.setCrackMethod(CrackMethod.BRUTE_FORCE);
+        atbash.canParametersBeSet(p);
+        CrackResult result = atbash.crack(text, p, 0);
         assertTrue("Crack atbash status", result.isSuccess());
         assertEquals("Crack atbash text", "Babylon burns.", result.getPlainText());
         assertEquals("Crack atbash text", text, result.getCipherText());
         assertNotNull("Crack atbash explain", result.getExplain());
+        assertEquals("Crack crack method", CrackMethod.BRUTE_FORCE, result.getCrackMethod());
     }
 
     @Test
@@ -90,12 +99,15 @@ public class AtbashTest {
         String cipherText = "Yzybolm yfimh.";
         Directives p = new Directives();
         p.setCribs("the,and");
-        p.setAlphabet(defaultAlphabet);
-        CrackResult result = atbash.crack(cipherText, p);
+        p.setCrackMethod(CrackMethod.BRUTE_FORCE);
+        String reason = atbash.canParametersBeSet(p);
+        assertNull("Atbash parameter", reason);
+        CrackResult result = atbash.crack(cipherText, p, 0);
         assertFalse("Crack Fail atbash status", result.isSuccess());
         assertNull("Crack Fail atbash text", result.getPlainText());
         assertEquals("Crack Fail atbash text", cipherText, result.getCipherText());
         assertNotNull("Crack Fail atbash explain", result.getExplain());
+        assertEquals("Crack crack method", CrackMethod.BRUTE_FORCE, result.getCrackMethod());
     }
 
     @Test
@@ -107,7 +119,6 @@ public class AtbashTest {
     @Test
     public void testInstanceDescription() {
         Directives p = new Directives();
-        p.setAlphabet(defaultAlphabet);
         String reason = atbash.canParametersBeSet(p);
         assertNull("Null reason", reason);
         String desc = atbash.getInstanceDescription();

@@ -24,6 +24,7 @@ public class CaesarTest {
     public void testIncorrectProperties() {
         // ensure we get a warning if bad parameters set
         Directives p = new Directives();
+        p.setAlphabet(null);
         String reason = caesar.canParametersBeSet(p);
         assertEquals("BadParam Alpha missing", "Alphabet is empty or too short", reason);
         p.setAlphabet("");
@@ -34,7 +35,12 @@ public class CaesarTest {
         assertEquals("BadParam Alpha too short", "Alphabet is empty or too short", reason);
 
         p.setAlphabet(defaultAlphabet);
+        p.setPaddingChars(null);
+        reason = caesar.canParametersBeSet(p);
+        assertEquals("BadParam missing pad", "Set of padding chars is missing", reason);
+
         p.setShift(-1);
+        p.setPaddingChars(Settings.DEFAULT_PADDING_CHARS);
         reason = caesar.canParametersBeSet(p);
         assertEquals("BadParam shift negative", "Shift value -1 incorrect, should be between 0 and 25", reason);
 
@@ -45,6 +51,9 @@ public class CaesarTest {
         reason = caesar.canParametersBeSet(p);
         assertNull("BadParam all okay", reason);
 
+        p.setCrackMethod(CrackMethod.DICTIONARY);
+        reason = caesar.canParametersBeSet(p);
+        assertEquals("Bad Param Method", "Invalid crack method", reason);
         p.setCrackMethod(CrackMethod.BRUTE_FORCE);
         reason = caesar.canParametersBeSet(p);
         assertEquals("BadParam cribs null", "Some cribs must be provided", reason);
@@ -60,7 +69,6 @@ public class CaesarTest {
     public void testDefaultAlphabet() {
         // encode and then decode a mixed case cipher
         Directives p = new Directives();
-        p.setAlphabet(defaultAlphabet);
         p.setShift(3);
         String encoded = caesar.encode("AbCdEfGhIjKlMnOpQrStUvWxYZaBcD", p);
         assertEquals("Encoding default Alphabet mixed case", "DeFgHiJkLmNoPqRsTuVwXyZaBCdEfG", encoded);
@@ -88,7 +96,6 @@ public class CaesarTest {
     public void testClassic() {
         // as per http://practicalcryptography.com/ciphers/caesar-cipher/
         Directives p = new Directives();
-        p.setAlphabet(defaultAlphabet);
         p.setShift(1);
         String reason = caesar.canParametersBeSet(p);
         assertNull("Encoding classic reason", reason);
@@ -137,16 +144,17 @@ public class CaesarTest {
                 "Believe me, etc. Arthur Wellesley.\n";
         Directives p = new Directives();
         p.setCribs("the,and,have");
-        p.setAlphabet(defaultAlphabet);
         p.setCrackMethod(CrackMethod.BRUTE_FORCE);
         String reason = caesar.canParametersBeSet(p);
         assertNull("Crack caesar reason", reason);
-        CrackResult result = caesar.crack(text, p);
+        CrackResult result = caesar.crack(text, p, 0);
         assertTrue("Crack caesar state", result.isSuccess());
         assertEquals("Crack caesar text", expected, result.getPlainText());
         assertEquals("Crack caesar cipher text", text, result.getCipherText());
         assertEquals("Crack caesar shift", 9, result.getDirectives().getShift());
         assertNotNull("Crack caesar explain", result.getExplain());
+        assertEquals("Crack caesar cipher name", "Caesar cipher (shift=9)", result.getCipher().getInstanceDescription());
+        assertEquals("Crack caesar crack method", CrackMethod.BRUTE_FORCE, result.getCrackMethod());
     }
 
     @Test
@@ -155,17 +163,18 @@ public class CaesarTest {
                 "Vh Mnja Bra,\n";
         Directives p = new Directives();
         p.setCribs("presumably");
-        p.setAlphabet(defaultAlphabet);
         p.setCrackMethod(CrackMethod.BRUTE_FORCE);
         String reason = caesar.canParametersBeSet(p);
         assertNull("CrackFail caesar reason", reason);
 
-        CrackResult result = caesar.crack(cipherText, p);
+        CrackResult result = caesar.crack(cipherText, p, 0);
         assertFalse("Crack caesar state", result.isSuccess());
         assertNull("Crack caesar text", result.getPlainText());
         assertEquals("Crack caesar cipher text", cipherText, result.getCipherText());
         assertNull("Crack caesar shift", result.getDirectives());
         assertNotNull("Crack caesar explain", result.getExplain());
+        assertEquals("Crack caesar cipher name", "Caesar cipher (n/a)", result.getCipher().getInstanceDescription());
+        assertEquals("Crack caesar crack method", CrackMethod.BRUTE_FORCE, result.getCrackMethod());
     }
 
     @Test
@@ -177,7 +186,6 @@ public class CaesarTest {
     @Test
     public void testInstanceDescription() {
         Directives p = new Directives();
-        p.setAlphabet(defaultAlphabet);
         p.setShift(21);
         String reason = caesar.canParametersBeSet(p);
         assertNull("Null reason", reason);

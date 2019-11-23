@@ -1,5 +1,7 @@
 package mnh.game.ciphercrack.staticanalysis;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class AnalysisTabAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
+    @NotNull
     public Fragment getItem(int position) {
         return mFragmentList.get(position);
     }

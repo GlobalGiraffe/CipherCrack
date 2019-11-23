@@ -1,19 +1,20 @@
 package mnh.game.ciphercrack.cipher;
 
 import android.content.Context;
+import android.os.Parcel;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import mnh.game.ciphercrack.R;
+import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
 import mnh.game.ciphercrack.util.Directives;
+import mnh.game.ciphercrack.util.Settings;
 
 /**
  * Class that contains methods to assist with Railfence Cipher operations
@@ -22,11 +23,21 @@ import mnh.game.ciphercrack.util.Directives;
  */
 public class Railfence extends Cipher {
 
-    static final int MAX_RAILS = 20; // need some limit to avoid going forever
-
     private int rails = -1;
 
     Railfence(Context context) { super(context, "Railfence"); }
+
+    // used to send a cipher to a service
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeInt(rails);
+    }
+    @Override
+    public void unpack(Parcel in) {
+        super.unpack(in);
+        rails = in.readInt();
+    }
 
     /**
      * Describe what this cipher does
@@ -49,7 +60,7 @@ public class Railfence extends Cipher {
      */
     @Override
     public String getInstanceDescription() {
-        return getCipherName()+" cipher (rails="+rails+")";
+        return getCipherName()+" cipher ("+(rails == -1 ? "n/a" : "rails="+rails)+")";
     }
 
     /**
@@ -59,17 +70,23 @@ public class Railfence extends Cipher {
      */
     @Override
     public String canParametersBeSet(Directives dirs) {
+        String reason = super.canParametersBeSet(dirs);
+        if (reason != null)
+            return reason;
+        int rails = dirs.getRails();
         CrackMethod crackMethod = dirs.getCrackMethod();
         if (crackMethod == null || crackMethod == CrackMethod.NONE) {
-            int rails = dirs.getRails();
-            if (rails < 2 || rails > MAX_RAILS)
-                return "Number of rails: " + rails + " must be between 2 and " + MAX_RAILS;
-            this.rails = rails;
+            int maxRails = getMaxRails();
+            if (rails < 2 || rails > maxRails)
+                return "Number of rails: " + rails + " must be between 2 and " + maxRails;
         } else {
+            if (crackMethod != CrackMethod.BRUTE_FORCE)
+                return "Invalid crack method";
             String cribs = dirs.getCribs();
             if (cribs == null || cribs.length() == 0)
                 return "Some cribs must be provided";
         }
+        this.rails = rails;
         return null;
     }
 
@@ -80,8 +97,9 @@ public class Railfence extends Cipher {
         super.addExtraControls(context, layout, R.layout.extra_railfence);
 
         // create an array of possible rails for the user to choose from: 2 to 20
-        Integer[] railArray = new Integer[MAX_RAILS-2];
-        for (int i = 0; i < MAX_RAILS-2; i++) {
+        int maxRails = getMaxRails();
+        Integer[] railArray = new Integer[maxRails-2];
+        for (int i = 0; i < maxRails-2; i++) {
             railArray[i] = i+2;
         }
 
@@ -97,8 +115,14 @@ public class Railfence extends Cipher {
     @Override
     public void fetchExtraControls(LinearLayout layout, Directives dirs) {
         Spinner spinner = layout.findViewById(R.id.extra_railfence_spinner);
-        int rails = (int) spinner.getSelectedItem();
+        int rails = (int)spinner.getSelectedItem();
         dirs.setRails(rails);
+    }
+
+    // we don't add any extra controls, but we allow change of cribs
+    @Override
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+        return true;
     }
 
     /**
@@ -181,7 +205,7 @@ public class Railfence extends Cipher {
             railUsed[railItem] = 0; // zeroing as well need this in the next loop
         }
 
-        // now read the zig-zags to get the plain text
+        // now read the zigzags to get the plain text
         StringBuilder result = new StringBuilder(cipherText.length());
         int direction = -1;
         for (int railItem=0, pos=0; pos < cipherText.length(); pos++) {
@@ -196,16 +220,26 @@ public class Railfence extends Cipher {
     }
 
     /**
+     * Work out the maximum number of rails we can deal with, from settings
+     * @return the user-specified maximum number of rails
+     */
+    private int getMaxRails() {
+        return Integer.valueOf(Settings.instance().getString(context, R.string.pref_limit_railfence_rails, Settings.DEFAULT_LIMIT_RAILFENCE_RAILS));
+    }
+
+    /**
      * Crack a Railfence cipher by checking all rails and looking for cribs
      * @param cipherText the text to try to crack
      * @param dirs the directives with alphabet and cribs
      * @return the result of the crack attempt
      */
-    public CrackResult crack(String cipherText, Directives dirs) {
+    public CrackResult crack(String cipherText, Directives dirs, int crackId) {
         String cribString = dirs.getCribs();
         Set<String> cribSet = Cipher.getCribSet(cribString);
-        int maxRails = Math.min(MAX_RAILS, cipherText.length()/2);
+        int maxRails = getMaxRails();
+        maxRails = Math.min(maxRails, cipherText.length()/2);
         for (int currentRail=2; currentRail < maxRails; currentRail++) {
+            CrackResults.updatePercentageDirectly(crackId, 100 * currentRail / maxRails);
             dirs.setRails(currentRail);
             String plainText = decode(cipherText, dirs);
             if (Cipher.containsAllCribs(plainText, cribSet)) {
@@ -215,15 +249,18 @@ public class Railfence extends Cipher {
                         + cribString
                         + "] in the decoded text and found them with "
                         + currentRail
-                        + " rails.";
-                return new CrackResult(dirs, cipherText, plainText, explain);
+                        + " rails.\n";
+                rails = currentRail;
+                return new CrackResult(dirs.getCrackMethod(), this, dirs, cipherText, plainText, explain);
             }
         }
+        dirs.setRails(-1);
+        rails = -1;
         String explain = "Fail: Brute force approach: tried possible rails from 2 to "
                 + maxRails
                 + " looking for the cribs ["
                 + cribString
-                + "] in the decoded text but did not find them.";
-        return new CrackResult(cipherText, explain);
+                + "] in the decoded text but did not find them.\n";
+        return new CrackResult(dirs.getCrackMethod(), this, cipherText, explain);
     }
 }

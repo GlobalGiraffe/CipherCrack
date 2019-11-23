@@ -1,16 +1,16 @@
 package mnh.game.ciphercrack.cipher;
 
 import android.content.Context;
+import android.os.Parcel;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import mnh.game.ciphercrack.R;
+import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
 import mnh.game.ciphercrack.util.Directives;
@@ -22,12 +22,24 @@ import mnh.game.ciphercrack.util.Directives;
  */
 public class Caesar extends Cipher {
 
-    private int shift = -1;
+    int shift = -1;
 
     Caesar(Context context) { super(context, "Caesar"); }
 
     // needed for subclasses (ROT13)
     Caesar(Context context, String name) { super(context, name); }
+
+    // used to send a cipher to a service
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeInt(shift);
+    }
+    @Override
+    public void unpack(Parcel in) {
+        super.unpack(in);
+        shift = in.readInt();
+    }
 
     /**
      * Describe what this cipher does
@@ -35,10 +47,10 @@ public class Caesar extends Cipher {
      */
     @Override
     public String getCipherDescription() {
-        return "The Caesar cipher is a monoalphabtic substitution cipher where each letter of the plain text is shifted by a fixed amount. " +
+        return "The Caesar cipher is a mono-alphabetic substitution cipher where each letter of the plain text is shifted by a fixed amount. " +
                 "For example, if a shift of 3 is used then plain text 'a' will map to the 3rd letter after: 'D', 'b' will become 'E', and so on.\n" +
-                "To decipher, the shift is reversed, so with shift of 3, 'E' becmes 'b', 'D' becomes 'a' and so on.\n\n"+
-                "This is relatively easy to break since for each cipher text there are only 25 possible decodings.";
+                "To decipher, the shift is reversed, so with shift of 3, 'E' becomes 'b', 'D' becomes 'a' and so on.\n\n"+
+                "This is relatively easy to break since for each cipher text there are only 25 possible decipherments.";
     }
 
     /**
@@ -47,7 +59,7 @@ public class Caesar extends Cipher {
      */
     @Override
     public String getInstanceDescription() {
-        return getCipherName()+" cipher (shift="+shift+")";
+        return getCipherName()+" cipher ("+((shift == -1) ? "n/a" : "shift="+shift)+")";
     }
 
     /**
@@ -57,24 +69,26 @@ public class Caesar extends Cipher {
      */
     @Override
     public String canParametersBeSet(Directives dirs) {
-        String alphabet = dirs.getAlphabet();
-        if (alphabet == null || alphabet.length() < 2)
-            return "Alphabet is empty or too short";
-
+        String reason = super.canParametersBeSet(dirs);
+        if (reason != null)
+            return reason;
         CrackMethod crackMethod = dirs.getCrackMethod();
+        int shift = dirs.getShift();
         if (crackMethod == null || crackMethod == CrackMethod.NONE) {
-            int shift = dirs.getShift();
+            String alphabet = dirs.getAlphabet();
             if (shift < 0 || shift >= alphabet.length())
                 return "Shift value " + shift + " incorrect, should be between 0 and " + (alphabet.length() - 1);
-            this.shift = shift;
         } else {
+            // this the the only crack possible
+            if (crackMethod != CrackMethod.BRUTE_FORCE)
+                return "Invalid crack method";
             String cribs = dirs.getCribs();
             if (cribs == null || cribs.length() == 0)
                 return "Some cribs must be provided";
         }
+        this.shift = shift;
         return null;
     }
-
 
     @Override
     public void addExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
@@ -101,6 +115,12 @@ public class Caesar extends Cipher {
         Spinner spinner = layout.findViewById(R.id.extra_caesar_spinner);
         int shift = (int)spinner.getSelectedItem();
         dirs.setShift(shift);
+    }
+
+    // we don't add any extra controls, but we allow change of cribs
+    @Override
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+        return true;
     }
 
     /**
@@ -183,23 +203,34 @@ public class Caesar extends Cipher {
      * @param dirs the directives with alphabet and cribs
      * @return the cracked text (and directives has RESULT_SHIFT) or "" if unable to crack
      */
-    public CrackResult crack(String cipherText, Directives dirs) {
+    public CrackResult crack(String cipherText, Directives dirs, int crackId) {
         String alphabet = dirs.getAlphabet();
         String cribString = dirs.getCribs();
         Set<String> cribSet = Cipher.getCribSet(cribString);
+        CrackMethod crackMethod = dirs.getCrackMethod();
         for (int shift=0; shift < alphabet.length(); shift++) {
+            CrackResults.updatePercentageDirectly(crackId, 100*shift/alphabet.length());
             dirs.setShift(shift);
             String plainText = decode(cipherText, dirs);
             if (Cipher.containsAllCribs(plainText, cribSet)) {
+                this.shift = shift;
                 String explain = "Success: Brute force approach: tried each possible Caesar shift from 0 to "
                         + (alphabet.length()-1)
-                        + " looking for the cribs ["+cribString+"] in the decoded text and found them all with shift "+shift+".";
-                return new CrackResult(dirs, cipherText, plainText, explain);
+                        + " looking for the cribs ["
+                        + cribString
+                        + "] in the decoded text and found them all with shift "
+                        + shift
+                        + ".\n";
+                return new CrackResult(crackMethod, this, dirs, cipherText, plainText, explain);
             }
         }
+        dirs.setShift(-1);
+        this.shift = -1;
         String explain = "Fail: Brute force approach: tried each possible Caesar shift from 0 to "
                 + (alphabet.length()-1)
-                + " looking for the cribs ["+cribString+"] in the decoded text but did not find them.";
-        return new CrackResult(cipherText, explain);
+                + " looking for the cribs ["
+                + cribString
+                + "] in the decoded text but did not find them.\n";
+        return new CrackResult(crackMethod, this, cipherText, explain);
     }
 }

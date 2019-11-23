@@ -18,21 +18,24 @@ import static org.junit.Assert.assertNull;
 @RunWith(JUnit4.class)
 public class Rot13Test {
 
-    private static final String defaultAlphabet = Settings.DEFAULT_ALPHABET;
     private static final Rot13 rot13 = new Rot13(null);
 
     @Test
     public void testBadParameters() {
         Directives p = new Directives();
+        p.setAlphabet(null);
         String reason = rot13.canParametersBeSet(p); // alphabet is null
         assertEquals("Encoding null alphabet", "Alphabet is empty or too short", reason);
         p.setAlphabet("");
         reason = rot13.canParametersBeSet(p);
         assertEquals("Encoding null alphabet", "Alphabet is empty or too short", reason);
-        p.setAlphabet(defaultAlphabet);
+        p.setAlphabet(Settings.DEFAULT_ALPHABET);
         reason = rot13.canParametersBeSet(p);
         assertNull("Encoding params okay", reason);
 
+        p.setCrackMethod(CrackMethod.DICTIONARY);
+        reason = rot13.canParametersBeSet(p);
+        assertEquals("Bad Param Method", "Invalid crack method", reason);
         p.setCrackMethod(CrackMethod.BRUTE_FORCE);
         reason = rot13.canParametersBeSet(p);
         assertEquals("Crack cribs null", "Some cribs must be provided", reason);
@@ -48,7 +51,6 @@ public class Rot13Test {
     public void testDefaultAlphabet() {
         // encode and then decode a mixed case cipher
         Directives p = new Directives();
-        p.setAlphabet(defaultAlphabet);
         String encoded = rot13.encode("Hello", p);
         assertEquals("Encoding default Alphabet mixed case", "Uryyb", encoded);
         String decoded = rot13.decode(encoded, p);
@@ -73,8 +75,7 @@ public class Rot13Test {
         String plainText = "The sky above the port was the color of television, tuned to a dead channel.";
         Directives p = new Directives();
         p.setCribs("the,dead");
-        p.setAlphabet(defaultAlphabet);
-        CrackResult result = rot13.crack(cipherText, p);
+        CrackResult result = rot13.crack(cipherText, p, 0);
         assertTrue("Crack rot13 success", result.isSuccess());
         assertEquals("Crack rot13 plain", plainText, result.getPlainText());
         assertEquals("Crack rot13 cipher", cipherText, result.getCipherText());
@@ -87,8 +88,7 @@ public class Rot13Test {
         String cipherText = "Gur fxl nobir gur cbeg jnf gur pbybe bs gryrivfvba, gharq gb n qrnq punaary.";
         Directives p = new Directives();
         p.setCribs("the,and");
-        p.setAlphabet(defaultAlphabet);
-        CrackResult result = rot13.crack(cipherText, p);
+        CrackResult result = rot13.crack(cipherText, p, 0);
         assertFalse("Crack rot13 fail", result.isSuccess());
         assertNull("CrackFail rot13 text", result.getPlainText());
         assertEquals("CrackFail rot13 cipher", cipherText, result.getCipherText());
@@ -105,7 +105,6 @@ public class Rot13Test {
     @Test
     public void testInstanceDescription() {
         Directives p = new Directives();
-        p.setAlphabet(defaultAlphabet);
         String reason = rot13.canParametersBeSet(p);
         assertNull("Null reason", reason);
         String desc = rot13.getInstanceDescription();

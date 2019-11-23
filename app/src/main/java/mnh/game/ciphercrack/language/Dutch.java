@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 public class Dutch extends Language {
 
     // frequency of individual letters
-    // TODO - adjust to be like English with static initialisers - to run on old phones
+    // TODO - adjust to be like English with static initializer - to run on old phones
     // https://www.sttmedia.com/characterfrequency-dutch
     private static final Map<String, Float> freqLetters = Stream.of(new Object[][] {
             { "A", 7.79f },
@@ -95,7 +95,7 @@ public class Dutch extends Language {
     public double getExpectedIOC() { return 0.0798; } // https://elec5616.com/static/lectures/2016/03_ciphers.pdf
 
     @Override
-    public String getDictionaryResourceId() { return Dictionary.NONE; }
+    public String getDictionaryResourceName() { return "dictionary_dutch"; }
 
     @Override
     public Map<String, Float> getLetterFrequencies() {

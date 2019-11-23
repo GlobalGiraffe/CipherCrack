@@ -1,5 +1,6 @@
 package mnh.game.ciphercrack;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -7,21 +8,27 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import mnh.game.ciphercrack.cipher.Cipher;
+import mnh.game.ciphercrack.transform.SplitByWords;
 import mnh.game.ciphercrack.util.Directives;
 
 import static android.view.View.GONE;
 
 public class ResultActivity extends AppCompatActivity {
 
-    public static final String EXTRA_TEXT = "Txt";
-    public static final String EXTRA_RESULT = "Res";
-    public static final String EXTRA_EXPLAIN = "Exp";
-    public static final String EXTRA_CIPHER = "Cyp";
-    public static final String EXTRA_DIRECTIVES = "Dir";
+    public static final int RESULTS_REQUEST_CODE = 1000;
+
+    private static final String EXTRA_TEXT = "Txt";
+    private static final String EXTRA_RESULT = "Res";
+    private static final String EXTRA_EXPLAIN = "Exp";
+    private static final String EXTRA_CIPHER = "Cyp";
+    private static final String EXTRA_DIRECTIVES = "Dir";
+
+    private Cipher cipher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,17 +39,17 @@ public class ResultActivity extends AppCompatActivity {
         String result = getIntent().getStringExtra(EXTRA_RESULT);
         String explain  = getIntent().getStringExtra(EXTRA_EXPLAIN);
         String cipherName = getIntent().getStringExtra(EXTRA_CIPHER);
-        Directives dirs = (Directives)getIntent().getParcelableExtra((EXTRA_DIRECTIVES));
+        Directives dirs = getIntent().getParcelableExtra(EXTRA_DIRECTIVES);
 
         Toolbar toolbar = findViewById(R.id.result_toolbar);
-        setSupportActionBar(toolbar);
 
         // create a cipher object so we can get a description [with parameters to the cipher]
-        Cipher cipher = Cipher.instanceOf(cipherName, this);
-        if (cipher != null) {
+        cipher = Cipher.instanceOf(cipherName, this);
+        if (cipher != null && dirs != null) {
             cipher.canParametersBeSet(dirs);
-            toolbar.setTitle(cipher.getCipherDescription());
+            toolbar.setTitle(cipher.getInstanceDescription());
         }
+        setSupportActionBar(toolbar);
 
         // put the text on the screen
         TextView textView = findViewById(R.id.result_input_text);
@@ -71,10 +78,51 @@ public class ResultActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // show settings
         if (item.getItemId() == R.id.action_result_settings) {
             showSettings(null);
             return true;
         }
+        // copy the result text back to the main screen
+        if (item.getItemId() == R.id.action_result_copy) {
+            TextView textView = findViewById(R.id.result_result_text);
+            String result = textView.getText().toString();
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("RESULT_TEXT", result);
+            setResult(Activity.RESULT_OK, resultIntent);
+            finish();
+            return true;
+        }
+        // split the text on the results box into separate words
+        if (item.getItemId() == R.id.action_result_split_words) {
+            TextView textView = findViewById(R.id.result_result_text);
+            String result = textView.getText().toString();
+            String newResult = new SplitByWords().apply(this, result);
+            textView.setText(newResult);
+            return true;
+        }
+        // create an email with these results in the body
+        if (item.getItemId() == R.id.action_result_email) {
+            TextView textView = findViewById(R.id.result_input_text);
+            String input = textView.getText().toString();
+            textView = findViewById(R.id.result_result_text);
+            String result = textView.getText().toString();
+            textView = findViewById(R.id.result_explain_text);
+            String explain = textView.getText().toString();
+
+            Intent i = new Intent(Intent.ACTION_SEND);
+
+            i.setType("message/rfc822");
+            i.putExtra(Intent.EXTRA_SUBJECT, "Crack with cipher: "+cipher.getInstanceDescription());
+            i.putExtra(Intent.EXTRA_TEXT, "Input:\n"+input+"\n\nResult:\n"+result+"\n\nExplain\n"+explain+"\n");
+            try {
+                startActivity(Intent.createChooser(i, "Send mail..."));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_LONG).show();
+            }
+            return true;
+        }
+
         // If we got here, the user's action was not recognized.
         // Invoke the superclass to handle it.
         return super.onOptionsItemSelected(item);
@@ -84,5 +132,26 @@ public class ResultActivity extends AppCompatActivity {
     private void showSettings(View view) {
         Intent i = new Intent(this, SettingsActivity.class);
         startActivity(i);
+    }
+
+    /**
+     * Get the intent for opening the Result screen
+     * @param context the activity initiating the intent
+     * @param text the text to as original
+     * @param resultText what to show as the encoded/decoded text
+     * @param explainText for crack only, the explain text as to how we cracked
+     * @param cipher the name of the cipher we used
+     * @return the Intent that can launch the result screen suitably
+     */
+    public static Intent getResultIntent(AppCompatActivity context, final String text, final String resultText,
+                                          final String explainText, final Cipher cipher,
+                                          final Directives dirs) {
+        Intent i = new Intent(context, ResultActivity.class);
+        i.putExtra(ResultActivity.EXTRA_TEXT, text);
+        i.putExtra(ResultActivity.EXTRA_RESULT, resultText);
+        i.putExtra(ResultActivity.EXTRA_EXPLAIN, explainText);
+        i.putExtra(ResultActivity.EXTRA_CIPHER, cipher.getCipherName());
+        i.putExtra(ResultActivity.EXTRA_DIRECTIVES, dirs);
+        return i;
     }
 }

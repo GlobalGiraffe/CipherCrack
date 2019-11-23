@@ -11,17 +11,16 @@ import mnh.game.ciphercrack.AnalysisActivity;
 import mnh.game.ciphercrack.R;
 import mnh.game.ciphercrack.language.Language;
 
+/**
+ * This is the screen that shows which cipher is likely, using static analysis of the text
+ */
 public class SuggestCipherFragment extends Fragment {
 
     private final AnalysisProvider analysis;
-    private final String text;
-    private final String alphabet;
     private final Language language;
 
-    public SuggestCipherFragment(AnalysisActivity analysis, String text, String alphabet, Language language) {
+    public SuggestCipherFragment(AnalysisActivity analysis, Language language) {
         this.analysis = analysis;
-        this.text = text;
-        this.alphabet = alphabet;
         this.language = language;
     }
 

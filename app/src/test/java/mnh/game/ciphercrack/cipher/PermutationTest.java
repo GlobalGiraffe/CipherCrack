@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 @RunWith(JUnit4.class)
 public class PermutationTest {
 
-    private static final String defaultAlphabet = Settings.DEFAULT_ALPHABET;
     private final Permutation cipher = new Permutation(null);
 
     @Test
@@ -62,7 +61,6 @@ public class PermutationTest {
         int[] perm = cipher.convertKeywordToColumns(key);
         p.setPermutation(perm);
         p.setReadAcross(true);
-        p.setAlphabet(defaultAlphabet);
         String reason = cipher.canParametersBeSet(p);
         assertNull("Encode: params okay", reason);
         String encoded = cipher.encode(plainText, p);
@@ -86,7 +84,6 @@ public class PermutationTest {
         String expectedCipherText = "EDEFHNDTSEEALTWATLOFAHECESTL";
         Directives p = new Directives();
         p.setPermutation(perm);
-        p.setAlphabet(defaultAlphabet);
         p.setReadAcross(true);
         String reason = cipher.canParametersBeSet(p);
         assertNull("Encode: params okay", reason);
@@ -117,7 +114,6 @@ public class PermutationTest {
         String expectedCipherText = "EHSLTAEDNETLHSEDEWOETFTAAFCL";
         Directives p = new Directives();
         p.setPermutation(perm);
-        p.setAlphabet(defaultAlphabet);
         p.setReadAcross(false); // read down the columns
         String reason = cipher.canParametersBeSet(p);
         assertNull("Encode: params okay", reason);
@@ -130,6 +126,7 @@ public class PermutationTest {
     @Test
     public void testBadParameters() {
         Directives p = new Directives();
+        p.setAlphabet(null);
         String reason = cipher.canParametersBeSet(p);
         assertEquals("BadParam: alphabet missing", "Alphabet is empty or too short", reason);
         p.setAlphabet("");
@@ -138,8 +135,13 @@ public class PermutationTest {
         p.setAlphabet("D");
         reason = cipher.canParametersBeSet(p);
         assertEquals("BadParam: alphabet empty", "Alphabet is empty or too short", reason);
-        p.setAlphabet(defaultAlphabet);
 
+        p.setAlphabet(Settings.DEFAULT_ALPHABET);
+        p.setPaddingChars(null);
+        reason = cipher.canParametersBeSet(p);
+        assertEquals("BadParam: missing padding", "Set of padding chars is missing", reason);
+
+        p.setPaddingChars(Settings.DEFAULT_PADDING_CHARS);
         reason = cipher.canParametersBeSet(p);
         assertEquals("BadParam: missing perm", "Permutation is not valid", reason);
         p.setPermutation(new int[0]);
@@ -160,7 +162,7 @@ public class PermutationTest {
         reason = cipher.canParametersBeSet(p); // now all good for encode/decode
         assertNull("BadParam: encode okay", reason);
 
-        p.setCrackMethod(CrackMethod.BRUTE_FORCE);
+        p.setCrackMethod(CrackMethod.IOC);
         reason = cipher.canParametersBeSet(p); // Crack: still missing cribs
         assertEquals("BadParam: cribs missing", "Some cribs must be provided", reason);
         p.setCribs("");
@@ -168,11 +170,11 @@ public class PermutationTest {
         assertEquals("BadParam: cribs empty", "Some cribs must be provided", reason);
         p.setCribs("vostok,sputnik,saturn");
         reason = cipher.canParametersBeSet(p);
+        assertEquals("Bad Param Method", "Invalid crack method", reason);
+        p.setCrackMethod(CrackMethod.BRUTE_FORCE);
+        reason = cipher.canParametersBeSet(p);
         assertNull("BadParam: crack okay", reason);
         p.setCrackMethod(CrackMethod.DICTIONARY);
-        reason = cipher.canParametersBeSet(p);
-        assertEquals("BadParam: cribs empty", "Language must be provided", reason);
-        p.setLanguage(Language.instanceOf("English"));
         reason = cipher.canParametersBeSet(p);
         assertNull("BadParam: crack dict okay", reason);
     }
@@ -184,7 +186,6 @@ public class PermutationTest {
         String plainText = "Call me Ishmael. Some years ago — never mind how long precisely — having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world. It is a way I have of driving off the spleen, and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off — then, I account it high time to get to sea as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the ship. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the ocean with me.X".replaceAll("\\W","");
         Directives p = new Directives();
         p.setPermutation(perm);
-        p.setAlphabet(defaultAlphabet);
         p.setCrackMethod(CrackMethod.NONE);
         String reason = cipher.canParametersBeSet(p);
         assertNull("Crack Success: encode param okay", reason);
@@ -193,13 +194,12 @@ public class PermutationTest {
 
         // now attempt the crack of the text via brute force
         p.setPermutation(null);
-        p.setAlphabet(defaultAlphabet);
         p.setCribs("ishmael,ocean");
         p.setCrackMethod(CrackMethod.BRUTE_FORCE);
         reason = cipher.canParametersBeSet(p);
         assertNull("Crack Success: crack param okay", reason);
 
-        CrackResult result = cipher.crack(cipherText, p);
+        CrackResult result = cipher.crack(cipherText, p, 0);
         System.out.println("Decoded "+result.getPlainText());
         String explain = result.getExplain();
         System.out.println("Explain "+explain);
@@ -210,17 +210,18 @@ public class PermutationTest {
         assertEquals("Crack Text", plainText, result.getPlainText());
         assertEquals("Crack Permutation", "0,2,4,3,1", decodeKeyword);
         assertNotNull("Crack Explain", explain);
+        assertEquals("Crack cipher name", "Permutation cipher (0,2,4,3,1:down)", result.getCipher().getInstanceDescription());
     }
 
+    // this one takes around 15 seconds with max column permutations = 9
     @Test
     public void testCrackBruteFail() {
         // attempt Brute Force crack of Permutation cipher looking for cribs in all permutations (up to 9)
         // but fails as cribs are wrong
         int[] permutation = new int[] {4,2,3,1,0};
-        String plainText = "Call me Ishmael. Some years ago — never mind how long precisely — having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world. It is a way I have of driving off the spleen, and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off — then, I account it high time to get to sea as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the ship. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the ocean with me.X";
+        String plainText = "Call me Ishmael. Some years ago — never mind how long precisely — having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world. It is a way I have of driving off the spleen, and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off — then, I account it high time to get to sea as soon as I can.";
         Directives p = new Directives();
         p.setPermutation(permutation);
-        p.setAlphabet(defaultAlphabet);
         String reason = cipher.canParametersBeSet(p);
         assertNull("CrackFail: encode param okay", reason);
         String cipherText = cipher.encode(plainText, p);
@@ -228,13 +229,12 @@ public class PermutationTest {
 
         // now attempt the crack of the text via Brute Force, will fail die to bad cribs
         p.setPermutation(null);
-        p.setAlphabet(defaultAlphabet);
         p.setCribs("banana,plantation");
         p.setCrackMethod(CrackMethod.BRUTE_FORCE);
         reason = cipher.canParametersBeSet(p);
         assertNull("CrackSuccess: crack param okay", reason);
 
-        CrackResult result = cipher.crack(cipherText, p);
+        CrackResult result = cipher.crack(cipherText, p, 0);
         System.out.println("Decoded "+result.getPlainText());
         String explain = result.getExplain();
         System.out.println("Explain "+explain);
@@ -243,6 +243,7 @@ public class PermutationTest {
         assertNull("CrackFail Text", result.getPlainText());
         assertNull("CrackFail Permutation", result.getDirectives());
         assertNotNull("CrackFail Explain", explain);
+        assertEquals("CrackFail cipher name", "Permutation cipher (n/a)", result.getCipher().getInstanceDescription());
     }
 
     @Test
@@ -255,7 +256,6 @@ public class PermutationTest {
         Directives p = new Directives();
         int[] encodePerm = cipher.convertKeywordToColumns(keyword);
         p.setPermutation(encodePerm);
-        p.setAlphabet(defaultAlphabet);
         p.setReadAcross(true);
         String reason = cipher.canParametersBeSet(p);
         assertNull("CrackDictSuccess: encode param okay", reason);
@@ -264,14 +264,13 @@ public class PermutationTest {
 
         // now attempt the crack of the text via Dictionary
         p.setPermutation(null);
-        p.setAlphabet(defaultAlphabet);
         p.setLanguage(Language.instanceOf("English"));
         p.setCribs("privet,drive,normal");
         p.setCrackMethod(CrackMethod.DICTIONARY);
         reason = cipher.canParametersBeSet(p);
         assertNull("CrackDictSuccess: crack param okay", reason);
 
-        CrackResult result = cipher.crack(cipherText, p);
+        CrackResult result = cipher.crack(cipherText, p, 0);
         System.out.println("Decoded "+result.getPlainText());
         String explain = result.getExplain();
         System.out.println("Explain "+explain);
@@ -286,6 +285,7 @@ public class PermutationTest {
         assertEquals("CrackDict Permutation", expectedPermutation, Permutation.permutationToString(decodePermutation));
         assertNotNull("CrackDict Explain", explain);
         assertTrue("CrackDict Explain start", explain.startsWith("Success"));
+        assertEquals("CrackDict cipher name", "Permutation cipher (3,0,8,1,6,4,9,2,7,5:across)", result.getCipher().getInstanceDescription());
     }
 
     @Test
@@ -297,7 +297,6 @@ public class PermutationTest {
         Directives p = new Directives();
         int[] encodePerm = cipher.convertKeywordToColumns(keyword);
         p.setPermutation(encodePerm);
-        p.setAlphabet(defaultAlphabet);
         String reason = cipher.canParametersBeSet(p);
         assertNull("CrackDictSuccess: encode param okay", reason);
         String cipherText = cipher.encode(plainText, p);
@@ -305,7 +304,6 @@ public class PermutationTest {
 
         // now attempt the crack of the text via Dictionary
         p.setPermutation(null);
-        p.setAlphabet(defaultAlphabet);
         p.setLanguage(Language.instanceOf("English"));
         p.setCribs("banana,republic");   // this is why it fails
         //p.setCribs("dursley");   // with this, it would work
@@ -313,7 +311,7 @@ public class PermutationTest {
         reason = cipher.canParametersBeSet(p);
         assertNull("CrackDictSuccess: crack param okay", reason);
 
-        CrackResult result = cipher.crack(cipherText, p);
+        CrackResult result = cipher.crack(cipherText, p, 0);
         System.out.println("Decoded "+result.getPlainText());
         String explain = result.getExplain();
         System.out.println("Explain "+explain);
@@ -323,6 +321,7 @@ public class PermutationTest {
         assertNull("CrackDict Directives", result.getDirectives());
         assertNotNull("CrackDict Explain", explain);
         assertTrue("CrackDict Explain start", explain.startsWith("Fail"));
+        assertEquals("CrackDict cipher name", "Permutation cipher (n/a)", result.getCipher().getInstanceDescription());
     }
 
     @Test
@@ -335,7 +334,6 @@ public class PermutationTest {
     @Test
     public void testInstanceDescription() {
         Directives p = new Directives();
-        p.setAlphabet(defaultAlphabet);
         p.setPermutation(new int[] {1,3,2,0});
         p.setReadAcross(true);
         String reason = cipher.canParametersBeSet(p);

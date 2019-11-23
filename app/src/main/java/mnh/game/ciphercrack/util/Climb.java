@@ -11,6 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import mnh.game.ciphercrack.cipher.Caesar;
 import mnh.game.ciphercrack.cipher.Cipher;
 import mnh.game.ciphercrack.language.Language;
+import mnh.game.ciphercrack.services.CrackResults;
 
 /**
  * Tools used to crack ciphers using various kinds of climb or anealing, measuring fitness
@@ -20,6 +21,7 @@ public class Climb {
     // inputs
     public static final String CLIMB_ALPHABET = "climb-alphabet";
     public static final String CLIMB_LANGUAGE = "climb-language";
+    public static final String CLIMB_PADDING_CHARS = "climb-padding";
     public static final String CLIMB_CRIBS = "climb-cribs";
     public static final String CLIMB_START_KEYWORD = "climb-start-keyword";
     public static final String CLIMB_TEMPERATURE = "climb-temperature";
@@ -40,13 +42,15 @@ public class Climb {
      * @param text the cipher text to be cracked
      * @param cipher the type of cipher - generally Vigenere or Beaufort
      * @param props properties used in the cipher: alphabet, seed keyword and cribs
-     * @return properties containing best keyword, decoded text and measure, with explanation of
-     * what has been done
+     * @param crackId the identifier for the crack attempt we're doing, used to update progress
+     * @return true if successful, and the properties will contain the best keyword,
+     * decoded text and measure, with explanation of what has been done, otherwise false
      */
-    public static boolean doClimb(String text, Cipher cipher, Properties props) {
+    public static boolean doClimb(String text, Cipher cipher, Properties props, int crackId) {
         String alphabet = props.getProperty(Climb.CLIMB_ALPHABET);
         String startKey = props.getProperty(Climb.CLIMB_START_KEYWORD);
         String cribString = props.getProperty(Climb.CLIMB_CRIBS);
+        String paddingChars = props.getProperty(Climb.CLIMB_PADDING_CHARS);
         Set<String> cribs = Cipher.getCribSet(cribString);
         Language language = Language.instanceOf(props.getProperty(Climb.CLIMB_LANGUAGE));
 
@@ -61,22 +65,25 @@ public class Climb {
         Directives dirs = new Directives();
         dirs.setAlphabet(alphabet);
         dirs.setLanguage(language);
+        dirs.setPaddingChars(paddingChars);
 
         double bestMeasure = -1.0;
         boolean finished = false;
         int iteration = 0;
         StringBuilder activity = new StringBuilder("Perform a hill climb for ")
-                .append(cipher.getInstanceDescription())
-                .append(" with start key ")
+                .append(cipher.getCipherName())
+                .append(" cipher with start key ")
                 .append(startKey)
                 .append("\n");
 
         // keep going until we did a whole loop with no change being made
+        int percent = 5; // start with some number, add increments of 5
         while (!finished) {
+            CrackResults.updatePercentageDirectly(crackId, percent);
 
             char[] dynamicKey = startKey.toCharArray();
 
-            // purturb each letter in the key in turn
+            // mutate each letter in the key in turn
             for (int pos=0; pos < dynamicKey.length; pos++) {
 
                 // try every possible char in this pos, one at a time
@@ -107,8 +114,12 @@ public class Climb {
             // see if anything changed after the above 2 loops, if not, we're done
             finished = startKey.equals(String.valueOf(dynamicKey));
             startKey = String.valueOf(bestKey); // prepare to go around again
-            Log.i("Climb","Completed a climb loop, bestMeasure="+bestMeasure+", bestKey="+startKey+".");
+
+            // Can't tell when it'll be done, but show some progress, even if this goes over 100%!
+            percent += 5;
+            Log.i("Climb","Completed a climb loop, bestMeasure="+bestMeasure+", bestKey="+startKey+", percent="+percent+"%.");
         }
+        CrackResults.updatePercentageDirectly(crackId, 99);
 
         // report the best key/measure we found overall
         activity.append("Found best key ")
@@ -154,7 +165,7 @@ public class Climb {
 
     /**
      * Swap around 'temp' letters in the startKey, returning a new key
-     * @param startKey the inital key value
+     * @param startKey the initial key value
      * @param temp how many letters to swap around
      * @return the new key with the letters swapped around
      */
@@ -178,9 +189,10 @@ public class Climb {
      * @param text the text to be analysed and decoded
      * @param cipher the cipher being used (e.g. Keyword Substitution)
      * @param props the properties required for this climb
+     * @param crackId the identifier for the crack attempt we're doing, used to update progress
      * @return true if all cribs were found in the best decode we could achieve
      */
-    public static boolean doSimulatedAnealing(String text, Cipher cipher, Properties props) {
+    public static boolean doSimulatedAnealing(String text, Cipher cipher, Properties props, int crackId) {
         String alphabet = props.getProperty(Climb.CLIMB_ALPHABET);
         String startKey = props.getProperty(Climb.CLIMB_START_KEYWORD);
         String cribString = props.getProperty(Climb.CLIMB_CRIBS);
@@ -217,9 +229,11 @@ public class Climb {
 
         // keep going until we did a whole loop with no change being made
         String dynamicKey = startKey;
+        int percent = 5;
         for (int temp = startTemp; temp > 0; temp--) {
-
+            CrackResults.updatePercentageDirectly(crackId, percent);
             Log.i("Anealing","Starting a simulated anealing loop, temp="+temp+", cycles="+cycles+", bestMeasure="+bestMeasure+", bestKey="+bestKey);
+
             // this does thousands of checks, mutating key as we go
             for (int cycle = 0; cycle < cycles; cycle++) {
 
@@ -246,6 +260,7 @@ public class Climb {
                 }
                 iteration++;
             }
+            percent += 8;
         }
 
         // report the best key/measure we found overall

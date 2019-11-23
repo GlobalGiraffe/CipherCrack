@@ -1,19 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Decipher Assists">
-        <EditTextPreference android:title="Cribs" android:summary="Known or suspected words in the plain text" android:defaultValue="and,the,have"
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Decipher Assists">
+        <EditTextPreference
+            android:title="Default Cribs"
+            android:summary="Known or suspected words in the plain text"
+            android:defaultValue="@string/default_cribs"
             android:key="@string/pref_cribs"/>
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Alpha">
-        <ListPreference android:title="Language" android:summary="Language defaults" android:defaultValue="English (UK)" android:key="@string/pref_language"
-            android:entryValues="@array/languageValues" android:entries="@array/languageEntries"/>
-        <EditTextPreference android:title="Plain Alphabet" android:summary="Symbols used in the plain text" android:defaultValue="@string/default_alphabet"
+    <PreferenceCategory
+        android:title="Alpha">
+        <ListPreference
+            android:title="Language"
+            android:summary="Language defaults"
+            android:defaultValue="English (UK)"
+            android:key="@string/pref_language"
+            android:entryValues="@array/languageValues"
+            android:entries="@array/languageEntries"/>
+        <EditTextPreference
+            android:title="Plain Alphabet"
+            android:summary="Symbols used in the plain text"
+            android:defaultValue="@string/default_alphabet"
             android:key="@string/pref_alphabet_plain"/>
-        <EditTextPreference android:title="Cipher Alphabet" android:summary="Symbols used in the cipher text" android:defaultValue="@string/default_alphabet"
+        <EditTextPreference
+            android:title="Cipher Alphabet"
+            android:summary="Symbols used in the cipher text"
+            android:defaultValue="@string/default_alphabet"
             android:key="@string/pref_alphabet_cipher"/>
-        <EditTextPreference android:title="Padding Characters" android:summary="Symbols used as spaces" android:defaultValue=" "
+        <EditTextPreference
+            android:title="Padding Characters"
+            android:summary="Symbols used as spaces"
+            android:defaultValue="@string/default_padding"
             android:key="@string/pref_padding_chars"/>
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="Limits">
+        <EditTextPreference
+            android:title="Gram Limit"
+            android:summary="Number of grams in Analysis"
+            android:inputType="number"
+            android:defaultValue="40"
+            android:key="@string/pref_limit_grams"/>
+        <EditTextPreference
+            android:title="Permutation Brute Force Columns"
+            android:summary="Max number of columns in brute force permutation crack"
+            android:inputType="number"
+            android:defaultValue="9"
+            android:key="@string/pref_limit_perm_brute_force_cols"/>
+        <EditTextPreference
+            android:title="Railfence Rails"
+            android:summary="Max number of rails in railfence crack"
+            android:inputType="number"
+            android:defaultValue="20"
+            android:key="@string/pref_limit_railfence_rails"/>
+    </PreferenceCategory>
 </PreferenceScreen>

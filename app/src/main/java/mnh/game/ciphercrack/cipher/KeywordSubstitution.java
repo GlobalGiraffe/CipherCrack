@@ -1,6 +1,7 @@
 package mnh.game.ciphercrack.cipher;
 
 import android.content.Context;
+import android.os.Parcel;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
@@ -14,22 +15,19 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.google.android.material.textfield.TextInputEditText;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import mnh.game.ciphercrack.R;
 import mnh.game.ciphercrack.language.Dictionary;
 import mnh.game.ciphercrack.language.Language;
+import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.util.Climb;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
@@ -59,7 +57,19 @@ public class KeywordSubstitution extends Cipher {
 
     private String keyword = "";
 
-    KeywordSubstitution(Context context) { super(context, "Keyword Substitution"); }
+    KeywordSubstitution(Context context) { super(context, "Substitution"); }
+
+    // used to send a cipher to a service
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(keyword);
+    }
+    @Override
+    public void unpack(Parcel in) {
+        super.unpack(in);
+        keyword = in.readString();
+    }
 
     /**
      * Describe what this cipher does
@@ -67,10 +77,10 @@ public class KeywordSubstitution extends Cipher {
      */
     @Override
     public String getCipherDescription() {
-        return "The Keyword substitution cipher is a monoalphabetic substitution cipher where each letter of the plain text maps to the same cipher letter, but not in any clear sequence. " +
+        return "The Keyword Substitution cipher is a monoalphabetic substitution cipher where each letter of the plain text maps to the same cipher letter, but not in any clear sequence. " +
                 "To encode a message take the first plain letter, calculate its ordinal (0-25), add it to the ordinal of the first keyword letter taking the modulo 26 to give the encoded letter, repeating as necessary.\n"+
                 "To decode a message, the inverse is performed: the ordinal of each cipher letter is taken in turn, the ordinal of the first key letter is subtracted modulo 26 to give the ordinal of the plain letter.\n"+
-                "This cipher retains the frequency of the letters of the source alphabet, i.e. since E is most commong we look at the most common cipher letter and assume that has been mapped from E. With sufficient cipher text, following this process with some of the common letters and examining for cribs one can usually decode the message.";
+                "This cipher retains the frequency of the letters of the source alphabet, i.e. since E is most common we look at the most common cipher letter and assume that has been mapped from E. With sufficient cipher text, following this process with some of the common letters and examining for cribs one can usually decode the message.";
     }
 
     /**
@@ -79,7 +89,7 @@ public class KeywordSubstitution extends Cipher {
      */
     @Override
     public String getInstanceDescription() {
-        return getCipherName()+" cipher (keyword="+keyword+")";
+        return getCipherName()+" cipher ("+(keyword==null?"n/a":keyword)+")";
     }
 
     /**
@@ -105,15 +115,15 @@ public class KeywordSubstitution extends Cipher {
      */
     @Override
     public String canParametersBeSet(Directives dirs) {
-        String alphabet = dirs.getAlphabet();
-        if (alphabet == null || alphabet.length() < 2)
-            return "Alphabet is empty or too short";
-
+        String reason = super.canParametersBeSet(dirs);
+        if (reason != null)
+            return reason;
+        String keywordValue = dirs.getKeyword();
         CrackMethod crackMethod = dirs.getCrackMethod();
         if (crackMethod == null || crackMethod == CrackMethod.NONE) {
-            String keywordValue = dirs.getKeyword();
             if (keywordValue == null || keywordValue.length() < 2)
                 return "Keyword is empty or too short";
+            String alphabet = dirs.getAlphabet();
             if (keywordValue.length() != alphabet.length())
                 return "Keyword (" + keywordValue.length() + ") and alphabet (" + alphabet.length() + ") must have the same length";
 
@@ -128,16 +138,21 @@ public class KeywordSubstitution extends Cipher {
                         return "Character " + keyChar + " is present multiple times in the keyword";
                 }
             }
-            keyword = keywordValue;
         } else { // crack via dictionary or word-count => need language and cribs
-            Language language = dirs.getLanguage();
-            if (language == null)
-                return "Language is missing";
-
+            // this the the only crack possible
             String cribs = dirs.getCribs();
             if (cribs == null || cribs.length() == 0)
                 return "Some cribs must be provided";
+
+            if (crackMethod != CrackMethod.WORD_COUNT && crackMethod != CrackMethod.DICTIONARY)
+                return "Invalid crack method";
+            Language lang = dirs.getLanguage();
+            if (lang == null)
+                return "Language must be provided";
+            if (lang.getDictionary() == null)
+                return "No "+lang.getName()+" dictionary is defined";
         }
+        keyword = keywordValue;
         return null;
     }
 
@@ -165,60 +180,6 @@ public class KeywordSubstitution extends Cipher {
             }
         }
         return extend;
-    }
-
-    /**
-     * This takes the keyword extend method and a short keyword and then applies the method
-     * to produce a full-sized keyword, same length as the alphabet
-     * @param extend the method to use to extend the keyword, min, max or last
-     * @param keyword the initial keyword
-     * @return the resulting keyword with all alphabet letters
-     */
-     static String applyKeywordExtend(KeywordExtend extend, String keyword, String alphabet) {
-        StringBuilder sb = new StringBuilder(alphabet.length());
-
-        // First, we start to form the full keyword by taking each unique letter of the keyword
-        SortedSet<Character> charsUsed = new TreeSet<>();
-        for (int p =0; p < keyword.length(); p++) {
-            char nextChar = keyword.charAt(p);
-            if (!charsUsed.contains(nextChar)) {
-                sb.append(nextChar);
-                charsUsed.add(nextChar);
-            }
-        }
-
-        // now we decide using the extend method
-        char prevChar = alphabet.charAt(alphabet.length()-1);
-        switch (extend) {
-            case EXTEND_FIRST: // already set up above
-                break;
-            case EXTEND_MIN:
-                if (!charsUsed.isEmpty())
-                    prevChar = charsUsed.first();
-                break;
-            case EXTEND_MAX:
-                if (!charsUsed.isEmpty())
-                    prevChar = charsUsed.last();
-                break;
-            case EXTEND_LAST:
-                if (sb.length() != 0)
-                    prevChar = sb.charAt(sb.length()-1);
-                break;
-        }
-
-        // now scan the alphabet for remaining chars
-        // used double to save having to go back to the start (% length)
-        String doubleAlphabet = alphabet+alphabet;
-        int pos = alphabet.indexOf(prevChar)+1;
-        while (sb.length() < alphabet.length()) {
-            char nextChar = doubleAlphabet.charAt(pos);
-            if (!charsUsed.contains(nextChar)) {
-                sb.append(nextChar);
-                charsUsed.add(nextChar);
-            }
-            pos++;
-        }
-        return sb.toString();
     }
 
     @Override
@@ -306,6 +267,7 @@ public class KeywordSubstitution extends Cipher {
      * @param alphabet the current alphabet
      * @return true if controls added, else false
      */
+    @Override
     public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
         TextView crackLabel = new TextView(context);
         crackLabel.setText(context.getString(R.string.crack_method));
@@ -347,6 +309,7 @@ public class KeywordSubstitution extends Cipher {
      * @param dirs the directives to add to
      * @return the crack method to be used
      */
+    @Override
     public CrackMethod fetchCrackControls(LinearLayout layout, Directives dirs) {
         // locate the kind of crack we've been asked to do
         RadioButton dictButton = layout.findViewById(ID_BUTTON_DICTIONARY);
@@ -354,8 +317,8 @@ public class KeywordSubstitution extends Cipher {
     }
 
     /**
-     * Since Keyed Substitution is symetrical if we swap the keyword and alphabet,
-     * provide one routine to do this
+     * Since Keyed Substitution is symmetrical if we swap the keyword and alphabet, we just
+     *   provide one routine to do this
      * @param text the text to be encoded / decoded
      * @param alphabet alphabet if encoding, keyword if decoding
      * @param keyword keyword if encoding, alphabet if decoding
@@ -409,12 +372,13 @@ public class KeywordSubstitution extends Cipher {
      * @param cipherText the text to be decoded
      * @param alphabet the alphabet of the text
      * @param language the language currently in use
+     * @param paddingChars the characters to ignore as padding
      * @return a suggested keyword which matches letter frequencies
      */
-    String formFrequencySuggestedKeyword(String cipherText, String alphabet, Language language) {
+    String formFrequencySuggestedKeyword(String cipherText, String alphabet, Language language, String paddingChars) {
         // we need the frequencies of letters in current language
         List<Character> freqOfLetters = language.lettersOrderedByFrequency();
-        Map<Character, Integer> cipherFreq = StaticAnalysis.collectFrequencyAllInAlphabet(cipherText, true, alphabet);
+        Map<Character, Integer> cipherFreq = StaticAnalysis.collectFrequencyAllInAlphabet(cipherText, true, alphabet, paddingChars);
 
         TreeMap<Character, Character> suggestedMap = new TreeMap<>();
         for (Character langLetter : freqOfLetters) {
@@ -449,17 +413,19 @@ public class KeywordSubstitution extends Cipher {
      *              also include EXPLAIN and (if successfully cracked) DECODE_KEYWORD
      * @return the result of the crack attempt
      */
-    private CrackResult crackWordCount(String cipherText, Directives dirs) {
+    private CrackResult crackWordCount(String cipherText, Directives dirs, int crackId) {
         String alphabet = dirs.getAlphabet();
         String cribString = dirs.getCribs();
+        String paddingChars = dirs.getPaddingChars();
         Language language = dirs.getLanguage();
+        CrackMethod crackMethod = dirs.getCrackMethod();
 
         Properties crackProps = new Properties();
         crackProps.setProperty(Climb.CLIMB_ALPHABET, alphabet);
         crackProps.setProperty(Climb.CLIMB_LANGUAGE, language.getName());
         crackProps.setProperty(Climb.CLIMB_CRIBS, cribString);
 
-        String startKeyword = formFrequencySuggestedKeyword(cipherText, alphabet, language);
+        String startKeyword = formFrequencySuggestedKeyword(cipherText, alphabet, language, paddingChars);
         crackProps.setProperty(Climb.CLIMB_START_KEYWORD, startKeyword);
 
         // do a short one (5000 iterations overall) to try to get close (ish)
@@ -468,36 +434,41 @@ public class KeywordSubstitution extends Cipher {
         int startTemperature = cipherText.length()/600 + 1;
         crackProps.setProperty(Climb.CLIMB_TEMPERATURE, String.valueOf(startTemperature));
         crackProps.setProperty(Climb.CLIMB_CYCLES, String.valueOf(5000/startTemperature));
+        CrackResults.updatePercentageDirectly(crackId, 1);
 
         // returns true if found all cribs, unlikely on first scan
         String firstActivity = "";
-        boolean success = Climb.doSimulatedAnealing(cipherText, this, crackProps);
+        boolean success = Climb.doSimulatedAnealing(cipherText, this, crackProps, crackId);
         Log.i("CipherCrack", "Cracking "+getCipherName()+" Climb, finished first pass");
         if (!success) {
             // scan with higher temperature, should not wander too far
+            CrackResults.updatePercentageDirectly(crackId, 50);
             firstActivity = crackProps.getProperty(Climb.CLIMB_ACTIVITY);
             crackProps.setProperty(Climb.CLIMB_START_KEYWORD, crackProps.getProperty(Climb.CLIMB_BEST_KEYWORD));
             crackProps.setProperty(Climb.CLIMB_TEMPERATURE, String.valueOf(8));
             crackProps.setProperty(Climb.CLIMB_CYCLES, String.valueOf(500));
-            if (!Climb.doSimulatedAnealing(cipherText, this, crackProps)) {
+            if (!Climb.doSimulatedAnealing(cipherText, this, crackProps, crackId)) {
                 // even this did not work, give up
                 String explain = "Fail: Searched for largest word match but did not find cribs ["
                         + cribString + "], best key was "
-                        + crackProps.getProperty(Climb.CLIMB_BEST_KEYWORD) + "\n"
+                        + crackProps.getProperty(Climb.CLIMB_BEST_KEYWORD)
+                        + "\n"
                         + firstActivity
                         + crackProps.getProperty(Climb.CLIMB_ACTIVITY);
-                return new CrackResult(cipherText, explain);
+                keyword = "";
+                return new CrackResult(crackMethod, this, cipherText, explain, crackProps.getProperty(Climb.CLIMB_BEST_DECODE));
             }
         }
         // one or other of the simulated anealing above worked, report back
-        dirs.setKeyword(crackProps.getProperty(Climb.CLIMB_BEST_KEYWORD));
+        keyword = crackProps.getProperty(Climb.CLIMB_BEST_KEYWORD);
+        dirs.setKeyword(keyword);
         String plainText = crackProps.getProperty(Climb.CLIMB_BEST_DECODE);
         String explain = "Success: Searched for largest word match and found all cribs ["
                 + cribString + "] with key "
                 + crackProps.getProperty(Climb.CLIMB_BEST_KEYWORD) + "\n"
                 + firstActivity
                 + crackProps.getProperty(Climb.CLIMB_ACTIVITY);
-        return new CrackResult(dirs, cipherText, plainText, explain);
+        return new CrackResult(crackMethod, this, dirs, cipherText, plainText, explain);
     }
 
     /**
@@ -508,10 +479,11 @@ public class KeywordSubstitution extends Cipher {
      *              also include EXPLAIN and (if successfully cracked) DECODE_KEYWORD
      * @return the result of the crack attempt
      */
-    private CrackResult crackDictionary(String cipherText, Directives dirs) {
+    private CrackResult crackDictionary(String cipherText, Directives dirs, int crackId) {
         String alphabet = dirs.getAlphabet();
         String cribString = dirs.getCribs();
         Language language = dirs.getLanguage();
+        CrackMethod crackMethod = dirs.getCrackMethod();
 
         // work out our crib set just once
         Set<String> cribs = Cipher.getCribSet(cribString);
@@ -528,8 +500,10 @@ public class KeywordSubstitution extends Cipher {
         Set<String> triedKeywords = new HashSet<>(2000);
         int wordsRead = 0;
         for (String word : dict) {
-            if (wordsRead++ % 1000 == 999)
-                Log.i("CipherCrack", "Cracking Substitution Dict: "+wordsRead+" words tried");
+            if (wordsRead++ % 200 == 199) {
+                Log.i("CipherCrack", "Cracking Substitution Dict: " + wordsRead + " words tried");
+                CrackResults.updatePercentageDirectly(crackId, 100*wordsRead/dict.size());
+            }
             if (word.length() > 1) {
                 word = word.toUpperCase();
 
@@ -572,6 +546,7 @@ public class KeywordSubstitution extends Cipher {
 
         // let's see if we found anything
         if (explain.length() > 0) {
+            keyword = validKeyword;
             dirs.setKeyword(validKeyword);
             String explainString = "Success: Searched using "
                     + dict.size()
@@ -579,14 +554,14 @@ public class KeywordSubstitution extends Cipher {
                     + cribString
                     + "]\n"
                     + explain.toString();
-            return new CrackResult(dirs, cipherText, validDecode, explainString);
+            return new CrackResult(crackMethod, this, dirs, cipherText, validDecode, explainString);
         }
-
+        keyword = "";
         String explainString = "Fail: Searched using "
                 + dict.size()
                 + " dictionary words as keys but did not find cribs ["
                 + cribString + "]\n";
-        return new CrackResult(cipherText, explainString);
+        return new CrackResult(crackMethod, this, cipherText, explainString);
     }
 
     /**
@@ -596,15 +571,16 @@ public class KeywordSubstitution extends Cipher {
      * @return the result of the crack attempt
      */
     @Override
-    public CrackResult crack(String cipherText, Directives dirs) {
+    public CrackResult crack(String cipherText, Directives dirs, int crackId) {
+
         CrackMethod crackMethod = dirs.getCrackMethod();
         if (crackMethod == CrackMethod.WORD_COUNT) {
             // crack by simulated anealing and measuring number of real word letters in the text
-            return crackWordCount(cipherText, dirs);
+            return crackWordCount(cipherText, dirs, crackId);
 
         } else {
             // crack type via using dictionary entries as potential keywords
-            return crackDictionary(cipherText, dirs);
+            return crackDictionary(cipherText, dirs, crackId);
         }
     }
 
@@ -617,7 +593,7 @@ public class KeywordSubstitution extends Cipher {
     @Override
     public double getFitness(String text, Directives dirs) {
         int lettersFound = 0;
-        text = text.toUpperCase();
+        text = text.toUpperCase().replaceAll("\\s","");
         Dictionary dict = dirs.getLanguage().getDictionary();
         for (String word : dict) {
             if (word.length() > 1) {

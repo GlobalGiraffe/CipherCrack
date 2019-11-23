@@ -8,7 +8,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import mnh.game.ciphercrack.HomeActivity;
+import mnh.game.ciphercrack.ComputeResultListActivity;
 import mnh.game.ciphercrack.R;
 import mnh.game.ciphercrack.SettingsActivity;
 import mnh.game.ciphercrack.AnalysisActivity;
@@ -36,16 +36,10 @@ public class BottomNavigationListener implements BottomNavigationView.OnNavigati
                 i.putExtra("TEXT", textField.getText().toString());
                 activity.startActivity(i);
                 return true;
-            case R.id.bottom_history:
-//                i = new Intent(activity, HomeActivity.class);
-//                activity.startActivity(i);
+            case R.id.bottom_results:
+                i = new Intent(activity, ComputeResultListActivity.class);
+                activity.startActivityForResult(i, ComputeResultListActivity.RESULT_LIST_REQUEST_CODE);
                 return true;
-                /*
-            case R.id.bottom_history:
-                break;
-            case R.id.bottom_info:
-                break;
-                 */
             case R.id.bottom_settings:
                 Intent si = new Intent(activity, SettingsActivity.class);
                 activity.startActivity(si);

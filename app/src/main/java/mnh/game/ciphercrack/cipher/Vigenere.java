@@ -1,6 +1,7 @@
 package mnh.game.ciphercrack.cipher;
 
 import android.content.Context;
+import android.os.Parcel;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
@@ -21,6 +22,7 @@ import androidx.core.content.ContextCompat;
 import mnh.game.ciphercrack.R;
 import mnh.game.ciphercrack.language.Dictionary;
 import mnh.game.ciphercrack.language.Language;
+import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.util.Climb;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
@@ -50,13 +52,25 @@ public class Vigenere extends Cipher {
     // needed for subclasses (Beaufort)
     Vigenere(Context context, String name) { super(context, name); }
 
+    // used to send a cipher to a service
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(keyword);
+    }
+    @Override
+    public void unpack(Parcel in) {
+        super.unpack(in);
+        keyword = in.readString();
+    }
+
     /**
      * Describe what this cipher does
      * @return a description of this cipher
      */
     @Override
     public String getCipherDescription() {
-        return "The Vigenere cipher is a polyalphabtic substitution cipher where each letter of the plain text can be mapped to many different letters in the cipher text, depending on the position of the letter in the message. " +
+        return "The Vigenere cipher is a poly-alphabetic substitution cipher where each letter of the plain text can be mapped to many different letters in the cipher text, depending on the position of the letter in the message. " +
                 "A tableau is used where each of 26 columns contain the 26 letters of the alphabet in a different position. As the message is encoded, each column in turn is used to perform a Caesar cipher encoding.\n" +
                 "To encode a message take the next plain letter, calculate its ordinal (0-25), count down that many letters in the column whose position is the plain letter's position in the text modulus the number of columns. The result is treated as the ordinal number of the cipher character.\n"+
                 "To decode a message, the inverse is performed: each cipher letter is taken in turn, it is looked up in the column that is the position in the text modulo the number of columns, and the position in that column gives the ordinal of the plain letter.\n"+
@@ -69,7 +83,7 @@ public class Vigenere extends Cipher {
      */
     @Override
     public String getInstanceDescription() {
-        return getCipherName()+" cipher (keyword="+keyword+")";
+        return getCipherName()+" cipher ("+(keyword==null?"n/a":keyword)+")";
     }
 
     /**
@@ -79,39 +93,45 @@ public class Vigenere extends Cipher {
      */
     @Override
     public String canParametersBeSet(Directives dirs) {
-        String alphabet = dirs.getAlphabet();
-        if (alphabet == null || alphabet.length() < 2)
-            return "Alphabet is empty or too short";
-
+        String reason = super.canParametersBeSet(dirs);
+        if (reason != null)
+            return reason;
+        String keywordValue = dirs.getKeyword();
         CrackMethod crackMethod = dirs.getCrackMethod();
         if (crackMethod == null || crackMethod == CrackMethod.NONE) {
-            String keywordValue = dirs.getKeyword();
             if (keywordValue == null || keywordValue.length() < 2)
                 return "Keyword is empty or too short";
             // letters in the keyword should be in the alphabet
             for (int i = 0; i < keywordValue.length(); i++) {
-                if (alphabet.indexOf(keywordValue.charAt(i)) < 0)
+                if (dirs.getAlphabet().indexOf(keywordValue.charAt(i)) < 0)
                     return "Character " + keywordValue.charAt(i) + " at offset " + i + " in the keyword is not in the alphabet";
             }
-            keyword = keywordValue;
         } else {
             String cribs = dirs.getCribs();
+            if (crackMethod != CrackMethod.DICTIONARY && crackMethod != CrackMethod.IOC)
+                return "Invalid crack method";
+
             if (cribs == null || cribs.length() == 0)
                 return "Some cribs must be provided";
 
-            // to crack Vigenere (IOC climb) we need a keyword length too
+            // to crack Vigenere via IOC climb then we need a keyword length too
             if (crackMethod == CrackMethod.IOC) {
                 int keywordLength = dirs.getKeywordLength();
                 if (keywordLength <= 0)
                     return "Keyword length is empty, zero or not a positive integer";
             }
-            // to crack Vigenere via Dictionary we need a Language
+            // to crack Vigenere via Dictionary keys we need a dictionary
             if (crackMethod == CrackMethod.DICTIONARY) {
-                Language language = dirs.getLanguage();
-                if (language == null)
-                    return "Missing language";
+                // for the dictionary
+                Language lang = dirs.getLanguage();
+                if (lang == null)
+                    return "Language must be provided";
+                if (lang.getDictionary() == null) {
+                    return "No "+lang.getName()+" dictionary is defined";
+                }
             }
         }
+        keyword = keywordValue;
         return null;
     }
 
@@ -160,6 +180,7 @@ public class Vigenere extends Cipher {
      * @param alphabet the current alphabet
      * @return true if controls added, else false
      */
+    @Override
     public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
         TextView lengthLabel = new TextView(context);
         lengthLabel.setText(context.getString(R.string.length));
@@ -217,6 +238,7 @@ public class Vigenere extends Cipher {
      * @param dirs the directives to add to
      * @return the crack method to use
      */
+    @Override
     public CrackMethod fetchCrackControls(LinearLayout layout, Directives dirs) {
         dirs.setKeywordLength(-2);
         EditText keywordLengthField = layout.findViewById(ID_VIGENERE_LENGTH);
@@ -235,7 +257,7 @@ public class Vigenere extends Cipher {
 
         // locate the kind of crack we've been asked to do
         RadioButton dictButton = layout.findViewById(ID_BUTTON_DICTIONARY);
-        return (dictButton.isChecked()) ? CrackMethod.DICTIONARY : CrackMethod.WORD_COUNT;
+        return (dictButton.isChecked()) ? CrackMethod.DICTIONARY : CrackMethod.IOC;
     }
 
     /**
@@ -254,8 +276,7 @@ public class Vigenere extends Cipher {
         StringBuilder result = new StringBuilder(plainText.length());
         for (int i=0, keyPos=0; i < plainText.length(); i++) {
             char plainChar = plainText.charAt(i);
-            char plainCharUpper = (char)((plainChar >= 'a' && plainChar <= 'z')
-                ? (plainChar - ('a'-'A')) : plainChar);
+            char plainCharUpper = Character.toUpperCase(plainChar);
             if (alphabet.indexOf(plainCharUpper) < 0) {
                 result.append(plainChar);
             } else {
@@ -284,8 +305,7 @@ public class Vigenere extends Cipher {
         StringBuilder result = new StringBuilder(cipherText.length());
         for (int i=0, keyPos=0; i < cipherText.length(); i++) {
             char cipherChar = cipherText.charAt(i);
-            char cipherCharUpper = (char)((cipherChar >= 'a' && cipherChar <= 'z')
-                    ? (cipherChar - ('a'-'A')) : cipherChar);
+            char cipherCharUpper = Character.toUpperCase(cipherChar);
             if (alphabet.indexOf(cipherCharUpper) < 0) {
                 result.append(cipherChar);
             } else {
@@ -299,82 +319,132 @@ public class Vigenere extends Cipher {
     }
 
     /**
+     * Crack a Vigenere cipher by checking all words in a dictionary as keys, looking for cribs
+     * @param cipherText the text to try to crack
+     * @param dirs the directives with alphabet and cribs
+     * @param crackId used to pass progress results around
+     * @return the results of the crack attempt
+     */
+    private CrackResult crackUsingDictionary(String cipherText, Directives dirs, int crackId) {
+        String cribString = dirs.getCribs();
+        CrackMethod crackMethod = dirs.getCrackMethod();
+        StringBuilder explain = new StringBuilder();
+
+        Set<String> cribs = Cipher.getCribSet(cribString);
+        Dictionary dict = dirs.getLanguage().getDictionary();
+        int wordsRead = 0;
+        String foundWord = null;
+        String foundPlainText = null;
+        for (String word : dict) {
+            if (wordsRead++ % 500 == 499) {
+                Log.i("CipherCrack", "Cracking " + getCipherName() + " Dict: " + wordsRead + " words tried");
+                CrackResults.updatePercentageDirectly(crackId, 100*wordsRead/dict.size());
+            }
+            word = word.toUpperCase();
+            dirs.setKeyword(word);
+            String plainText = decode(cipherText, dirs);
+            if (Cipher.containsAllCribs(plainText, cribs)) {
+                explain.append("Success: Searched using ")
+                        .append(dict.size())
+                        .append(" dictionary words as keys and found all cribs [")
+                        .append(cribString)
+                        .append("]\n")
+                        .append("Keyword ")
+                        .append(word)
+                        .append(" gave decoded text=")
+                        .append(plainText.substring(0, 60))
+                        .append("\n");
+                foundWord = word;
+                foundPlainText = plainText;
+            }
+        }
+
+        // let's see what we found, could be zero or multiple words
+        if (foundWord != null) {
+            dirs.setKeyword(foundWord);
+            keyword = foundWord;
+            return new CrackResult(crackMethod, this, dirs, cipherText, foundPlainText, explain.toString());
+        }
+
+        // nothing found
+        dirs.setKeyword(null);
+        keyword = null;
+        explain.append("Fail: Searched using ")
+                .append(dict.size())
+                .append(" dictionary words as keys but did not find all cribs [")
+                .append(cribString)
+                .append("]\n");
+        return new CrackResult(crackMethod, this, cipherText, explain.toString());
+    }
+
+    /**
      * Crack a Vigenere cipher by checking all shifts, climbing based on IOC and when best IOC found
      * we take that keyword and look through all equally shifted keys for the cribs
      * @param cipherText the text to try to crack
      * @param dirs the directives with alphabet and cribs
+     * @param crackId used to pass progress results around
+     * @return the results of the crack attempt
+     */
+    private CrackResult crackUsingClimbIOC(String cipherText, Directives dirs, int crackId) {
+        String alphabet = dirs.getAlphabet();
+        String cribString = dirs.getCribs();
+        String paddingChars = dirs.getPaddingChars();
+        CrackMethod crackMethod = dirs.getCrackMethod();
+        StringBuilder explain = new StringBuilder();
+
+        // build a candidate keyword, all 'A's to start with
+        int keywordLength = dirs.getKeywordLength();
+        StringBuilder sbKeyword = new StringBuilder(alphabet.length());
+        for (int pos=0; pos < keywordLength; pos++) {
+            sbKeyword.append(alphabet.charAt(0));
+        }
+
+        Properties crackProps = new Properties();
+        crackProps.setProperty(Climb.CLIMB_ALPHABET, alphabet);
+        crackProps.setProperty(Climb.CLIMB_CRIBS, cribString);
+        crackProps.setProperty(Climb.CLIMB_START_KEYWORD, sbKeyword.toString());
+        crackProps.setProperty(Climb.CLIMB_PADDING_CHARS, paddingChars);
+
+        // publisher.publishProgress(crackId, 1);
+        CrackResults.updatePercentageDirectly(crackId, 1);
+        if (Climb.doClimb(cipherText, this, crackProps, crackId)) {
+            keyword = crackProps.getProperty(Climb.CLIMB_BEST_KEYWORD);
+            dirs.setKeyword(keyword);
+            explain.append("Success: Searched for best IOC and found all cribs [")
+                    .append(cribString)
+                    .append("] with key ")
+                    .append(crackProps.getProperty(Climb.CLIMB_BEST_KEYWORD)).append("\n")
+                    .append(crackProps.getProperty(Climb.CLIMB_ACTIVITY));
+            return new CrackResult(crackMethod, this, dirs, cipherText, crackProps.getProperty(Climb.CLIMB_BEST_DECODE), explain.toString());
+        } else { // did not find all cribs, return failed result
+            keyword = null;
+            String bestDecode = crackProps.getProperty(Climb.CLIMB_BEST_DECODE);
+            explain.append("Fail: Searched for best IOC, but did not find cribs [")
+                    .append(cribString)
+                    .append("], best key was ")
+                    .append(crackProps.getProperty(Climb.CLIMB_BEST_KEYWORD))
+                    .append(", which gave text starting: ")
+                    .append(bestDecode.substring(0,Math.min(bestDecode.length(), 40)))
+                    .append("\n")
+                    .append(crackProps.getProperty(Climb.CLIMB_ACTIVITY));
+            return new CrackResult(crackMethod, this, cipherText, explain.toString(), bestDecode);
+        }
+    }
+
+    /**
+     * Crack a Vigenere cipher by one of several methods
+     * @param cipherText the text to try to crack
+     * @param dirs the directives with alphabet and cribs
+     * @param crackId used to pass progress results around
      * @return the results of the crack attempt
      */
     @Override
-    public CrackResult crack(String cipherText, Directives dirs) {
-        String alphabet = dirs.getAlphabet();
-        String cribString = dirs.getCribs();
+    public CrackResult crack(String cipherText, Directives dirs, int crackId) {
         CrackMethod crackMethod = dirs.getCrackMethod();
-
-        // returns best decode if found all cribs
-        StringBuilder explain = new StringBuilder();
         if (crackMethod == CrackMethod.IOC) {
-
-            // build a candidate keyword, all 'A's to start with
-            int keywordLength = dirs.getKeywordLength();
-            StringBuilder sbKeyword = new StringBuilder(alphabet.length());
-            for (int pos=0; pos < keywordLength; pos++) {
-                sbKeyword.append(alphabet.charAt(0));
-            }
-
-            Properties crackProps = new Properties();
-            crackProps.setProperty(Climb.CLIMB_ALPHABET, alphabet);
-            crackProps.setProperty(Climb.CLIMB_CRIBS, cribString);
-            crackProps.setProperty(Climb.CLIMB_START_KEYWORD, sbKeyword.toString());
-
-            if (Climb.doClimb(cipherText, this, crackProps)) {
-                dirs.setKeyword(crackProps.getProperty(Climb.CLIMB_BEST_KEYWORD));
-                explain.append("Success: Searched for best IOC and found all cribs [")
-                        .append(cribString)
-                        .append("] with key ")
-                        .append(crackProps.getProperty(Climb.CLIMB_BEST_KEYWORD)).append("\n")
-                        .append(crackProps.getProperty(Climb.CLIMB_ACTIVITY));
-                return new CrackResult(dirs, cipherText, crackProps.getProperty(Climb.CLIMB_BEST_DECODE), explain.toString());
-            } else { // did not find all cribs, return failed result
-                explain.append("Fail: Searched for best IOC, but did not find cribs [")
-                        .append(cribString)
-                        .append("], best key was ")
-                        .append(crackProps.getProperty(Climb.CLIMB_BEST_KEYWORD))
-                        .append("\n")
-                        .append(crackProps.getProperty(Climb.CLIMB_ACTIVITY));
-                return new CrackResult(cipherText, explain.toString());
-            }
+            return crackUsingClimbIOC(cipherText, dirs, crackId);
         } else { // do dictionary search
-            Set<String> cribs = Cipher.getCribSet(cribString);
-            Dictionary dict = dirs.getLanguage().getDictionary();
-            int wordsRead = 0;
-            for (String word : dict) {
-                if (wordsRead++ % 1000 == 0)
-                    Log.i("CipherCrack", "Cracking "+getCipherName()+" Dict: "+wordsRead+" words tried");
-                word = word.toUpperCase();
-                dirs.setKeyword(word);
-                String plainText = decode(cipherText, dirs);
-                if (Cipher.containsAllCribs(plainText, cribs)) {
-                    explain.append("Success: Searched using ")
-                            .append(dict.size())
-                            .append(" dictionary words as keys and found all cribs [")
-                            .append(cribString)
-                            .append("]\n")
-                            .append("Keyword ")
-                            .append(word)
-                            .append(" gave decoded text=")
-                            .append(plainText.substring(0, 60))
-                            .append("\n");
-                    return new CrackResult(dirs, cipherText, plainText, explain.toString());
-                }
-            }
-            dirs.setKeyword(null);
-            explain.append("Fail: Searched using ")
-                    .append(dict.size())
-                    .append(" dictionary words as keys but did not find all cribs [")
-                    .append(cribString)
-                    .append("]\n");
-            return new CrackResult(cipherText, explain.toString());
+            return crackUsingDictionary(cipherText, dirs, crackId);
         }
     }
 
@@ -386,6 +456,6 @@ public class Vigenere extends Cipher {
      */
     @Override
     public double getFitness(String text, Directives dirs) {
-        return StaticAnalysis.calculateIOC(text, dirs.getAlphabet());
+        return StaticAnalysis.calculateIOC(text, dirs.getAlphabet(), dirs.getPaddingChars());
     }
 }

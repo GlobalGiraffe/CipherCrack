@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import mnh.game.ciphercrack.language.Language;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
 import mnh.game.ciphercrack.util.Directives;
@@ -22,14 +21,13 @@ import static org.junit.Assert.assertTrue;
 @RunWith(JUnit4.class)
 public class BinaryTest {
 
-    private static final String defaultAlphabet = Settings.DEFAULT_ALPHABET;
-    private static final Language defaultLanguage = Language.instanceOf(Settings.DEFAULT_LANGUAGE);
     private static final Binary binary = new Binary(null);
 
     @Test
     public void testIncorrectProperties() {
         // ensure we get a warning if bad parameters set
         Directives p = new Directives();
+        p.setAlphabet(null);
         String reason = binary.canParametersBeSet(p);
         assertEquals("BadParam Alpha missing", "Alphabet is empty or too short", reason);
         p.setAlphabet("");
@@ -39,7 +37,7 @@ public class BinaryTest {
         reason = binary.canParametersBeSet(p);
         assertEquals("BadParam Alpha too short", "Alphabet is empty or too short", reason);
 
-        p.setAlphabet(defaultAlphabet);
+        p.setAlphabet(Settings.DEFAULT_ALPHABET);
         reason = binary.canParametersBeSet(p);
         assertEquals("BadParam missing digits", "Too few digits", reason);
         p.setDigits("");
@@ -74,10 +72,10 @@ public class BinaryTest {
         reason = binary.canParametersBeSet(p);
         assertNull("BadParam all okay", reason);
 
-        p.setCrackMethod(CrackMethod.BRUTE_FORCE);
+        p.setCrackMethod(CrackMethod.WORD_COUNT);
         reason = binary.canParametersBeSet(p);
-        assertEquals("BadParam cribs null", "Language is missing", reason);
-        p.setLanguage(defaultLanguage);
+        assertEquals("Bad Param Method", "Invalid crack method", reason);
+        p.setCrackMethod(CrackMethod.BRUTE_FORCE);
         reason = binary.canParametersBeSet(p);
         assertEquals("BadParam cribs null", "Some cribs must be provided", reason);
         p.setCribs("");
@@ -92,8 +90,6 @@ public class BinaryTest {
     public void testDefaultAlphabet() {
         // encode and then decode a mixed case cipher
         Directives p = new Directives();
-        p.setAlphabet(defaultAlphabet);
-        p.setLanguage(defaultLanguage);
         p.setDigits("01");
         p.setSeparator("");
         String encoded = binary.encode("AbcDz", p);
@@ -106,7 +102,6 @@ public class BinaryTest {
     public void testOtherDigitsAlphabet() {
         // encode and then decode a mixed case cipher
         Directives p = new Directives();
-        p.setAlphabet(defaultAlphabet);
         p.setDigits("AB");
         p.setSeparator("");
         p.setNumberSize(5);
@@ -147,19 +142,19 @@ public class BinaryTest {
         String cipherText = "10102120121110\n";
         Directives p = new Directives();
         p.setCribs("presumably");
-        p.setAlphabet(defaultAlphabet);
-        p.setLanguage(defaultLanguage);
         p.setCrackMethod(CrackMethod.BRUTE_FORCE);
         String reason = binary.canParametersBeSet(p);
         assertNull("CrackFail binary reason", reason);
 
-        CrackResult result = binary.crack(cipherText, p);
-        assertFalse("Crack binary", result.isSuccess());
-        assertNull("Crack binary text", result.getPlainText());
-        assertEquals("Crack binary cipher text", cipherText, result.getCipherText());
-        assertNull("Crack binary digits", result.getDirectives());
-        assertNotNull("Crack binary explain", result.getExplain());
-        assertTrue("Crack binary start", result.getExplain().startsWith("Fail:"));
+        CrackResult result = binary.crack(cipherText, p, 0);
+        assertFalse("Crack binary fail", result.isSuccess());
+        assertNull("Crack binary fail text", result.getPlainText());
+        assertEquals("Crack binary fail cipher text", cipherText, result.getCipherText());
+        assertNull("Crack binary fail digits", result.getDirectives());
+        assertNotNull("Crack binary fail explain", result.getExplain());
+        assertTrue("Crack binary fail start", result.getExplain().startsWith("Fail:"));
+        // depends on prior run: assertEquals("Crack binary fail cipher name", "Binary cipher ([], size=n/a)", result.getCipher().getInstanceDescription());
+        assertEquals("Crack binary crack method", CrackMethod.BRUTE_FORCE, result.getCrackMethod());
     }
 
     @Test
@@ -171,7 +166,6 @@ public class BinaryTest {
     @Test
     public void testInstanceDescription() {
         Directives p = new Directives();
-        p.setAlphabet(defaultAlphabet);
         p.setDigits("01");
         p.setNumberSize(5);
         String reason = binary.canParametersBeSet(p);

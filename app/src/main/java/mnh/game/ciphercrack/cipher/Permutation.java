@@ -1,6 +1,7 @@
 package mnh.game.ciphercrack.cipher;
 
 import android.content.Context;
+import android.os.Parcel;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.Log;
@@ -25,9 +26,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import mnh.game.ciphercrack.R;
 import mnh.game.ciphercrack.language.Dictionary;
+import mnh.game.ciphercrack.language.Language;
+import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
 import mnh.game.ciphercrack.util.Directives;
+import mnh.game.ciphercrack.util.Settings;
 
 /**
  * Class that contains methods to assist with Permutation transposition cipher operations
@@ -37,8 +41,7 @@ import mnh.game.ciphercrack.util.Directives;
  */
 public class Permutation extends Cipher {
 
-    // need some limit when cracking to avoid running too long
-    private static final int MAX_CRACK_COLUMNS = 9;
+    private static final String TAG = "CrackPermutation";
 
     // only allow A-Z, 0-9 and ',' in the keyword field
     private static final InputFilter PERM_INPUT_FILTER = new InputFilter() {
@@ -79,10 +82,36 @@ public class Permutation extends Cipher {
         }
     };
 
-    private int[] permutation = null;
-    private boolean readAcross = true;
+    int[] permutation = null;
+    boolean readAcross = true;
+    private int maxCrackColumns;
+    private int decodes = 0;
+    private int maxDecodes = 0;
 
     Permutation(Context context) { super(context, "Permutation"); }
+
+    // used to send a cipher to a service
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        if (permutation == null) {
+            dest.writeInt(0);
+            dest.writeInt(0);
+        } else {
+            dest.writeInt(permutation.length);
+            dest.writeIntArray(permutation);
+        }
+        dest.writeInt(readAcross ? 1 : 0);
+    }
+
+    @Override
+    public void unpack(Parcel in) {
+        super.unpack(in);
+        int permutationSize = in.readInt();
+        permutation = new int[permutationSize];
+        in.readIntArray(permutation);
+        readAcross = (in.readInt() == 1);
+    }
 
     /**
      * Describe what this cipher does
@@ -112,7 +141,7 @@ public class Permutation extends Cipher {
      */
     @Override
     public String getInstanceDescription() {
-        return getCipherName()+" cipher ("+permutationToString(permutation)+":"+(readAcross?"across":"down")+")";
+        return getCipherName()+" cipher ("+permutationToString(permutation)+(permutation==null?"":(":"+(readAcross?"across":"down")))+")";
     }
 
     /**
@@ -122,13 +151,13 @@ public class Permutation extends Cipher {
      */
     @Override
     public String canParametersBeSet(Directives dirs) {
-        String alphabet = dirs.getAlphabet();
-        if (alphabet == null || alphabet.length() < 2)
-            return "Alphabet is empty or too short";
-        CrackMethod crackMethod = dirs.getCrackMethod();
+        String reason = super.canParametersBeSet(dirs);
+        if (reason != null)
+            return reason;
+        int[] permutation = dirs.getPermutation();
         this.readAcross = dirs.isReadAcross();
+        CrackMethod crackMethod = dirs.getCrackMethod();
         if (crackMethod == null || crackMethod == CrackMethod.NONE) {
-            int[] permutation = dirs.getPermutation();
             if (permutation == null || permutation.length == 0)
                 return "Permutation is not valid";
             Set<Integer> permSet = new HashSet<>(permutation.length*2);
@@ -140,17 +169,23 @@ public class Permutation extends Cipher {
                 }
                 permSet.add(perm);
             }
-            this.permutation = permutation;
         } else {
             String cribs = dirs.getCribs();
             if (cribs == null || cribs.length() == 0)
                 return "Some cribs must be provided";
+            if (crackMethod != CrackMethod.DICTIONARY && crackMethod != CrackMethod.BRUTE_FORCE)
+                return "Invalid crack method";
             if (crackMethod == CrackMethod.DICTIONARY) {
                 // for the dictionary
-                if (dirs.getLanguage() == null)
+                Language lang = dirs.getLanguage();
+                if (lang == null)
                     return "Language must be provided";
+                if (lang.getDictionary() == null) {
+                    return "No "+lang.getName()+" dictionary is defined";
+                }
             }
         }
+        this.permutation = permutation;
         return null;
     }
 
@@ -206,6 +241,7 @@ public class Permutation extends Cipher {
      * @param alphabet the current alphabet
      * @return true if controls added, else false
      */
+    @Override
     public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
         TextView crackLabel = new TextView(context);
         crackLabel.setText(context.getString(R.string.crack_method));
@@ -247,6 +283,7 @@ public class Permutation extends Cipher {
      * @param dirs the directives to add to
      * @return the crack method to be used
      */
+    @Override
     public CrackMethod fetchCrackControls(LinearLayout layout, Directives dirs) {
         // locate the kind of crack we've been asked to do
         RadioButton dictButton = layout.findViewById(ID_BUTTON_DICTIONARY);
@@ -397,12 +434,12 @@ public class Permutation extends Cipher {
      * @return the result of the crack attempt
      */
     @NotNull
-    public CrackResult crack(String cipherText, Directives dirs) {
+    public CrackResult crack(String cipherText, Directives dirs, int crackId) {
         CrackMethod method = dirs.getCrackMethod();
         if (method == CrackMethod.BRUTE_FORCE) {
-            return crackBruteForce(cipherText, dirs);
+            return crackBruteForce(cipherText, dirs, crackId);
         } else {
-            return crackDictionary(cipherText, dirs);
+            return crackDictionary(cipherText, dirs, crackId);
         }
     }
     /**
@@ -412,14 +449,17 @@ public class Permutation extends Cipher {
      * @return the result of the crack attempt
      */
     @NotNull
-    private CrackResult crackDictionary(String cipherText, Directives dirs) {
+    private CrackResult crackDictionary(String cipherText, Directives dirs, int crackId) {
         String cribString = dirs.getCribs();
         Set<String> cribSet = Cipher.getCribSet(cribString);
-        Dictionary dictionary = dirs.getLanguage().getDictionary();
+        Dictionary dict = dirs.getLanguage().getDictionary();
+        CrackMethod crackMethod = dirs.getCrackMethod();
         int wordsChecked = 0, wordsRead = 0;
-        for (String word : dictionary) {
-            if (wordsRead++ % 1000 == 0)
-                Log.i("CipherCrack", "Cracking Permutation Dict: "+wordsRead+" words tried");
+        for (String word : dict) {
+            if (wordsRead++ % 500 == 499) {
+                Log.i("CipherCrack", "Cracking Permutation Dict: " + wordsRead + " words tried");
+                CrackResults.updatePercentageDirectly(crackId, 100 * wordsRead / dict.size());
+            }
             String keyword = word.toUpperCase();
             int[] possiblePerm = convertKeywordToColumns(keyword);
             if (possiblePerm != null) {
@@ -429,6 +469,8 @@ public class Permutation extends Cipher {
                 String plainText = decode(cipherText, dirs);
                 if (containsAllCribs(plainText, cribSet)) {
                     dirs.setKeyword(keyword);
+                    permutation = possiblePerm;
+                    readAcross = dirs.isReadAcross();
                     String explain = "Success: Dictionary scan: tried using all words in the dictionary as keys to form permutations and look for cribs ["
                             + cribString
                             + "] in the decoded text and found them with "
@@ -436,13 +478,15 @@ public class Permutation extends Cipher {
                             + ", columns: "
                             + permutationToString(possiblePerm)
                             + ":across\n";
-                    return new CrackResult(dirs, cipherText, plainText, explain);
+                    return new CrackResult(crackMethod, this, dirs, cipherText, plainText, explain);
                 }
                 // did not work with read-across, so try read-down instead
                 dirs.setReadAcross(false);
                 plainText = decode(cipherText, dirs);
                 if (containsAllCribs(plainText, cribSet)) {
                     dirs.setKeyword(keyword);
+                    permutation = possiblePerm;
+                    readAcross = dirs.isReadAcross();
                     String explain = "Success: Dictionary scan: tried using all words in the dictionary as keys to form permutations and look for cribs ["
                             + cribString
                             + "] in the decoded text and found them with "
@@ -450,18 +494,20 @@ public class Permutation extends Cipher {
                             + ", columns: "
                             + permutationToString(possiblePerm)
                             + ":down\n";
-                    return new CrackResult(dirs, cipherText, plainText, explain);
+                    return new CrackResult(dirs.getCrackMethod(), this, dirs, cipherText, plainText, explain);
                 }
             }
         }
+        dirs.setPermutation(null);
+        permutation = null;
         String explain = "Fail: Dictionary scan: tried using "
                 + wordsChecked
                 + " acceptable words in the dictionary of "
-                + dictionary.size()
+                + dict.size()
                 + " words as keys to form permutations and look for cribs ["
                 + cribString
                 + "] in the decoded text but did not find them.\n";
-        return new CrackResult(cipherText, explain);
+        return new CrackResult(crackMethod, this, cipherText, explain);
     }
 
     /**
@@ -474,35 +520,61 @@ public class Permutation extends Cipher {
      * @return the result of a successful crack finding all cribs, or null if crack was not successful
      */
     @Nullable
-    private CrackResult checkPossiblePermutations(int start, int[] input, String cipherText, Set<String> cribSet, Directives dirs) {
+    private CrackResult checkPossiblePermutations(int start, int[] input, String cipherText, Set<String> cribSet, Directives dirs, int crackId) {
         if (start == input.length) {
             dirs.setPermutation(input);
+            if (decodes++ % 5000 == 4999) {
+                CrackResults.updatePercentageDirectly(crackId, 100 * decodes / maxDecodes);
+                Log.i(TAG, "Permutation has completed "+decodes+" of "+maxDecodes+", "+(100*decodes/maxDecodes)+"%");
+            }
+            dirs.setReadAcross(false);
             String plainText = decode(cipherText, dirs);
-            if (containsAllCribs(plainText, cribSet)) {
+            boolean containsAllCribs = containsAllCribs(plainText, cribSet);
+            if (!containsAllCribs) {
+                dirs.setReadAcross(true);
+                plainText = decode(cipherText, dirs);
+                containsAllCribs = containsAllCribs(plainText, cribSet);
+            }
+            if (containsAllCribs) {
                 String explain = "Success: Brute force approach: tried decode all permutations up to "
-                        + MAX_CRACK_COLUMNS
+                        + maxCrackColumns
                         + " columns looking for cribs ["
                         + dirs.getCribs()
                         + "] in the decoded text and found them with "
                         + input.length
                         + " columns: "
                         + Permutation.permutationToString(input)
+                        + ":"
+                        + (dirs.isReadAcross()?"across":"down")
                         + "\n";
-                return new CrackResult(dirs, cipherText, plainText, explain);
+                permutation = input;
+                readAcross = dirs.isReadAcross();
+                return new CrackResult(dirs.getCrackMethod(), this, dirs, cipherText, plainText, explain);
             }
         } else {
             for (int i = start; i < input.length; i++) {
                 // swapping
                 int temp = input[i]; input[i] = input[start]; input[start] = temp;
-                // swap(input[i], input[start]);
-                CrackResult result = checkPossiblePermutations(start + 1, input, cipherText, cribSet, dirs);
+                CrackResult result = checkPossiblePermutations(start + 1, input, cipherText, cribSet, dirs, crackId);
                 if (result != null)
                     return result;
-                // swap(input[i],input[start]);
                 temp = input[i]; input[i] = input[start]; input[start] = temp;
             }
         }
         return null;
+    }
+
+    /**
+     * Create an int array with set number of columns and containing 0..columns-1
+     * @param columns the number of columns in the array
+     * @return the constructed column array
+     */
+    private int [] createPermutationColumns(int columns) {
+        int[] input = new int[columns];
+        for (int a = 0; a < columns; a++) {
+            input[a] = a;
+        }
+        return input;
     }
 
     /**
@@ -512,29 +584,41 @@ public class Permutation extends Cipher {
      * @return the result of the crack attempt
      */
     @NotNull
-    private CrackResult crackBruteForce(String cipherText, Directives dirs) {
+    private CrackResult crackBruteForce(String cipherText, Directives dirs, int crackId) {
         String cribString = dirs.getCribs();
         Set<String> cribSet = Cipher.getCribSet(cribString);
+        CrackResults.updatePercentageDirectly(crackId, 1);
+        maxCrackColumns = Integer.valueOf(Settings.instance().getString(context, R.string.pref_limit_railfence_rails, Settings.DEFAULT_LIMIT_PERM_COLS));
 
-        for (int columns = 1; columns <= MAX_CRACK_COLUMNS; columns++) {
-            Log.i("CipherCrack", "Cracking Permutation with "+columns+" columns");
-            int[] input = new int[columns];
-            for (int a=0; a < columns; a++) {
-                input[a] = a;
-            }
+        // calculate the maximum number of decodes we could do
+        // 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, etc
+        maxDecodes = 1;
+        int thisDecodes = 1;
+        for (int columns = 1; columns <= maxCrackColumns; columns++) {
+            thisDecodes *= columns;
+            maxDecodes += thisDecodes;
+        }
+
+        // loop through the possible number of columns, trying every combination
+        decodes = 0;
+        for (int columns = 1; columns <= maxCrackColumns; columns++) {
+            Log.i("CipherCrack", "Cracking Permutation with " + columns + " columns");
             // do the checking in-line, without creating massive lists of permutations
             // Do the decode/containsAllCribs check in createPossiblePermutations() and if found
             // then return a CrackResult else return null and try next size column
-            CrackResult crackResult = checkPossiblePermutations(0, input, cipherText, cribSet, dirs);
+            int[] input = createPermutationColumns(columns);
+            CrackResult crackResult = checkPossiblePermutations(0, input, cipherText, cribSet, dirs, crackId);
             if (crackResult != null)
                 return crackResult;
         }
+        dirs.setPermutation(null);
+        permutation = null;
         String explain = "Fail: Brute force approach: tried decode all permutations up to "
-                + MAX_CRACK_COLUMNS
+                + maxCrackColumns
                 + " columns looking for cribs ["
                 + cribString
                 + "] in the decoded text but did not find them.\n";
-        return new CrackResult(cipherText, explain);
+        return new CrackResult(dirs.getCrackMethod(), this, cipherText, explain);
     }
 
     /**
@@ -545,7 +629,7 @@ public class Permutation extends Cipher {
     @NotNull
     static String permutationToString(int[] perm) {
         if (perm == null)
-            return "null";
+            return "n/a";
         StringBuilder sb = new StringBuilder();
         for (int i=0; i< perm.length; i++) {
             if (i > 0)

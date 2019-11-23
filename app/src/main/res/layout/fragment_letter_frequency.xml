@@ -27,21 +27,29 @@
                 android:stretchColumns="1">
                 <TableRow>
                     <TextView
+                        android:id="@+id/freq_letter_gram"
                         android:text="@string/letter"
                         android:gravity="start"
-                        android:padding="3dip"/>
+                        android:padding="3dip"
+                        android:onClick="sortLetterByColumn"/>
                     <TextView
+                        android:id="@+id/freq_letter_count"
                         android:text="@string/count"
                         android:gravity="start"
-                        android:padding="3dip"/>
+                        android:padding="3dip"
+                        android:onClick="sortLetterByColumn"/>
                     <TextView
+                        android:id="@+id/freq_letter_percent"
                         android:text="@string/percent_sign"
                         android:gravity="center"
-                        android:padding="3dip"/>
+                        android:padding="3dip"
+                        android:onClick="sortLetterByColumn"/>
                     <TextView
+                        android:id="@+id/freq_letter_normal"
                         android:text="@string/normal"
                         android:gravity="end"
-                        android:padding="3dip"/>
+                        android:padding="3dip"
+                        android:onClick="sortLetterByColumn"/>
                 </TableRow>
                 <TableRow>
                     <View

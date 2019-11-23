@@ -1,10 +1,10 @@
 package mnh.game.ciphercrack.cipher;
 
 import android.content.Context;
+import android.os.Parcel;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import mnh.game.ciphercrack.R;
+import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
 import mnh.game.ciphercrack.util.Directives;
@@ -28,6 +28,20 @@ public class Affine extends Cipher {
     private int a = -1, b = -1;
 
     Affine(Context context) { super(context, "Affine"); }
+
+    // used to send a cipher to a service
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeInt(a);
+        dest.writeInt(b);
+    }
+    @Override
+    public void unpack(Parcel in) {
+        super.unpack(in);
+        a = in.readInt();
+        b = in.readInt();
+    }
 
     /**
      * Describe what this cipher does
@@ -48,9 +62,10 @@ public class Affine extends Cipher {
      */
     @Override
     public String getInstanceDescription() {
-        return getCipherName()+" cipher (a="+a+", b="+b+")";
+        return getCipherName()+" cipher ("+(a == -1 ? "n/a" :("a="+a+", b="+b))+")";
     }
 
+    @Override
     public void addExtraControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
         // this extracts the layout from the XML resource
         super.addExtraControls(context, layout, R.layout.extra_affine);
@@ -83,6 +98,7 @@ public class Affine extends Cipher {
         spinnerB.setAdapter(adapterB);
     }
 
+    @Override
     public void fetchExtraControls(LinearLayout layout, Directives dirs) {
         Spinner affineSpinner = layout.findViewById(R.id.extra_affine_spinner_a);
         int a = (int) affineSpinner.getSelectedItem();
@@ -90,6 +106,12 @@ public class Affine extends Cipher {
         affineSpinner = layout.findViewById(R.id.extra_affine_spinner_b);
         int b = (int) affineSpinner.getSelectedItem();
         dirs.setValueB(b);
+    }
+
+    // we don't add any extra controls, but we allow change of cribs
+    @Override
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+        return true;
     }
 
     /**
@@ -113,26 +135,30 @@ public class Affine extends Cipher {
      */
     @Override
     public String canParametersBeSet(Directives dirs) {
-        String alphabet = dirs.getAlphabet();
-        if (alphabet == null || alphabet.length() < 2)
-            return "Alphabet is empty or too short";
+        String reason = super.canParametersBeSet(dirs);
+        if (reason != null)
+            return reason;
+        int aValue = dirs.getValueA();
+        int bValue = dirs.getValueB();
 
-        // used for Encode / Decode
+        // are we doing encode/decode or cracking
         CrackMethod crackMethod = dirs.getCrackMethod();
         if (crackMethod == null || crackMethod == CrackMethod.NONE) {
-            int aValue = dirs.getValueA();
-            int bValue = dirs.getValueB();
             if (aValue < 0 || bValue < 0)
                 return "Values for A (" + aValue + ") and B (" + bValue + ") must be greater than zero";
             if (!areCoPrimes(aValue, bValue))
                 return "Values for A (" + aValue + ") and B (" + bValue + ") are not co-prime";
-            a = aValue;
-            b = bValue;
-        } else { // brute force crack needs cribs
+        } else {
+            // this the the only crack possible
+            if (crackMethod != CrackMethod.BRUTE_FORCE)
+                return "Invalid crack method";
+            // brute force crack needs cribs
             String cribs = dirs.getCribs();
             if (cribs == null || cribs.length() == 0)
                 return "Some cribs must be provided";
         }
+        a = aValue;
+        b = bValue;
         return null;
     }
 
@@ -239,15 +265,20 @@ public class Affine extends Cipher {
      * @param dirs the directives with alphabet and cribs
      * @return the result of the crack attempt
      */
-    public CrackResult crack(String cipherText, Directives dirs) {
+    public CrackResult crack(String cipherText, Directives dirs, int crackId) {
         String alphabet = dirs.getAlphabet();
         String cribString = dirs.getCribs();
         Set<String> cribSet = Cipher.getCribSet(cribString);
+        CrackMethod crackMethod = dirs.getCrackMethod();
 
         //Log.i("CRACK", "Trying to crack text "+cipherText.substring(0,20)+", cribs="+cribString);
         for (int a=0; a < alphabet.length(); a++) {
+            // publish progress as a percentage
+            CrackResults.updatePercentageDirectly(crackId, 100*a/alphabet.length());
             dirs.setValueA(a);
+
             for (int b=0; b < alphabet.length(); b++) {
+
                 // only check if values are co-primes, else could have 2 plain -> 1 cipher letter
                 if (areCoPrimes(a, b)) {
                     dirs.setValueB(b);
@@ -257,16 +288,19 @@ public class Affine extends Cipher {
                                 + (alphabet.length() - 1)
                                 + " looking for the cribs [" + cribString
                                 + "] in the decoded text and found them all with a=" + a + " and b="
-                                + b + ".";
-                        return new CrackResult(dirs, cipherText, plainText, explain);
+                                + b + ".\n";
+                        this.a = a;
+                        this.b = b;
+                        return new CrackResult(crackMethod, this, dirs, cipherText, plainText, explain);
                     }
                 }
             }
         }
+        a = b = -1;
         String explain = "Fail: Brute force approach: tried each possible value of a and b from 0 to "
                 + (alphabet.length() - 1)
                 + " looking for the cribs [" + cribString
-                + "] in the decoded text but did not find them.";
-        return new CrackResult(cipherText, explain);
+                + "] in the decoded text but did not find them.\n";
+        return new CrackResult(crackMethod, this, cipherText, explain);
     }
 }

@@ -1,25 +1,16 @@
 package mnh.game.ciphercrack.language;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableSet;
-import java.util.SortedSet;
-import java.util.TreeMap;
 
 import mnh.game.ciphercrack.util.Settings;
 
-import static java.util.Map.Entry.comparingByValue;
-import static java.util.stream.Collectors.toList;
-
 public abstract class Language {
+
+    private static final String NO_DICTIONARY = ""; // indicates the language has no dictionary available
 
     // keep track of created Languages, we just want one of each so dictionary only loaded once
     private static final HashMap<String, Language> instances = new HashMap<>();
@@ -46,7 +37,7 @@ public abstract class Language {
                 Package packageName = Language.class.getPackage();
                 if (packageName != null) {
                     Class languageClass = Class.forName(packageName.getName() + "." + name);
-                    language = (Language) languageClass.newInstance();
+                    language = (Language)languageClass.newInstance();
                     instances.put(name, language);
                     language.loadDictionary();
                 } else {
@@ -63,7 +54,7 @@ public abstract class Language {
         return language;
     }
 
-    abstract protected String getDictionaryResourceId();
+    // the name of the dictionary raw resource, e.g. "english_dictionary"
     abstract protected Map<String, Float> getLetterFrequencies();
     abstract protected Map<String, Float> getBigramFrequencies();
     abstract protected Map<String, Float> getTrigramFrequencies();
@@ -78,6 +69,9 @@ public abstract class Language {
         return name;
     }
 
+    // default is "no dictionary available", language subclasses will override
+    String getDictionaryResourceName() { return Language.NO_DICTIONARY; }
+
     /**
      * Compute the sorted list of letters based on their frequency, low to high
      * @return the high-to-low list of letters based on their frequency
@@ -90,7 +84,7 @@ public abstract class Language {
             freqLetters.put(entry.getKey().charAt(0), entry.getValue());
         }
         // now create ordered list of letters, sorted based on the float value, high-to-low
-        LinkedList<Character> orderedChars = new LinkedList<>();
+        List<Character> orderedChars = new LinkedList<>();
         for(Map.Entry<Character, Float> entry : freqLetters.entrySet()) {
             char thisChar = entry.getKey();
             float thisValue = entry.getValue();
@@ -107,7 +101,7 @@ public abstract class Language {
                 orderedChars.add(thisChar);
             }
         }
-        /** Java 8 Streams do not run on SDK 23 (needs 24)
+        /* Java 8 Streams do not run on SDK 23 (needs 24)
         List<Character> orderedChars = freqLetters
                 .entrySet()
                 .stream()
@@ -156,38 +150,30 @@ public abstract class Language {
      */
     private void loadDictionary() {
         if (dictionary == null) {
-            String dictResourceId = getDictionaryResourceId();
-            if (Dictionary.NONE.equals(dictResourceId)) {
+            String dictResourceName = getDictionaryResourceName();
+            if (Language.NO_DICTIONARY.equals(dictResourceName)) {
                 return;
             }
-            InputStream is = null;
+            InputStream dictStream = null;
             ClassLoader cl = getClass().getClassLoader();
             if (cl != null) {
-                is = cl.getResourceAsStream(dictResourceId);
-                if (is == null) {
-                    is = cl.getResourceAsStream("raw/"+dictResourceId);
+                dictStream = cl.getResourceAsStream(dictResourceName);
+                if (dictStream == null) {
+                    dictStream = cl.getResourceAsStream("raw/"+dictResourceName);
                 }
             }
-            if (is == null) {
-                is = getClass().getResourceAsStream(dictResourceId);
+            if (dictStream == null) {
+                dictStream = getClass().getResourceAsStream(dictResourceName);
             }
-            if (is == null) {
-                is = getClass().getResourceAsStream("raw/"+dictResourceId);
+            if (dictStream == null) {
+                dictStream = getClass().getResourceAsStream("raw/"+dictResourceName);
             }
-            if (is == null) {
+            if (dictStream == null) {
                 return; // could not locate the dictionary files
             }
             Dictionary dict = new Dictionary();
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    dict.add(line.trim().toUpperCase());
-                }
-            } catch (IOException ex) {
-                return;
-            }
-            dictionary = dict;
+            if (dict.load(dictStream))
+                dictionary = dict;
         }
     }
-
 }

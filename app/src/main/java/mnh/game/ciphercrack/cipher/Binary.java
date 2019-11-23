@@ -1,14 +1,11 @@
 package mnh.game.ciphercrack.cipher;
 
 import android.content.Context;
-import android.text.InputType;
-import android.view.ViewGroup;
+import android.os.Parcel;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import mnh.game.ciphercrack.R;
 import mnh.game.ciphercrack.language.Language;
 import mnh.game.ciphercrack.util.CrackMethod;
@@ -31,6 +28,22 @@ public class Binary extends Cipher {
 
     Binary(Context context) { super(context, "Binary"); }
 
+    // used to send a cipher to a service
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(digits);
+        dest.writeInt(numberSize);
+        dest.writeString(separator);
+    }
+    @Override
+    public void unpack(Parcel in) {
+        super.unpack(in);
+        digits = in.readString();
+        numberSize = in.readInt();
+        separator = in.readString();
+    }
+
     /**
      * Describe what this cipher does
      * @return a description of this cipher
@@ -49,7 +62,7 @@ public class Binary extends Cipher {
      */
     @Override
     public String getInstanceDescription() {
-        return getCipherName()+" cipher (["+digits+"]"+((separator.length()!=0)?(",sep="+separator):((numberSize!=0)?(",size="+numberSize):""))+")";
+        return getCipherName()+" cipher (["+digits+"]"+((separator.length()!=0)?(",sep="+separator):((numberSize!=0)?(",size="+(numberSize==-1?"n/a":numberSize)):""))+")";
     }
 
     /**
@@ -59,10 +72,9 @@ public class Binary extends Cipher {
      */
     @Override
     public String canParametersBeSet(Directives dirs) {
-        String alphabet = dirs.getAlphabet();
-        if (alphabet == null || alphabet.length() < 2)
-            return "Alphabet is empty or too short";
-
+        String reason = super.canParametersBeSet(dirs);
+        if (reason != null)
+            return reason;
         CrackMethod crackMethod = dirs.getCrackMethod();
         if (crackMethod == null || crackMethod == CrackMethod.NONE) {
             String binaryDigits = dirs.getDigits();
@@ -102,10 +114,10 @@ public class Binary extends Cipher {
                 numberSize = 0;
             }
         } else { // crack via Brute Force, i.e. look at text and work out digits and separator, etc
-            Language language = dirs.getLanguage();
-            if (language == null)
-                return "Language is missing";
-
+            // this the the only crack possible
+            if (crackMethod != CrackMethod.BRUTE_FORCE)
+                return "Invalid crack method";
+            // brute force crack needs cribs
             String cribs = dirs.getCribs();
             if (cribs == null || cribs.length() == 0)
                 return "Some cribs must be provided";
@@ -138,6 +150,12 @@ public class Binary extends Cipher {
         String languageName = Settings.instance().getString(layout.getContext(), R.string.pref_language);
         Language language = Language.instanceOf(languageName);
         dirs.setLanguage(language);
+    }
+
+    // we don't add any extra controls, but we allow change of cribs
+    @Override
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+        return true;
     }
 
     /**
@@ -217,9 +235,12 @@ public class Binary extends Cipher {
             }
             try {
                 int ordinal = Integer.parseInt(seq, 2);
-                result.append(alphabet.charAt(ordinal));
+                if (ordinal < alphabet.length())
+                    result.append(alphabet.charAt(ordinal));
+                else
+                    result.append("z"); // binary digits decoded to something beyond the alphabet
             } catch (NumberFormatException ex) {
-                result.append("x");
+                result.append("x");     // string does not represent a binary number
             }
         }
         return result.toString();
@@ -228,10 +249,10 @@ public class Binary extends Cipher {
     /**
      * Not able to crack this yet
      * @param cipherText the text to be cracked
-     * @param directives the controls and parameters for this crack request
+     * @param dirs the controls and parameters for this crack request
      * @return the result of the crack attempt
      */
-    public CrackResult crack(String cipherText, Directives directives) {
-        return new CrackResult(cipherText, "Fail: Unable to crack "+getCipherName()+" cipher");
+    public CrackResult crack(String cipherText, Directives dirs, int crackId) {
+        return new CrackResult(dirs.getCrackMethod(), this, cipherText, "Fail: Not yet able to crack "+getCipherName()+" cipher.\n");
     }
 }

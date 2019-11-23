@@ -26,21 +26,29 @@
                 android:stretchColumns="1">
                 <TableRow>
                     <TextView
+                        android:id="@+id/freq_bigram_gram"
                         android:text="@string/bigram"
                         android:gravity="start"
-                        android:padding="3dip"/>
+                        android:padding="3dip"
+                        android:onClick="sortBigramByColumn"/>
                     <TextView
+                        android:id="@+id/freq_bigram_count"
                         android:text="@string/count"
                         android:gravity="start"
-                        android:padding="3dip"/>
+                        android:padding="3dip"
+                        android:onClick="sortBigramByColumn"/>
                     <TextView
+                        android:id="@+id/freq_bigram_percent"
                         android:text="@string/percent_sign"
                         android:gravity="center"
-                        android:padding="3dip"/>
+                        android:padding="3dip"
+                        android:onClick="sortBigramByColumn"/>
                     <TextView
+                        android:id="@+id/freq_bigram_normal"
                         android:text="@string/normal"
                         android:gravity="end"
-                        android:padding="3dip"/>
+                        android:padding="3dip"
+                        android:onClick="sortBigramByColumn"/>
                 </TableRow>
                 <TableRow>
                     <View

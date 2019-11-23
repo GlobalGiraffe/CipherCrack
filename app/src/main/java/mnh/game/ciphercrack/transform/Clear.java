@@ -7,6 +7,7 @@ import android.content.Context;
  */
 public class Clear implements Transform {
 
+    @Override
     public String apply(Context context, String text) {
         return "";
     }

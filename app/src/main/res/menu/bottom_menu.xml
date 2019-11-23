@@ -7,25 +7,11 @@
         android:title="@string/analysis"
         app:labelVisibilityMode="labeled"/>
 
-    <!--
     <item
-        android:id="@+id/bottom_cipher"
-        android:icon="@drawable/ic_action_cipher"
-        android:title="@string/cipher"
+        android:id="@+id/bottom_results"
+        android:icon="@drawable/ic_action_results"
+        android:title="@string/results"
         app:labelVisibilityMode="labeled"/>
-        -->
-    <item
-        android:id="@+id/bottom_history"
-        android:icon="@drawable/ic_action_history"
-        android:title="@string/history"
-        app:labelVisibilityMode="labeled"/>
-    <!--
-    <item
-        android:id="@+id/bottom_info"
-        android:icon="@drawable/ic_action_info"
-        android:title="@string/info"
-        app:labelVisibilityMode="labeled"/>
-    -->
 
     <item android:id="@+id/bottom_settings"
         android:icon="@drawable/ic_action_settings"

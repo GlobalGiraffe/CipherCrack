@@ -10,8 +10,7 @@ import mnh.game.ciphercrack.util.Settings;
  */
 public class ReverseWords implements Transform {
 
-    private static final Reverse reverseTransform = new Reverse();
-
+    @Override
     public String apply(Context context, String text) {
         if (text == null)
             return null;

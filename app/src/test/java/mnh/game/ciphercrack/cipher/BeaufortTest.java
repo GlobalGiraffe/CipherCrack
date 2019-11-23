@@ -31,7 +31,6 @@ public class BeaufortTest {
         String keyword = "FORTIFICATION";
         Directives p = new Directives();
         p.setKeyword(keyword);
-        p.setAlphabet(defaultAlphabet);
         String encoded = cipher.encode("DEFENDTHEEASTWALLOFTHECASTLE", p);
         assertEquals("Encoding Classic", "CKMPVCPVWPIWUJOGIUAPVWRIWUUK", encoded);
         String decoded = cipher.decode(encoded, p);
@@ -45,7 +44,6 @@ public class BeaufortTest {
         String keyword = "DICKENS";
         Directives p = new Directives();
         p.setKeyword(keyword);
-        p.setAlphabet(defaultAlphabet);
         String encoded = cipher.encode(plainText, p);
         assertEquals("Encoding Classic", cipherText, encoded);
         String decoded = cipher.decode(cipherText, p);
@@ -55,13 +53,17 @@ public class BeaufortTest {
     @Test
     public void testBadParameters() {
         Directives p = new Directives();
+        p.setAlphabet(null);
         String reason = cipher.canParametersBeSet(p);
         assertEquals("BadParam: alphabet missing", "Alphabet is empty or too short", reason);
         p.setAlphabet("");
         reason = cipher.canParametersBeSet(p);
         assertEquals("BadParam: alphabet empty", "Alphabet is empty or too short", reason);
         p.setAlphabet(defaultAlphabet);
-
+        p.setPaddingChars(null);
+        reason = cipher.canParametersBeSet(p);
+        assertEquals("BadParam: missing pad", "Set of padding chars is missing", reason);
+        p.setPaddingChars(Settings.DEFAULT_PADDING_CHARS);
         reason = cipher.canParametersBeSet(p);
         assertEquals("BadParam: empty keyword", "Keyword is empty or too short", reason);
         p.setKeyword("");
@@ -80,6 +82,9 @@ public class BeaufortTest {
         reason = cipher.canParametersBeSet(p); // now all good for encode/decode
         assertNull("BadParam: encode okay", reason);
 
+        p.setCrackMethod(CrackMethod.WORD_COUNT);
+        reason = cipher.canParametersBeSet(p);
+        assertEquals("Bad Param Method", "Invalid crack method", reason);
         p.setCrackMethod(CrackMethod.DICTIONARY);
         reason = cipher.canParametersBeSet(p); // Crack: still missing cribs
         assertEquals("BadParam: cribs missing", "Some cribs must be provided", reason);
@@ -103,6 +108,7 @@ public class BeaufortTest {
         assertNull("BadParam: crack okay", reason);
 
         p.setCrackMethod(CrackMethod.DICTIONARY);
+        p.setLanguage(null);
         reason = cipher.canParametersBeSet(p);
         assertEquals("BadParam: missing length", "Missing language", reason);
 
@@ -118,7 +124,6 @@ public class BeaufortTest {
         String plainText = "I first met Dean not long after my wife and I split up. I had just gotten over a serious illness that I won’t bother to talk about, except that it had something to do with the miserably weary split-up and my feeling that everything was dead. With the coming of Dean Moriarty began the part of my life you could call my life on the road. Before that I’d often dreamed of going West to see the country, always vaguely planning and never taking off. Dean is the perfect guy for the road because he actually was born on the road, when his parents were passing through Salt Lake City in 1926, in a jalopy, on their way to Los Angeles. First reports of him came to me through Chad King, who’d shown me a few letters from him written in a New Mexico reform school. I was tremendously interested in the letters because they so naively and sweetly asked Chad to teach him all about Nietzsche and all the wonderful intellectual things that Chad knew.";
         Directives p = new Directives();
         p.setKeyword(keyword);
-        p.setAlphabet(defaultAlphabet);
         String cipherText = cipher.encode(plainText, p);
         assertNotNull("Crack Encoding", cipherText);
 
@@ -126,16 +131,19 @@ public class BeaufortTest {
         p.setKeyword(null);
         p.setKeywordLength(keyword.length());
         p.setAlphabet(defaultAlphabet);
+        p.setPaddingChars(Settings.DEFAULT_PADDING_CHARS);
         p.setCribs("moriarty,mexico");
         p.setCrackMethod(CrackMethod.IOC);
         String reason = cipher.canParametersBeSet(p);
         assertNull("Crack Success reason", reason);
-        CrackResult cracked = cipher.crack(cipherText, p);
+        CrackResult cracked = cipher.crack(cipherText, p, 0);
         assertTrue("Crack Status", cracked.isSuccess());
         assertEquals("Crack Plain Text", plainText, cracked.getPlainText());
         assertEquals("Crack Cipher Text", cipherText, cracked.getCipherText());
         assertEquals("Crack Keyword", keyword, cracked.getDirectives().getKeyword());
         assertNotNull("Crack Explain", cracked.getExplain());
+        assertEquals("Crack cipher name", "Beaufort cipher (ONTHEROAD)", cracked.getCipher().getInstanceDescription());
+        assertEquals("Crack crack method", CrackMethod.IOC, cracked.getCrackMethod());
     }
 
     @Test
@@ -145,24 +153,24 @@ public class BeaufortTest {
         String plainText = "I first met Dean not long after my wife and I split up. I had just gotten over a serious illness that I won’t bother to talk about, except that it had something to do with the miserably weary split-up and my feeling that everything was dead. With the coming of Dean Moriarty began the part of my life you could call my life on the road. Before that I’d often dreamed of going West to see the country, always vaguely planning and never taking off. Dean is the perfect guy for the road because he actually was born on the road, when his parents were passing through Salt Lake City in 1926, in a jalopy, on their way to Los Angeles. First reports of him came to me through Chad King, who’d shown me a few letters from him written in a New Mexico reform school. I was tremendously interested in the letters because they so naively and sweetly asked Chad to teach him all about Nietzsche and all the wonderful intellectual things that Chad knew.";
         Directives p = new Directives();
         p.setKeyword(keyword);
-        p.setAlphabet(defaultAlphabet);
         String cipherText = cipher.encode(plainText, p);
         assertNotNull("CrackFail Encoding", cipherText);
 
         // now attempt the crack of the text via IOC
         p.setKeyword(null);
         p.setKeywordLength(keyword.length());
-        p.setAlphabet(defaultAlphabet);
         p.setCribs("banana,plantation");
         p.setCrackMethod(CrackMethod.IOC);
         String reason = cipher.canParametersBeSet(p);
         assertNull("Crack Fail reason", reason);
-        CrackResult cracked = cipher.crack(cipherText, p);
+        CrackResult cracked = cipher.crack(cipherText, p, 0);
         assertFalse("Crack Status", cracked.isSuccess());
-        assertNull("CrackFail Text", cracked.getPlainText());
+        assertNotNull("CrackFail Text", cracked.getPlainText());  // this will be the best fit, may not have cribs
         assertEquals("Crack Cipher Text", cipherText, cracked.getCipherText());
         assertNull("Crack Keyword", cracked.getDirectives());
         assertNotNull("Crack Explain", cracked.getExplain());
+        assertEquals("Crack cipher name", "Beaufort cipher (n/a)", cracked.getCipher().getInstanceDescription());
+        assertEquals("Crack crack method", CrackMethod.IOC, cracked.getCrackMethod());
     }
 
     @Test
@@ -176,11 +184,10 @@ public class BeaufortTest {
     public void testInstanceDescription() {
         Directives p = new Directives();
         p.setKeyword("BROUGHT");
-        p.setAlphabet(defaultAlphabet);
         String reason = cipher.canParametersBeSet(p);
         assertNull("Null reason", reason);
         String desc = cipher.getInstanceDescription();
         assertNotNull("Instance Description", desc);
-        assertEquals("Instance Description", "Beaufort cipher (keyword=BROUGHT)", desc);
+        assertEquals("Instance Description", "Beaufort cipher (BROUGHT)", desc);
     }
 }

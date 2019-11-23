@@ -7,6 +7,8 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
+import mnh.game.ciphercrack.util.Settings;
+
 /**
  * Allow user to change preferences
  */
@@ -51,6 +53,9 @@ public class SettingsActivity extends PreferenceActivity {
             onSharedPreferenceChanged(sp, getString(R.string.pref_alphabet_plain));
             onSharedPreferenceChanged(sp, getString(R.string.pref_language));
             onSharedPreferenceChanged(sp, getString(R.string.pref_padding_chars));
+            onSharedPreferenceChanged(sp, getString(R.string.pref_limit_grams));
+            onSharedPreferenceChanged(sp, getString(R.string.pref_limit_perm_brute_force_cols));
+            onSharedPreferenceChanged(sp, getString(R.string.pref_limit_railfence_rails));
         }
 
         public void onPause() {
@@ -73,7 +78,7 @@ public class SettingsActivity extends PreferenceActivity {
 
             // check each preference key that may need summary changed
             if (key.equals(getString(R.string.pref_cribs)))
-                p.setSummary("Cribs in use: "+ sp.getString(key, "<none>"));
+                p.setSummary("Default cribs: "+ sp.getString(key, "<none>"));
             if (key.equals(getString(R.string.pref_padding_chars))) {
                 String padding = sp.getString(key, "<none>");
                 if (padding != null && padding.equals(" ")) {
@@ -96,6 +101,12 @@ public class SettingsActivity extends PreferenceActivity {
                 else
                     p.setSummary("Custom");
             }
+            if (key.equals(getString(R.string.pref_limit_grams)))
+                p.setSummary("Max grams in analysis: "+ sp.getString(key, Settings.DEFAULT_LIMIT_GRAMS));
+            if (key.equals(getString(R.string.pref_limit_perm_brute_force_cols)))
+                p.setSummary("Max columns in brute force permutation crack: "+ sp.getString(key, Settings.DEFAULT_LIMIT_PERM_COLS));
+            if (key.equals(getString(R.string.pref_limit_railfence_rails)))
+                p.setSummary("Max rails in railfence crack: "+ sp.getString(key, Settings.DEFAULT_LIMIT_RAILFENCE_RAILS));
         }
     }
 }

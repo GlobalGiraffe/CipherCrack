@@ -6,7 +6,7 @@ import mnh.game.ciphercrack.util.Directives;
 
 /**
  * Class that contains methods to assist with Beaufort Cipher operations
- * This polyalphabetic cipher shifts each letter within the text by a
+ * This poly-alphabetic cipher shifts each letter within the text by a
  *   an amount based on a keyword
  * Many parts (screen layout, crack algorithm, etc) are identical to Vigenere,
  * so just extend that one and override where necessary
@@ -53,9 +53,9 @@ public class Beaufort extends Vigenere {
      */
     @Override
     public String getCipherDescription() {
-        return "The Beaufort cipher is a polyalphabtic substitution cipher where each letter of the plain text can be mapped to many different letters in the cipher text, depending on the position of the letter in the message. " +
+        return "The Beaufort cipher is a poly-alphabetic substitution cipher where each letter of the plain text can be mapped to many different letters in the cipher text, depending on the position of the letter in the message. " +
                 "A tableau is used where each of 26 columns contain the 26 letters of the alphabet in a different position. As the message is encoded, each column in turn is used to perform a Caesar cipher encoding.\n" +
-                "To encrypt, first choose the plaintext character from the top row of the tableau; call this column P. Secondly, travel down column P to the corresponding key letter K. Finally, move directly left from the key letter to the left edge of the tableau, the ciphertext encryption of plaintext P with key K will be there.\n"+
+                "To encrypt, first choose the plaintext character from the top row of the tableau; call this column P. Secondly, travel down column P to the corresponding key letter K. Finally, move directly left from the key letter to the left edge of the tableau, the cipher text encryption of plaintext P with key K will be there.\n"+
                 "As Beaufort is a reciprocal cipher and so to decode a message the same steps are used as for encoding.\n"+
                 "This cipher can be broken by looking at IOC values for different possible keyword sizes, the one with IOC close to the target language will indicate keyword length. With the help of some cribs, particularly ones longer than the keyword length, the keyword can be slowly discovered.";
     }
@@ -66,7 +66,7 @@ public class Beaufort extends Vigenere {
      */
     @Override
     public String getInstanceDescription() {
-        return getCipherName()+" cipher (keyword="+keyword+")";
+        return getCipherName()+" cipher ("+(keyword==null?"n/a":keyword)+")";
     }
 
     /**
