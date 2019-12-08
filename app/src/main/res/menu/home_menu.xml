@@ -46,6 +46,11 @@
                 android:icon="@android:drawable/ic_media_pause"
                 app:showAsAction="ifRoom" />
             <item
+                android:id="@+id/action_home_edit_split_at"
+                android:title="@string/split_at"
+                android:icon="@android:drawable/ic_media_pause"
+                app:showAsAction="ifRoom" />
+            <item
                 android:id="@+id/action_home_edit_clear"
                 android:title="@string/clear"
                 android:icon="@android:drawable/ic_notification_clear_all"
@@ -69,519 +74,1333 @@
         android:icon="@android:drawable/ic_menu_camera"
         android:title="@string/camera"
         app:showAsAction="always"/>
+
+    <!-- now, on with the challenges -->
     <item
-        android:id="@+id/action_home_cipher_challenge_2001"
-        android:title="@string/cc_2001"
+        android:id="@+id/action_home_cipher_challenges"
+        android:title="@string/cipher_challenges"
         app:showAsAction="ifRoom">
         <menu>
             <item
-                android:id="@+id/action_home_cipher_challenge_2001_1"
-                android:title="@string/cc_2001_1"
-                app:showAsAction="ifRoom" />
+                android:id="@+id/action_home_cipher_challenge_2001"
+                android:title="@string/cc_2001"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2001_1"
+                        android:title="@string/cc_2001_1"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2001_2"
+                        android:title="@string/cc_2001_2"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2001_3"
+                        android:title="@string/cc_2001_3"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2001_4"
+                        android:title="@string/cc_2001_4"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2001_5"
+                        android:title="@string/cc_2001_5"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
             <item
-                android:id="@+id/action_home_cipher_challenge_2001_2"
-                android:title="@string/cc_2001_2"
-                app:showAsAction="ifRoom" />
+                android:id="@+id/action_home_cipher_challenge_2002"
+                android:title="@string/cc_2002"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2002_00"
+                        android:title="@string/cc_2002_00"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2002_01"
+                        android:title="@string/cc_2002_01"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2002_02"
+                        android:title="@string/cc_2002_02"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2002_03"
+                        android:title="@string/cc_2002_03"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2002_04"
+                        android:title="@string/cc_2002_04"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2002_05"
+                        android:title="@string/cc_2002_05"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2002_06"
+                        android:title="@string/cc_2002_06"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2002_07"
+                        android:title="@string/cc_2002_07"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2002_08a"
+                        android:title="@string/cc_2002_08a"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2002_08b"
+                        android:title="@string/cc_2002_08b"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2002_09"
+                        android:title="@string/cc_2002_09"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2002_10"
+                        android:title="@string/cc_2002_10"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2002_11"
+                        android:title="@string/cc_2002_11"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2002_12"
+                        android:title="@string/cc_2002_12"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2002_13"
+                        android:title="@string/cc_2002_13"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2002_14"
+                        android:title="@string/cc_2002_14"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2002_15"
+                        android:title="@string/cc_2002_15"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2002_16"
+                        android:title="@string/cc_2002_16"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
             <item
-                android:id="@+id/action_home_cipher_challenge_2001_3"
-                android:title="@string/cc_2001_3"
-                app:showAsAction="ifRoom" />
+                android:id="@+id/action_home_cipher_challenge_2003"
+                android:title="@string/cc_2003"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2003_00"
+                        android:title="@string/cc_2003_00"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2003_01"
+                        android:title="@string/cc_2003_01"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2003_02"
+                        android:title="@string/cc_2003_02"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2003_03"
+                        android:title="@string/cc_2003_03"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2003_04"
+                        android:title="@string/cc_2003_04"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2003_05"
+                        android:title="@string/cc_2003_05"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2003_06"
+                        android:title="@string/cc_2003_06"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2003_07"
+                        android:title="@string/cc_2003_07"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2003_08"
+                        android:title="@string/cc_2003_08"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
             <item
-                android:id="@+id/action_home_cipher_challenge_2001_4"
-                android:title="@string/cc_2001_4"
-                app:showAsAction="ifRoom" />
+                android:id="@+id/action_home_cipher_challenge_2004"
+                android:title="@string/cc_2004"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2004_00"
+                        android:title="@string/cc_2004_0"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2004_1A"
+                        android:title="@string/cc_2004_1A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2004_1B"
+                        android:title="@string/cc_2004_1B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2004_2A"
+                        android:title="@string/cc_2004_2A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2004_2B"
+                        android:title="@string/cc_2004_2B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2004_3A"
+                        android:title="@string/cc_2004_3A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2004_3B"
+                        android:title="@string/cc_2004_3B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2004_4A"
+                        android:title="@string/cc_2004_4A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2004_4B"
+                        android:title="@string/cc_2004_4B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2004_5A"
+                        android:title="@string/cc_2004_5A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2004_5B"
+                        android:title="@string/cc_2004_5B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2004_6A"
+                        android:title="@string/cc_2004_6A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2004_6B"
+                        android:title="@string/cc_2004_6B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2004_7A"
+                        android:title="@string/cc_2004_7A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2004_7B"
+                        android:title="@string/cc_2004_7B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2004_8A"
+                        android:title="@string/cc_2004_8A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2004_8B"
+                        android:title="@string/cc_2004_8B"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
             <item
-                android:id="@+id/action_home_cipher_challenge_2001_5"
-                android:title="@string/cc_2001_5"
-                app:showAsAction="ifRoom" />
+                android:id="@+id/action_home_cipher_challenge_2005"
+                android:title="@string/cc_2005"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2005_00"
+                        android:title="@string/cc_2005_0"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2005_1A"
+                        android:title="@string/cc_2005_1A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2005_1B"
+                        android:title="@string/cc_2005_1B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2005_2A"
+                        android:title="@string/cc_2005_2A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2005_2B"
+                        android:title="@string/cc_2005_2B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2005_3A"
+                        android:title="@string/cc_2005_3A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2005_3B"
+                        android:title="@string/cc_2005_3B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2005_4A"
+                        android:title="@string/cc_2005_4A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2005_4B"
+                        android:title="@string/cc_2005_4B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2005_5A"
+                        android:title="@string/cc_2005_5A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2005_5B"
+                        android:title="@string/cc_2005_5B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2005_6A"
+                        android:title="@string/cc_2005_6A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2005_6B"
+                        android:title="@string/cc_2005_6B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2005_7A"
+                        android:title="@string/cc_2005_7A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2005_7B"
+                        android:title="@string/cc_2005_7B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2005_8A"
+                        android:title="@string/cc_2005_8A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2005_8B"
+                        android:title="@string/cc_2005_8B"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
+            <item
+                android:id="@+id/action_home_cipher_challenge_2006"
+                android:title="@string/cc_2006"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2006_1A"
+                        android:title="@string/cc_2006_1A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2006_1B"
+                        android:title="@string/cc_2006_1B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2006_2A"
+                        android:title="@string/cc_2006_2A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2006_2B"
+                        android:title="@string/cc_2006_2B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2006_3A"
+                        android:title="@string/cc_2006_3A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2006_3B"
+                        android:title="@string/cc_2006_3B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2006_4A"
+                        android:title="@string/cc_2006_4A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2006_4B"
+                        android:title="@string/cc_2006_4B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2006_5A"
+                        android:title="@string/cc_2006_5A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2006_5B"
+                        android:title="@string/cc_2006_5B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2006_6A"
+                        android:title="@string/cc_2006_6A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2006_6B"
+                        android:title="@string/cc_2006_6B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2006_7A"
+                        android:title="@string/cc_2006_7A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2006_7B"
+                        android:title="@string/cc_2006_7B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2006_8A"
+                        android:title="@string/cc_2006_8A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2006_8B"
+                        android:title="@string/cc_2006_8B"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
+            <item
+                android:id="@+id/action_home_cipher_challenge_2007"
+                android:title="@string/cc_2007"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2007_1A"
+                        android:title="@string/cc_2007_1A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2007_1B"
+                        android:title="@string/cc_2007_1B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2007_2A"
+                        android:title="@string/cc_2007_2A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2007_2B"
+                        android:title="@string/cc_2007_2B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2007_3A"
+                        android:title="@string/cc_2007_3A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2007_3B"
+                        android:title="@string/cc_2007_3B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2007_4A"
+                        android:title="@string/cc_2007_4A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2007_4B"
+                        android:title="@string/cc_2007_4B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2007_5A"
+                        android:title="@string/cc_2007_5A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2007_5B"
+                        android:title="@string/cc_2007_5B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2007_6A"
+                        android:title="@string/cc_2007_6A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2007_6B"
+                        android:title="@string/cc_2007_6B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2007_7A"
+                        android:title="@string/cc_2007_7A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2007_7B"
+                        android:title="@string/cc_2007_7B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2007_8A"
+                        android:title="@string/cc_2007_8A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2007_8B"
+                        android:title="@string/cc_2007_8B"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
+            <item
+                android:id="@+id/action_home_cipher_challenge_2009"
+                android:title="@string/cc_2009"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2009_0A"
+                        android:title="@string/cc_2009_0A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2009_0B"
+                        android:title="@string/cc_2009_0B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2009_1A"
+                        android:title="@string/cc_2009_1A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2009_1B"
+                        android:title="@string/cc_2009_1B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2009_2A"
+                        android:title="@string/cc_2009_2A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2009_2B"
+                        android:title="@string/cc_2009_2B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2009_3A"
+                        android:title="@string/cc_2009_3A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2009_3B"
+                        android:title="@string/cc_2009_3B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2009_4A"
+                        android:title="@string/cc_2009_4A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2009_4B"
+                        android:title="@string/cc_2009_4B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2009_5A"
+                        android:title="@string/cc_2009_5A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2009_5B"
+                        android:title="@string/cc_2009_5B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2009_6A"
+                        android:title="@string/cc_2009_6A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2009_6B"
+                        android:title="@string/cc_2009_6B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2009_7A"
+                        android:title="@string/cc_2009_7A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2009_7B"
+                        android:title="@string/cc_2009_7B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2009_8A"
+                        android:title="@string/cc_2009_8A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2009_8B"
+                        android:title="@string/cc_2009_8B"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
+            <item
+                android:id="@+id/action_home_cipher_challenge_2010"
+                android:title="@string/cc_2010"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2010_1A"
+                        android:title="@string/cc_2010_1A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2010_1B"
+                        android:title="@string/cc_2010_1B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2010_2A"
+                        android:title="@string/cc_2010_2A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2010_2B"
+                        android:title="@string/cc_2010_2B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2010_3A"
+                        android:title="@string/cc_2010_3A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2010_3B"
+                        android:title="@string/cc_2010_3B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2010_4A"
+                        android:title="@string/cc_2010_4A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2010_4B"
+                        android:title="@string/cc_2010_4B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2010_5A"
+                        android:title="@string/cc_2010_5A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2010_5B"
+                        android:title="@string/cc_2010_5B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2010_6A"
+                        android:title="@string/cc_2010_6A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2010_6B"
+                        android:title="@string/cc_2010_6B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2010_7A"
+                        android:title="@string/cc_2010_7A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2010_7B"
+                        android:title="@string/cc_2010_7B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2010_8A"
+                        android:title="@string/cc_2010_8A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2010_8B"
+                        android:title="@string/cc_2010_8B"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
+            <item
+                android:id="@+id/action_home_cipher_challenge_2011"
+                android:title="@string/cc_2011"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2011_1A"
+                        android:title="@string/cc_2011_1A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2011_1B"
+                        android:title="@string/cc_2011_1B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2011_2A"
+                        android:title="@string/cc_2011_2A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2011_2B"
+                        android:title="@string/cc_2011_2B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2011_3A"
+                        android:title="@string/cc_2011_3A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2011_3B"
+                        android:title="@string/cc_2011_3B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2011_4A"
+                        android:title="@string/cc_2011_4A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2011_4B"
+                        android:title="@string/cc_2011_4B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2011_5A"
+                        android:title="@string/cc_2011_5A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2011_5B"
+                        android:title="@string/cc_2011_5B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2011_6A"
+                        android:title="@string/cc_2011_6A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2011_6B"
+                        android:title="@string/cc_2011_6B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2011_7A"
+                        android:title="@string/cc_2011_7A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2011_7B"
+                        android:title="@string/cc_2011_7B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2011_8A"
+                        android:title="@string/cc_2011_8A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2011_8B"
+                        android:title="@string/cc_2011_8B"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
+            <item
+                android:id="@+id/action_home_cipher_challenge_2012"
+                android:title="@string/cc_2012"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2012_0"
+                        android:title="@string/cc_2012_0"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2012_1A"
+                        android:title="@string/cc_2012_1A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2012_1B"
+                        android:title="@string/cc_2012_1B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2012_2A"
+                        android:title="@string/cc_2012_2A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2012_2B"
+                        android:title="@string/cc_2012_2B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2012_3A"
+                        android:title="@string/cc_2012_3A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2012_3B"
+                        android:title="@string/cc_2012_3B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2012_4A"
+                        android:title="@string/cc_2012_4A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2012_4B"
+                        android:title="@string/cc_2012_4B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2012_5A"
+                        android:title="@string/cc_2012_5A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2012_5B"
+                        android:title="@string/cc_2012_5B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2012_6A"
+                        android:title="@string/cc_2012_6A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2012_6B"
+                        android:title="@string/cc_2012_6B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2012_7A"
+                        android:title="@string/cc_2012_7A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2012_7B"
+                        android:title="@string/cc_2012_7B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2012_8A"
+                        android:title="@string/cc_2012_8A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2012_8B"
+                        android:title="@string/cc_2012_8B"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
+            <item
+                android:id="@+id/action_home_cipher_challenge_2013"
+                android:title="@string/cc_2013"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2013_0"
+                        android:title="@string/cc_2013_0"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2013_1A"
+                        android:title="@string/cc_2013_1A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2013_1B"
+                        android:title="@string/cc_2013_1B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2013_2A"
+                        android:title="@string/cc_2013_2A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2013_2B"
+                        android:title="@string/cc_2013_2B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2013_3A"
+                        android:title="@string/cc_2013_3A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2013_3B"
+                        android:title="@string/cc_2013_3B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2013_4A"
+                        android:title="@string/cc_2013_4A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2013_4B"
+                        android:title="@string/cc_2013_4B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2013_5A"
+                        android:title="@string/cc_2013_5A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2013_5B"
+                        android:title="@string/cc_2013_5B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2013_6A"
+                        android:title="@string/cc_2013_6A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2013_6B"
+                        android:title="@string/cc_2013_6B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2013_7A"
+                        android:title="@string/cc_2013_7A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2013_7B"
+                        android:title="@string/cc_2013_7B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2013_8A"
+                        android:title="@string/cc_2013_8A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2013_8B"
+                        android:title="@string/cc_2013_8B"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
+            <item
+            android:id="@+id/action_home_cipher_challenge_2014"
+            android:title="@string/cc_2014"
+            app:showAsAction="ifRoom">
+            <menu>
+                <item
+                    android:id="@+id/action_home_cipher_challenge_2014_0"
+                    android:title="@string/cc_2014_0"
+                    app:showAsAction="ifRoom" />
+                <item
+                    android:id="@+id/action_home_cipher_challenge_2014_1A"
+                    android:title="@string/cc_2014_1A"
+                    app:showAsAction="ifRoom" />
+                <item
+                    android:id="@+id/action_home_cipher_challenge_2014_1B"
+                    android:title="@string/cc_2014_1B"
+                    app:showAsAction="ifRoom" />
+                <item
+                    android:id="@+id/action_home_cipher_challenge_2014_2A"
+                    android:title="@string/cc_2014_2A"
+                    app:showAsAction="ifRoom" />
+                <item
+                    android:id="@+id/action_home_cipher_challenge_2014_2B"
+                    android:title="@string/cc_2014_2B"
+                    app:showAsAction="ifRoom" />
+                <item
+                    android:id="@+id/action_home_cipher_challenge_2014_3A"
+                    android:title="@string/cc_2014_3A"
+                    app:showAsAction="ifRoom" />
+                <item
+                    android:id="@+id/action_home_cipher_challenge_2014_3B"
+                    android:title="@string/cc_2014_3B"
+                    app:showAsAction="ifRoom" />
+                <item
+                    android:id="@+id/action_home_cipher_challenge_2014_4A"
+                    android:title="@string/cc_2014_4A"
+                    app:showAsAction="ifRoom" />
+                <item
+                    android:id="@+id/action_home_cipher_challenge_2014_4B"
+                    android:title="@string/cc_2014_4B"
+                    app:showAsAction="ifRoom" />
+                <item
+                    android:id="@+id/action_home_cipher_challenge_2014_5A"
+                    android:title="@string/cc_2014_5A"
+                    app:showAsAction="ifRoom" />
+                <item
+                    android:id="@+id/action_home_cipher_challenge_2014_5B"
+                    android:title="@string/cc_2014_5B"
+                    app:showAsAction="ifRoom" />
+                <item
+                    android:id="@+id/action_home_cipher_challenge_2014_6A"
+                    android:title="@string/cc_2014_6A"
+                    app:showAsAction="ifRoom" />
+                <item
+                    android:id="@+id/action_home_cipher_challenge_2014_6B"
+                    android:title="@string/cc_2014_6B"
+                    app:showAsAction="ifRoom" />
+                <item
+                    android:id="@+id/action_home_cipher_challenge_2014_7A"
+                    android:title="@string/cc_2014_7A"
+                    app:showAsAction="ifRoom" />
+                <item
+                    android:id="@+id/action_home_cipher_challenge_2014_7B"
+                    android:title="@string/cc_2014_7B"
+                    app:showAsAction="ifRoom" />
+                <item
+                    android:id="@+id/action_home_cipher_challenge_2014_8A"
+                    android:title="@string/cc_2014_8A"
+                    app:showAsAction="ifRoom" />
+                <item
+                    android:id="@+id/action_home_cipher_challenge_2014_8B"
+                    android:title="@string/cc_2014_8B"
+                    app:showAsAction="ifRoom" />
+            </menu>
+            </item>
+            <item
+                android:id="@+id/action_home_cipher_challenge_2015"
+                android:title="@string/cc_2015"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2015_0"
+                        android:title="@string/cc_2015_0"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2015_1A"
+                        android:title="@string/cc_2015_1A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2015_1B"
+                        android:title="@string/cc_2015_1B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2015_2A"
+                        android:title="@string/cc_2015_2A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2015_2B"
+                        android:title="@string/cc_2015_2B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2015_3A"
+                        android:title="@string/cc_2015_3A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2015_3B"
+                        android:title="@string/cc_2015_3B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2015_4A"
+                        android:title="@string/cc_2015_4A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2015_4B"
+                        android:title="@string/cc_2015_4B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2015_5A"
+                        android:title="@string/cc_2015_5A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2015_5B"
+                        android:title="@string/cc_2015_5B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2015_6A"
+                        android:title="@string/cc_2015_6A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2015_6B"
+                        android:title="@string/cc_2015_6B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2015_7A"
+                        android:title="@string/cc_2015_7A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2015_7B"
+                        android:title="@string/cc_2015_7B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2015_8A"
+                        android:title="@string/cc_2015_8A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2015_8B"
+                        android:title="@string/cc_2015_8B"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
+            <item
+                android:id="@+id/action_home_cipher_challenge_2016"
+                android:title="@string/cc_2016"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2016_1A"
+                        android:title="@string/cc_2016_1A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2016_1B"
+                        android:title="@string/cc_2016_1B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2016_2A"
+                        android:title="@string/cc_2016_2A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2016_2B"
+                        android:title="@string/cc_2016_2B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2016_3A"
+                        android:title="@string/cc_2016_3A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2016_3B"
+                        android:title="@string/cc_2016_3B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2016_4A"
+                        android:title="@string/cc_2016_4A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2016_4B"
+                        android:title="@string/cc_2016_4B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2016_5A"
+                        android:title="@string/cc_2016_5A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2016_5B"
+                        android:title="@string/cc_2016_5B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2016_6A"
+                        android:title="@string/cc_2016_6A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2016_6B"
+                        android:title="@string/cc_2016_6B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2016_7A"
+                        android:title="@string/cc_2016_7A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2016_7B"
+                        android:title="@string/cc_2016_7B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2016_8A"
+                        android:title="@string/cc_2016_8A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2016_8B"
+                        android:title="@string/cc_2016_8B"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
+            <item
+                android:id="@+id/action_home_cipher_challenge_2017"
+                android:title="@string/cc_2017"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2017_1A"
+                        android:title="@string/cc_2017_1A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2017_1B"
+                        android:title="@string/cc_2017_1B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2017_2A"
+                        android:title="@string/cc_2017_2A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2017_2B"
+                        android:title="@string/cc_2017_2B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2017_3A"
+                        android:title="@string/cc_2017_3A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2017_3B"
+                        android:title="@string/cc_2017_3B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2017_4A"
+                        android:title="@string/cc_2017_4A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2017_4B"
+                        android:title="@string/cc_2017_4B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2017_5A"
+                        android:title="@string/cc_2017_5A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2017_5B"
+                        android:title="@string/cc_2017_5B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2017_6A"
+                        android:title="@string/cc_2017_6A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2017_6B"
+                        android:title="@string/cc_2017_6B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2017_7A"
+                        android:title="@string/cc_2017_7A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2017_7B"
+                        android:title="@string/cc_2017_7B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2017_8A"
+                        android:title="@string/cc_2017_8A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2017_8B"
+                        android:title="@string/cc_2017_8B"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
+            <item
+                android:id="@+id/action_home_cipher_challenge_2018"
+                android:title="@string/cc_2018"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_1A"
+                        android:title="@string/cc_2018_1A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_1B"
+                        android:title="@string/cc_2018_1B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_2A"
+                        android:title="@string/cc_2018_2A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_2B"
+                        android:title="@string/cc_2018_2B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_3A"
+                        android:title="@string/cc_2018_3A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_3B"
+                        android:title="@string/cc_2018_3B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_4A"
+                        android:title="@string/cc_2018_4A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_4B"
+                        android:title="@string/cc_2018_4B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_5A"
+                        android:title="@string/cc_2018_5A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_5B"
+                        android:title="@string/cc_2018_5B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_6A"
+                        android:title="@string/cc_2018_6A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_6B"
+                        android:title="@string/cc_2018_6B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_7A"
+                        android:title="@string/cc_2018_7A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_7B"
+                        android:title="@string/cc_2018_7B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_8A"
+                        android:title="@string/cc_2018_8A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_8B"
+                        android:title="@string/cc_2018_8B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_9A"
+                        android:title="@string/cc_2018_9A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_9B"
+                        android:title="@string/cc_2018_9B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_10A"
+                        android:title="@string/cc_2018_10A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2018_10B"
+                        android:title="@string/cc_2018_10B"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
+            <item
+                android:id="@+id/action_home_cipher_challenge_2019"
+                android:title="@string/cc_2019"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2019_1A"
+                        android:title="@string/cc_2019_1A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2019_1B"
+                        android:title="@string/cc_2019_1B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2019_2A"
+                        android:title="@string/cc_2019_2A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2019_2B"
+                        android:title="@string/cc_2019_2B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2019_3A"
+                        android:title="@string/cc_2019_3A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2019_3B"
+                        android:title="@string/cc_2019_3B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2019_4A"
+                        android:title="@string/cc_2019_4A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2019_4B"
+                        android:title="@string/cc_2019_4B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2019_5A"
+                        android:title="@string/cc_2019_5A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2019_5B"
+                        android:title="@string/cc_2019_5B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2019_6A"
+                        android:title="@string/cc_2019_6A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2019_6B"
+                        android:title="@string/cc_2019_6B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2019_7A"
+                        android:title="@string/cc_2019_7A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2019_7B"
+                        android:title="@string/cc_2019_7B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2019_8A"
+                        android:title="@string/cc_2019_8A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2019_8B"
+                        android:title="@string/cc_2019_8B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2019_9A"
+                        android:title="@string/cc_2019_9A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2019_9B"
+                        android:title="@string/cc_2019_9B"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
         </menu>
     </item>
     <item
-        android:id="@+id/action_home_cipher_challenge_2002"
-        android:title="@string/cc_2002"
+        android:id="@+id/action_home_cb_menu"
+        android:title="@string/cb_menu"
         app:showAsAction="ifRoom">
         <menu>
             <item
-                android:id="@+id/action_home_cipher_challenge_2002_00"
-                android:title="@string/cc_2002_00"
+                android:id="@+id/action_home_cb_menu_stage_1"
+                android:title="@string/cb_menu_stage_1"
                 app:showAsAction="ifRoom" />
             <item
-                android:id="@+id/action_home_cipher_challenge_2002_01"
-                android:title="@string/cc_2002_01"
+                android:id="@+id/action_home_cb_menu_stage_2"
+                android:title="@string/cb_menu_stage_2"
                 app:showAsAction="ifRoom" />
             <item
-                android:id="@+id/action_home_cipher_challenge_2002_02"
-                android:title="@string/cc_2002_02"
+                android:id="@+id/action_home_cb_menu_stage_3"
+                android:title="@string/cb_menu_stage_3"
                 app:showAsAction="ifRoom" />
             <item
-                android:id="@+id/action_home_cipher_challenge_2002_03"
-                android:title="@string/cc_2002_03"
+                android:id="@+id/action_home_cb_menu_stage_4"
+                android:title="@string/cb_menu_stage_4"
                 app:showAsAction="ifRoom" />
             <item
-                android:id="@+id/action_home_cipher_challenge_2002_04"
-                android:title="@string/cc_2002_04"
+                android:id="@+id/action_home_cb_menu_stage_5"
+                android:title="@string/cb_menu_stage_5"
                 app:showAsAction="ifRoom" />
             <item
-                android:id="@+id/action_home_cipher_challenge_2002_05"
-                android:title="@string/cc_2002_05"
+                android:id="@+id/action_home_cb_menu_stage_6"
+                android:title="@string/cb_menu_stage_6"
                 app:showAsAction="ifRoom" />
             <item
-                android:id="@+id/action_home_cipher_challenge_2002_06"
-                android:title="@string/cc_2002_06"
+                android:id="@+id/action_home_cb_menu_stage_7"
+                android:title="@string/cb_menu_stage_7"
                 app:showAsAction="ifRoom" />
             <item
-                android:id="@+id/action_home_cipher_challenge_2002_07"
-                android:title="@string/cc_2002_07"
+                android:id="@+id/action_home_cb_menu_stage_8"
+                android:title="@string/cb_menu_stage_8"
                 app:showAsAction="ifRoom" />
             <item
-                android:id="@+id/action_home_cipher_challenge_2002_08a"
-                android:title="@string/cc_2002_08a"
+                android:id="@+id/action_home_cb_menu_stage_9"
+                android:title="@string/cb_menu_stage_9"
                 app:showAsAction="ifRoom" />
             <item
-                android:id="@+id/action_home_cipher_challenge_2002_08b"
-                android:title="@string/cc_2002_08b"
+                android:id="@+id/action_home_cb_menu_stage_10_shorter"
+                android:title="@string/cb_menu_stage_10_shorter"
                 app:showAsAction="ifRoom" />
             <item
-                android:id="@+id/action_home_cipher_challenge_2002_09"
-                android:title="@string/cc_2002_09"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2002_10"
-                android:title="@string/cc_2002_10"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2002_11"
-                android:title="@string/cc_2002_11"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2002_12"
-                android:title="@string/cc_2002_12"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2002_13"
-                android:title="@string/cc_2002_13"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2002_14"
-                android:title="@string/cc_2002_14"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2002_15"
-                android:title="@string/cc_2002_15"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2002_16"
-                android:title="@string/cc_2002_16"
-                app:showAsAction="ifRoom" />
-        </menu>
-    </item>
-    <item
-        android:id="@+id/action_home_cipher_challenge_2003"
-        android:title="@string/cc_2003"
-        app:showAsAction="ifRoom">
-        <menu>
-            <item
-                android:id="@+id/action_home_cipher_challenge_2003_00"
-                android:title="@string/cc_2003_00"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2003_01"
-                android:title="@string/cc_2003_01"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2003_02"
-                android:title="@string/cc_2003_02"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2003_03"
-                android:title="@string/cc_2003_03"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2003_04"
-                android:title="@string/cc_2003_04"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2003_05"
-                android:title="@string/cc_2003_05"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2003_06"
-                android:title="@string/cc_2003_06"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2003_07"
-                android:title="@string/cc_2003_07"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2003_08"
-                android:title="@string/cc_2003_08"
-                app:showAsAction="ifRoom" />
-        </menu>
-    </item>
-    <item
-        android:id="@+id/action_home_cipher_challenge_2004"
-        android:title="@string/cc_2004"
-        app:showAsAction="ifRoom">
-        <menu>
-            <item
-                android:id="@+id/action_home_cipher_challenge_2004_00"
-                android:title="@string/cc_2004_0"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2004_1A"
-                android:title="@string/cc_2004_1A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2004_1B"
-                android:title="@string/cc_2004_1B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2004_2A"
-                android:title="@string/cc_2004_2A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2004_2B"
-                android:title="@string/cc_2004_2B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2004_3A"
-                android:title="@string/cc_2004_3A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2004_3B"
-                android:title="@string/cc_2004_3B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2004_4A"
-                android:title="@string/cc_2004_4A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2004_4B"
-                android:title="@string/cc_2004_4B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2004_5A"
-                android:title="@string/cc_2004_5A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2004_5B"
-                android:title="@string/cc_2004_5B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2004_6A"
-                android:title="@string/cc_2004_6A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2004_6B"
-                android:title="@string/cc_2004_6B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2004_7A"
-                android:title="@string/cc_2004_7A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2004_7B"
-                android:title="@string/cc_2004_7B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2004_8A"
-                android:title="@string/cc_2004_8A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2004_8B"
-                android:title="@string/cc_2004_8B"
-                app:showAsAction="ifRoom" />
-        </menu>
-    </item>
-    <item
-        android:id="@+id/action_home_cipher_challenge_2006"
-        android:title="@string/cc_2006"
-        app:showAsAction="ifRoom">
-        <menu>
-            <item
-                android:id="@+id/action_home_cipher_challenge_2006_1A"
-                android:title="@string/cc_2006_1A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2006_1B"
-                android:title="@string/cc_2006_1B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2006_2A"
-                android:title="@string/cc_2006_2A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2006_2B"
-                android:title="@string/cc_2006_2B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2006_3A"
-                android:title="@string/cc_2006_3A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2006_3B"
-                android:title="@string/cc_2006_3B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2006_4A"
-                android:title="@string/cc_2006_4A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2006_4B"
-                android:title="@string/cc_2006_4B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2006_5A"
-                android:title="@string/cc_2006_5A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2006_5B"
-                android:title="@string/cc_2006_5B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2006_6A"
-                android:title="@string/cc_2006_6A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2006_6B"
-                android:title="@string/cc_2006_6B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2006_7A"
-                android:title="@string/cc_2006_7A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2006_7B"
-                android:title="@string/cc_2006_7B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2006_8A"
-                android:title="@string/cc_2006_8A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2006_8B"
-                android:title="@string/cc_2006_8B"
-                app:showAsAction="ifRoom" />
-        </menu>
-    </item>
-    <item
-        android:id="@+id/action_home_cipher_challenge_2007"
-        android:title="@string/cc_2007"
-        app:showAsAction="ifRoom">
-        <menu>
-            <item
-                android:id="@+id/action_home_cipher_challenge_2007_1A"
-                android:title="@string/cc_2007_1A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2007_1B"
-                android:title="@string/cc_2007_1B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2007_2A"
-                android:title="@string/cc_2007_2A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2007_2B"
-                android:title="@string/cc_2007_2B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2007_3A"
-                android:title="@string/cc_2007_3A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2007_3B"
-                android:title="@string/cc_2007_3B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2007_4A"
-                android:title="@string/cc_2007_4A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2007_4B"
-                android:title="@string/cc_2007_4B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2007_5A"
-                android:title="@string/cc_2007_5A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2007_5B"
-                android:title="@string/cc_2007_5B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2007_6A"
-                android:title="@string/cc_2007_6A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2007_6B"
-                android:title="@string/cc_2007_6B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2007_7A"
-                android:title="@string/cc_2007_7A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2007_7B"
-                android:title="@string/cc_2007_7B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2007_8A"
-                android:title="@string/cc_2007_8A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2007_8B"
-                android:title="@string/cc_2007_8B"
-                app:showAsAction="ifRoom" />
-        </menu>
-    </item>
-    <item
-        android:id="@+id/action_home_cipher_challenge_2009"
-        android:title="@string/cc_2009"
-        app:showAsAction="ifRoom">
-        <menu>
-            <item
-                android:id="@+id/action_home_cipher_challenge_2009_0A"
-                android:title="@string/cc_2009_0A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2009_0B"
-                android:title="@string/cc_2009_0B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2009_1A"
-                android:title="@string/cc_2009_1A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2009_1B"
-                android:title="@string/cc_2009_1B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2009_2A"
-                android:title="@string/cc_2009_2A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2009_2B"
-                android:title="@string/cc_2009_2B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2009_3A"
-                android:title="@string/cc_2009_3A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2009_3B"
-                android:title="@string/cc_2009_3B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2009_4A"
-                android:title="@string/cc_2009_4A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2009_4B"
-                android:title="@string/cc_2009_4B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2009_5A"
-                android:title="@string/cc_2009_5A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2009_5B"
-                android:title="@string/cc_2009_5B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2009_6A"
-                android:title="@string/cc_2009_6A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2009_6B"
-                android:title="@string/cc_2009_6B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2009_7A"
-                android:title="@string/cc_2009_7A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2009_7B"
-                android:title="@string/cc_2009_7B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2009_8A"
-                android:title="@string/cc_2009_8A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2009_8B"
-                android:title="@string/cc_2009_8B"
-                app:showAsAction="ifRoom" />
-        </menu>
-    </item>
-    <item
-        android:id="@+id/action_home_cipher_challenge_2010"
-        android:title="@string/cc_2010"
-        app:showAsAction="ifRoom">
-        <menu>
-            <item
-                android:id="@+id/action_home_cipher_challenge_2010_1A"
-                android:title="@string/cc_2010_1A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2010_1B"
-                android:title="@string/cc_2010_1B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2010_2A"
-                android:title="@string/cc_2010_2A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2010_2B"
-                android:title="@string/cc_2010_2B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2010_3A"
-                android:title="@string/cc_2010_3A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2010_3B"
-                android:title="@string/cc_2010_3B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2010_4A"
-                android:title="@string/cc_2010_4A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2010_4B"
-                android:title="@string/cc_2010_4B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2010_5A"
-                android:title="@string/cc_2010_5A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2010_5B"
-                android:title="@string/cc_2010_5B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2010_6A"
-                android:title="@string/cc_2010_6A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2010_6B"
-                android:title="@string/cc_2010_6B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2010_7A"
-                android:title="@string/cc_2010_7A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2010_7B"
-                android:title="@string/cc_2010_7B"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2010_8A"
-                android:title="@string/cc_2010_8A"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/action_home_cipher_challenge_2010_8B"
-                android:title="@string/cc_2010_8B"
+                android:id="@+id/action_home_cb_menu_stage_10_longer"
+                android:title="@string/cb_menu_stage_10_longer"
                 app:showAsAction="ifRoom" />
         </menu>
     </item>

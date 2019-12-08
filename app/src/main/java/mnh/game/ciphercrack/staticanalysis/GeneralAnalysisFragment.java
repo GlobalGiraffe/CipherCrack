@@ -23,6 +23,7 @@ public class GeneralAnalysisFragment extends Fragment {
     private final AnalysisActivity analysis;
     private final String text;
     private final String alphabet;
+    private String stats = null;
 
     public GeneralAnalysisFragment(AnalysisActivity analysis, String text, String alphabet) {
         this.analysis = analysis;
@@ -33,8 +34,9 @@ public class GeneralAnalysisFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_analysis_general, container, false);
+        if (stats == null)
+            stats = gatherGeneralStats(text);
         // gather stats and place on the screen
-        String stats = gatherGeneralStats(text);
         TextView textView = view.findViewById(R.id.stats_general_text);
         textView.setText(stats);
         return view;

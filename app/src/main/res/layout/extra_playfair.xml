@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:theme="@style/CrackTheme"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/extra_keyword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="15"
+            android:text="@string/default_playfair_keyword"
+            android:hint="@string/keyword"
+            android:importantForAutofill="no"
+            android:maxWidth="50dp"
+            android:singleLine="true"
+            android:inputType="textNoSuggestions"
+            android:padding="3dp"
+            android:layout_gravity="center"
+            android:textColor="@color/entry_text_text"
+            android:background="@drawable/entry_text_border" />
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:id="@+id/extra_playfair_keyword_delete"
+            android:background="@android:drawable/ic_delete"/>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/extra_playfair_rowscols"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:text="@string/default_playfair_rowscols"
+            android:hint="@string/size"
+            android:importantForAutofill="no"
+            android:maxWidth="50dp"
+            android:singleLine="true"
+            android:inputType="number"
+            android:padding="3dp"
+            android:layout_gravity="center"
+            android:textColor="@color/entry_text_text"
+            android:background="@drawable/entry_text_border" />
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:id="@+id/extra_playfair_rowscols_delete"
+            android:background="@android:drawable/ic_delete"/>
+        <EditText
+            android:id="@+id/extra_replace"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:text="@string/default_replace"
+            android:hint="@string/replace"
+            android:importantForAutofill="no"
+            android:maxWidth="50dp"
+            android:singleLine="true"
+            android:inputType="textNoSuggestions"
+            android:padding="3dp"
+            android:layout_gravity="center"
+            android:textColor="@color/entry_text_text"
+            android:background="@drawable/entry_text_border" />
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:id="@+id/extra_playfair_replace_delete"
+            android:background="@android:drawable/ic_delete"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/extend_explain" />
+        <RadioGroup
+            android:id="@id/extra_extend_button_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:checkedButton="@id/extra_extend_button_min">
+            <RadioButton
+                android:id="@id/extra_extend_button_first"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/extend_first"
+                android:checked="false"/>
+            <RadioButton
+                android:id="@id/extra_extend_button_min"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/extend_min"
+                android:checked="false" />
+            <RadioButton
+                android:id="@id/extra_extend_button_max"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/extend_max"
+                android:checked="true" />
+            <RadioButton
+                android:id="@id/extra_extend_button_last"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/extend_last"
+                android:checked="false" />
+            <RadioButton
+                android:id="@+id/extra_extend_button_none"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/extend_none"
+                android:checked="false" />
+        </RadioGroup>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/extra_full_keyword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="3dp"
+        android:text="@string/default_full_keyword" />
+</LinearLayout>

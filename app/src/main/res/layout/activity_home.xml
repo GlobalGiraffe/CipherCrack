@@ -32,9 +32,10 @@
         android:gravity="top|start"
         android:layout_weight="1"
         android:textSize="16sp"
+        android:textColor="@color/entry_text_text"
+        android:background="@drawable/result_text_border"
         android:inputType="textMultiLine|textNoSuggestions"
-        android:scrollIndicators="right"
-        android:text="@string/initial_entry_text"/>
+        android:scrollIndicators="right"/>
 
     <!-- this is where we programmatically put the extra controls for each cipher type -->
     <LinearLayout
@@ -93,6 +94,7 @@
         android:layout_gravity="end"
         app:itemIconTint="@color/crackPrimaryVVLight"
         app:itemTextColor="@color/white"
+        android:background="@drawable/result_text_border_darker"
         app:menu="@menu/bottom_menu" />
 
 </LinearLayout>

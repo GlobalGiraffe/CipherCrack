@@ -8,6 +8,8 @@ import android.widget.Spinner;
 
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,6 +18,7 @@ import mnh.game.ciphercrack.R;
 import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
+import mnh.game.ciphercrack.util.CrackState;
 import mnh.game.ciphercrack.util.Directives;
 
 /**
@@ -25,6 +28,7 @@ import mnh.game.ciphercrack.util.Directives;
  */
 public class Affine extends Cipher {
 
+    // the cipher text is calculated as (char*a + b)
     private int a = -1, b = -1;
 
     Affine(Context context) { super(context, "Affine"); }
@@ -71,12 +75,17 @@ public class Affine extends Cipher {
         super.addExtraControls(context, layout, R.layout.extra_affine);
 
         // now attach the values to the spinners
-        // create an array of possible values for 'a' and 'b' values for Affine cipher
-        // The first can be 1-26, the second 0-26
-        Integer[] aArray = new Integer[alphabet.length() - 1];
-        for (int i = 0; i < alphabet.length() - 1; i++) {
-            aArray[i] = i + 1;
+        // create an array of possible values for 'a' and 'b' for Affine cipher
+        // The first, for 'a' values, can be 1-[alphabet length], but only if not co-prime
+        List<Integer> listOfValueA = new LinkedList<Integer>();
+        for (int i = 1; i < alphabet.length(); i++) {
+            if (areCoPrimes(i, alphabet.length())) {
+                listOfValueA.add(i);
+            }
         }
+        Integer[] aArray = new Integer[listOfValueA.size()];
+        listOfValueA.toArray(aArray);
+        // now the second, for 'b' values, can be 0-[alphabet length]
         Integer[] bArray = new Integer[alphabet.length()];
         for (int i = 0; i < alphabet.length(); i++) {
             bArray[i] = i;
@@ -115,20 +124,6 @@ public class Affine extends Cipher {
     }
 
     /**
-     * if the Greatest Common Factor of a and b is not 1 then they're not coprime (relatively prime)
-     * in this case more than one plain letter will map to the same cipher letter and we'll not be able to decode
-     * @param a first int to be checked
-     * @param b second int to be checked
-     * @return true if the only common divisor of a and b are 1, else false
-     */
-    private boolean areCoPrimes(int a, int b) {
-        if (a == 0) // this doesn't give good Affine mappings, all map to same char
-            return false;
-        BigInteger gcf = BigInteger.valueOf(a).gcd(BigInteger.valueOf(b));
-        return gcf.equals(BigInteger.ONE);
-    }
-
-    /**
      * Determine whether the directives are valid for this cipher type, and sets if they are
      * @param dirs the directives to be checked and set
      * @return return the reason for being invalid, or null if the directives ARE valid (and are set)
@@ -146,8 +141,9 @@ public class Affine extends Cipher {
         if (crackMethod == null || crackMethod == CrackMethod.NONE) {
             if (aValue < 0 || bValue < 0)
                 return "Values for A (" + aValue + ") and B (" + bValue + ") must be greater than zero";
-            if (!areCoPrimes(aValue, bValue))
-                return "Values for A (" + aValue + ") and B (" + bValue + ") are not co-prime";
+            String alphabet = dirs.getAlphabet();
+            if (!areCoPrimes(aValue, alphabet.length()))
+                return "Values for A (" + aValue + ") and alphabet length (" + alphabet.length() + ") are not co-prime";
         } else {
             // this the the only crack possible
             if (crackMethod != CrackMethod.BRUTE_FORCE)
@@ -270,24 +266,38 @@ public class Affine extends Cipher {
         String cribString = dirs.getCribs();
         Set<String> cribSet = Cipher.getCribSet(cribString);
         CrackMethod crackMethod = dirs.getCrackMethod();
+        String reverseCipherText = new StringBuilder(cipherText).reverse().toString();
 
         //Log.i("CRACK", "Trying to crack text "+cipherText.substring(0,20)+", cribs="+cribString);
         for (int a=0; a < alphabet.length(); a++) {
-            // publish progress as a percentage
-            CrackResults.updatePercentageDirectly(crackId, 100*a/alphabet.length());
-            dirs.setValueA(a);
+            // only check if 'a' and length of alphabet are co-primes, else could have 2 plain -> 1 cipher letter
+            if (areCoPrimes(a, alphabet.length())) {
+                // publish progress as a percentage
+                if (CrackResults.isCancelled(crackId))
+                    return new CrackResult(dirs.getCrackMethod(), this, cipherText, "Crack cancelled", CrackState.CANCELLED);
+                CrackResults.updateProgressDirectly(crackId, a+" of "+alphabet.length()+": "+100*a/alphabet.length()+"% complete");
+                dirs.setValueA(a);
 
-            for (int b=0; b < alphabet.length(); b++) {
-
-                // only check if values are co-primes, else could have 2 plain -> 1 cipher letter
-                if (areCoPrimes(a, b)) {
+                // check each value of b up to length of alphabet, doing decode and looking for cribs
+                for (int b=0; b < alphabet.length(); b++) {
                     dirs.setValueB(b);
                     String plainText = decode(cipherText, dirs);
                     if (Cipher.containsAllCribs(plainText, cribSet)) {
-                        String explain = "Success: Brute force approach: tried each possible value of a and b from 0 to "
+                        String explain = "Success: Brute Force: tried each possible value of a and b from 0 to "
                                 + (alphabet.length() - 1)
                                 + " looking for the cribs [" + cribString
                                 + "] in the decoded text and found them all with a=" + a + " and b="
+                                + b + ".\n";
+                        this.a = a;
+                        this.b = b;
+                        return new CrackResult(crackMethod, this, dirs, cipherText, plainText, explain);
+                    }
+                    plainText = decode(reverseCipherText, dirs);
+                    if (Cipher.containsAllCribs(plainText, cribSet)) {
+                        String explain = "Success: Brute Force REVERSE: tried each possible value of a and b from 0 to "
+                                + (alphabet.length() - 1)
+                                + " looking for the cribs [" + cribString
+                                + "] in the decoded REVERSE text and found them all with a=" + a + " and b="
                                 + b + ".\n";
                         this.a = a;
                         this.b = b;
@@ -297,7 +307,7 @@ public class Affine extends Cipher {
             }
         }
         a = b = -1;
-        String explain = "Fail: Brute force approach: tried each possible value of a and b from 0 to "
+        String explain = "Fail: Brute Force: tried each possible value of a and b from 0 to "
                 + (alphabet.length() - 1)
                 + " looking for the cribs [" + cribString
                 + "] in the decoded text but did not find them.\n";

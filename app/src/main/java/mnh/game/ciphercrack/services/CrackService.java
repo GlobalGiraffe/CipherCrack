@@ -7,6 +7,7 @@ import android.util.Log;
 
 import mnh.game.ciphercrack.cipher.Cipher;
 import mnh.game.ciphercrack.util.CrackResult;
+import mnh.game.ciphercrack.util.CrackState;
 import mnh.game.ciphercrack.util.Directives;
 
 /**
@@ -26,7 +27,7 @@ public class CrackService extends IntentService {
 
     public static final String MSG_TYPE_PROGRESS = "Progress"; // will have PERCENT_COMPLETE int
     public static final String MSG_TYPE_COMPLETE = "Complete"; // will have CRACK_RESULT
-    public static final String PERCENT_COMPLETE = "PercentComplete"; // key for an int
+    public static final String PROGRESS = "Progress"; // key for a String
     public static final String CRACK_RESULT = "CrackResult"; // key for a CrackResult
 
     // IntentService can perform these actions
@@ -36,6 +37,7 @@ public class CrackService extends IntentService {
     private static final String EXTRA_CIPHER_NAME = "mnh.game.ciphercrack.services.extra.CIPHER_NAME";
     private static final String EXTRA_INPUT_TEXT = "mnh.game.ciphercrack.services.extra.INPUT_TEXT";
     private static final String EXTRA_DIRECTIVES = "mnh.game.ciphercrack.services.extra.DIRECTIVES";
+    private static final String EXTRA_CRACK_ID = "mnh.game.ciphercrack.services.extra.CRACK_ID";
 
     public CrackService() {
         super("CrackService");
@@ -47,12 +49,17 @@ public class CrackService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionCrack(Context context, String cipherName, String inputText, Directives dirs) {
+    public static void startActionCrack(Context context, Cipher cipher, String inputText, Directives dirs) {
+        CrackResult cr = new CrackResult(dirs.getCrackMethod(), cipher, inputText, "Not yet complete", CrackState.QUEUED);
+        cr.setProgress("Not yet running");
+        CrackResults.crackResults.addFirst(cr);
+
         Intent intent = new Intent(context, CrackService.class);
         intent.setAction(ACTION_CRACK);
-        intent.putExtra(EXTRA_CIPHER_NAME, cipherName);
+        intent.putExtra(EXTRA_CIPHER_NAME, cipher.getCipherName());
         intent.putExtra(EXTRA_INPUT_TEXT, inputText);
         intent.putExtra(EXTRA_DIRECTIVES, dirs);
+        intent.putExtra(EXTRA_CRACK_ID, cr.getId());
         context.startService(intent);
     }
 
@@ -64,11 +71,12 @@ public class CrackService extends IntentService {
                 final String cipherName = intent.getStringExtra(EXTRA_CIPHER_NAME);
                 final String inputText = intent.getStringExtra(EXTRA_INPUT_TEXT);
                 final Directives dirs = intent.getParcelableExtra(EXTRA_DIRECTIVES);
+                final int crackId = intent.getIntExtra(EXTRA_CRACK_ID, -1);
                 final Cipher cipher = Cipher.instanceOf(cipherName, null);
                 if (cipher != null && dirs != null) {
                     cipher.canParametersBeSet(dirs);
                 }
-                handleActionCrack(cipher, inputText, dirs);
+                handleActionCrack(crackId, cipher, inputText, dirs);
             }
         }
     }
@@ -76,21 +84,21 @@ public class CrackService extends IntentService {
     /**
      * Handle Crack action in the provided background thread with the provided parameters.
      */
-    private void handleActionCrack(Cipher cipher, String inputText, Directives dirs) {
+    private void handleActionCrack(int crackId, Cipher cipher, String inputText, Directives dirs) {
         Log.i(TAG, "handleActionCrack is starting");
-        long start = System.currentTimeMillis();
-        CrackResult cr = new CrackResult(dirs.getCrackMethod(), cipher, inputText, "Not yet complete");
-        cr.setPercentComplete(1);
-        CrackResults.crackResults.addFirst(cr);
+        long startTime = System.currentTimeMillis();
+        CrackResult cr = CrackResults.findCrackResult(crackId);
+        cr.setCrackState(CrackState.RUNNING);
+        CrackResults.updateProgressDirectly(crackId, "Running");
 
         // get on with the crack action
         CrackResult result = cipher.crack(inputText, dirs, cr.getId());
 
         // The result now goes into the array of results at cr
-        CrackResults.updatePercentageDirectly(cr.getId(), 100);
-        long duration = System.currentTimeMillis() - start;
-        cr.setMilliseconds(duration);
         cr.setFields(result);
+        cr.setCrackState(CrackState.COMPLETE);
+        cr.setMilliseconds(System.currentTimeMillis() - startTime);
+        CrackResults.updateProgressDirectly(cr.getId(), (cr.getCrackState() == CrackState.CANCELLED ? "Cancelled early" : "100% complete"));
         Log.i(TAG, "handleActionCrack is complete");
     }
 

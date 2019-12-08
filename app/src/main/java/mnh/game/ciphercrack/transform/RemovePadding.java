@@ -8,7 +8,7 @@ import mnh.game.ciphercrack.util.Settings;
 /**
  * Remove padding chars from a string - padding is defined in the application preferences
  */
-public class RemovePadding implements Transform {
+public class RemovePadding extends Transform {
 
     @Override
     public String apply(Context context, String text) {

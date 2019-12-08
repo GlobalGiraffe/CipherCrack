@@ -7,4 +7,5 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:textIsSelectable="true"
+    android:background="@drawable/result_text_border_darkest"
     tools:context=".ComputeResultDetailFragment" />

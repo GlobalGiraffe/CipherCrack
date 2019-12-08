@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import mnh.game.ciphercrack.util.CrackResult;
+import mnh.game.ciphercrack.util.CrackState;
 
 /**
  * Group of cipher results, success, failure, in-progress
@@ -30,9 +31,9 @@ public class CrackResults {
                     int crackId = intent.getIntExtra(CrackService.CRACK_ID, -1);
                     CrackResult crackResult = findCrackResult(crackId);
                     if (crackResult != null) {
-                        int percentComplete = intent.getIntExtra(CrackService.PERCENT_COMPLETE, 0);
-                        Log.i(TAG, "Received message from service: " + typeOfMessage + ", for id=" + crackId + ", percent=" + percentComplete);
-                        crackResult.setPercentComplete(percentComplete);
+                        String progress = intent.getStringExtra(CrackService.PROGRESS);
+                        Log.i(TAG, "Received message from service: " + typeOfMessage + ", for id=" + crackId + ", progress: " + progress);
+                        crackResult.setProgress(progress);
                     //} else {
                     //    Toast.makeText(HomeActivity.this, "Crack Service sent message for unknown id=" + crackId, Toast.LENGTH_LONG).show();
                     }
@@ -48,20 +49,25 @@ public class CrackResults {
     };
 
 
-    public static void updatePercentageDirectly(int crackId, int percentage) {
+    public static void updateProgressDirectly(int crackId, String progress) {
         CrackResult result = findCrackResult(crackId);
         if (result != null) {
-            result.setPercentComplete(percentage);
+            result.setProgress(progress);
         }
     }
 
     // locate the id in the list of in-flight and completed items
-    private static CrackResult findCrackResult(int id) {
+    public static CrackResult findCrackResult(int id) {
         for (CrackResult result : crackResults) {
             if (result.getId() == id)
                 return result;
         }
         return null;
+    }
+
+    public static boolean isCancelled(int id) {
+        CrackResult cr = findCrackResult(id);
+        return (cr != null && cr.getCrackState() == CrackState.CANCELLED);
     }
 
     // replace the result in the list with the actual result
@@ -74,6 +80,13 @@ public class CrackResults {
     // locate the item to be removed, and remove it
     public static void removeCrackResult(CrackResult crackResult) {
         crackResults.remove(crackResult);
+    }
+
+    // locate the item to be removed, and remove it
+    public static void cancelCrack(int crackId) {
+        CrackResult cr = findCrackResult(crackId);
+        if (cr != null)
+            cr.setCrackState(CrackState.CANCELLED);
     }
 
     // clear the list and replace with what has been provided (restoring state)

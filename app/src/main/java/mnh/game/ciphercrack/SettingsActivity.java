@@ -77,8 +77,10 @@ public class SettingsActivity extends PreferenceActivity {
             String defaultAlphabet = getString(R.string.default_alphabet);
 
             // check each preference key that may need summary changed
-            if (key.equals(getString(R.string.pref_cribs)))
-                p.setSummary("Default cribs: "+ sp.getString(key, "<none>"));
+            if (key.equals(getString(R.string.pref_cribs))) {
+                String cribs = sp.getString(key, "<none>");
+                p.setSummary("Default cribs: " + cribs);
+            }
             if (key.equals(getString(R.string.pref_padding_chars))) {
                 String padding = sp.getString(key, "<none>");
                 if (padding != null && padding.equals(" ")) {

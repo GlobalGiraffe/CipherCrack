@@ -36,6 +36,12 @@ public class KeywordSubstitutionTest {
     }
 
     @Test
+    public void testApplyKeywordExtendNone() {
+        String keywordAsIs = KeywordSubstitution.applyKeywordExtend(KeywordExtend.EXTEND_NONE, "TUNE", defaultAlphabet);
+        assertEquals("ExtendNone", "TUNE", keywordAsIs);
+    }
+
+    @Test
     public void testZebras() {
         // encode and then decode a mixed case cipher
         //          --    ABCDEFGHIJKLMNOPQRSTUVWXYZ
@@ -51,7 +57,7 @@ public class KeywordSubstitutionTest {
     }
 
     @Test
-    @Ignore("Word Count Crack takes 90+ seconds")
+    //@Ignore("Word Count Crack takes 80+ seconds and does not always succeed")
     public void testSubstitutionCrackWordCount() {
         // encode and then crack a large piece of text
         //                abcdefghijklmnopqrstuvwxyz
@@ -82,7 +88,7 @@ public class KeywordSubstitutionTest {
         Dictionary dict = defaultLanguage.getDictionary();
         assertNotNull("Load dictionary", dict);
 
-        // now crack it
+        // now crack the cipher using simulated anealing
         Directives cp = new Directives();
         cp.setCribs("caught,allowed,diary");
         cp.setCrackMethod(CrackMethod.WORD_COUNT);
@@ -103,7 +109,7 @@ public class KeywordSubstitutionTest {
     }
 
     @Test
-    @Ignore("Word Count Crack2 takes 200+ seconds")
+    //@Ignore("Word Count Crack2 takes 200+ seconds (but have seen 59 seconds) and does not always succeed")
     public void testSubstitutionCrackWordCount2() {
         // encode and then crack a large piece of text
         String keyword = "ALFREDOSTUVWXYZBCGHIJKMNPQ";

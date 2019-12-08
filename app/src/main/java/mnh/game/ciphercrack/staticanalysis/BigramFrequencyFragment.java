@@ -1,10 +1,10 @@
 package mnh.game.ciphercrack.staticanalysis;
 
-import mnh.game.ciphercrack.R;
+import android.content.Context;
 
 public class BigramFrequencyFragment extends FrequencyFragment {
 
-    public BigramFrequencyFragment(String text) {
-        super(text, 2, R.layout.fragment_bigram_frequency, R.id.freq_bigram_layout);
+    public BigramFrequencyFragment(Context context, String text, boolean aligned, int overallLayoutId, int tableLayoutId) {
+        super(context, text, 2, aligned, overallLayoutId, tableLayoutId);
     }
 }

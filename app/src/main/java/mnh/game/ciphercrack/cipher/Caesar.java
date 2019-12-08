@@ -13,6 +13,7 @@ import mnh.game.ciphercrack.R;
 import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
+import mnh.game.ciphercrack.util.CrackState;
 import mnh.game.ciphercrack.util.Directives;
 
 /**
@@ -208,13 +209,17 @@ public class Caesar extends Cipher {
         String cribString = dirs.getCribs();
         Set<String> cribSet = Cipher.getCribSet(cribString);
         CrackMethod crackMethod = dirs.getCrackMethod();
+        String reverseCipherText = new StringBuilder(cipherText).reverse().toString();
+
         for (int shift=0; shift < alphabet.length(); shift++) {
-            CrackResults.updatePercentageDirectly(crackId, 100*shift/alphabet.length());
+            if (CrackResults.isCancelled(crackId))
+                return new CrackResult(dirs.getCrackMethod(), this, cipherText, "Crack cancelled", CrackState.CANCELLED);
+            CrackResults.updateProgressDirectly(crackId, shift+" shifts of "+alphabet.length()+": "+100*shift/alphabet.length()+"% complete");
             dirs.setShift(shift);
             String plainText = decode(cipherText, dirs);
             if (Cipher.containsAllCribs(plainText, cribSet)) {
                 this.shift = shift;
-                String explain = "Success: Brute force approach: tried each possible Caesar shift from 0 to "
+                String explain = "Success: Brute Force: tried each possible Caesar shift from 0 to "
                         + (alphabet.length()-1)
                         + " looking for the cribs ["
                         + cribString
@@ -223,10 +228,22 @@ public class Caesar extends Cipher {
                         + ".\n";
                 return new CrackResult(crackMethod, this, dirs, cipherText, plainText, explain);
             }
+            plainText = decode(reverseCipherText, dirs);
+            if (Cipher.containsAllCribs(plainText, cribSet)) {
+                this.shift = shift;
+                String explain = "Success: Brute Force REVERSE: tried each possible Caesar shift from 0 to "
+                        + (alphabet.length()-1)
+                        + " looking for the cribs ["
+                        + cribString
+                        + "] in the decoded REVERSE text and found them all with shift "
+                        + shift
+                        + ".\n";
+                return new CrackResult(crackMethod, this, dirs, cipherText, plainText, explain);
+            }
         }
         dirs.setShift(-1);
         this.shift = -1;
-        String explain = "Fail: Brute force approach: tried each possible Caesar shift from 0 to "
+        String explain = "Fail: Brute Force: tried each possible Caesar shift from 0 to "
                 + (alphabet.length()-1)
                 + " looking for the cribs ["
                 + cribString

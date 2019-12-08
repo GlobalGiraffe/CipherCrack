@@ -15,7 +15,7 @@ import mnh.game.ciphercrack.util.Settings;
 /**
  * Split a string of plaintext by using words in the dictionary
  */
-public class SplitByWords implements Transform {
+public class SplitByWords extends Transform {
 
     @Override
     public String apply(Context context, String text) {
@@ -32,7 +32,9 @@ public class SplitByWords implements Transform {
         return doTextSplit(text, language);
     }
 
-    // helper method to do the split, called from both apply methods
+    /**
+     * Helper method to do the split, called from both apply methods
+     */
     private String doTextSplit(String text, Language language) {
         if (text == null)
             return null;
@@ -49,16 +51,16 @@ public class SplitByWords implements Transform {
         // find the likely words in the text and insert a space between them
         Set<Character> singleLetterWords = dict.getSingleLetterWords();
 
-        text = text.toUpperCase();
         StringBuilder result = new StringBuilder(text.length()*2);
         List<String> attempts = new ArrayList<>(2);
+        String textUpper = text.toUpperCase();
         while (text.length() > 0) {
-            char firstLetter = text.charAt(0);
+            char firstLetter = textUpper.charAt(0);
             if (Character.isAlphabetic(firstLetter)) {
 
                 // if prefix starts 'A' or 'I' (e.g. AS or IN) then we should
                 //  try once with prefix AS/IN/etc and then again with just A/I
-                String first2Letters = text.substring(0, Math.min(text.length(), 2));
+                String first2Letters = textUpper.substring(0, Math.min(textUpper.length(), 2));
                 attempts.clear();
                 attempts.add(first2Letters);
                 if (dict.getSingleLetterWords().contains(firstLetter)) {
@@ -72,25 +74,23 @@ public class SplitByWords implements Transform {
                     // if some words have this prefix (not XJ, for example)
                     if (candidateWords != null) {
                         for (String word : candidateWords) {
-                            if (text.startsWith(word)) {
+                            if (textUpper.startsWith(word)) {
                                 int wordLen = word.length();
                                 // this word matches to the end of the text, it will be the best
-                                if (text.length() == wordLen || !Character.isAlphabetic(text.charAt(wordLen))) {
+                                if (textUpper.length() == wordLen || !Character.isAlphabetic(textUpper.charAt(wordLen))) {
                                     largestWord = word;
                                     largestWordLen = wordLen;
                                     largestWordPairLen = wordLen;
                                 } else {
                                     // check the next 2 letters after this word are a prefix in the map
-                                    int nextPrefixLargestWordLen = 0;
-                                    String nextPrefix = text.length() >= wordLen + 2 ? text.substring(wordLen, wordLen + 2) : "";
-                                    List<String> nextCandidateWords = wordsWithPrefix.get(nextPrefix);
-                                    if (nextCandidateWords != null) {
-                                        for (String nextWord : nextCandidateWords) {
-                                            int nextWordLen = nextWord.length();
-                                            if (nextWordLen > nextPrefixLargestWordLen && text.substring(wordLen).startsWith(nextWord)) {
-                                                nextPrefixLargestWordLen = nextWordLen;
-                                            }
-                                        }
+                                    int nextPrefixLargestWordLen = getNextPrefixLargestWordLen(textUpper.substring(wordLen), wordsWithPrefix);
+
+                                    // now special case: if after current word the next letter is a single (e.g. A or I)
+                                    // then consider that a match and look for NEXT word after that
+                                    if (singleLetterWords.contains(textUpper.charAt(wordLen)) && textUpper.substring(wordLen+1).length() > 2) {
+                                        int uberNextPrefixLargestWordLen = getNextPrefixLargestWordLen(textUpper.substring(wordLen+1), wordsWithPrefix) + 1;
+                                        if (uberNextPrefixLargestWordLen > nextPrefixLargestWordLen)
+                                            nextPrefixLargestWordLen = uberNextPrefixLargestWordLen;
                                     }
                                     // no next word, but could by single-letter word like I/A in English, or Y/O in Spanish
                                     if (nextPrefixLargestWordLen == 0
@@ -120,13 +120,15 @@ public class SplitByWords implements Transform {
 
                 // we've tried 1 or 2 prefix attempts, let's see what we found
                 if (largestWordLen > 0) {
-                    result.append(largestWord);
+                    addToResultString(result, largestWord, text);
                     //System.out.println(largestWord + ": ");
                     text = text.substring(largestWordLen);
+                    textUpper = textUpper.substring(largestWordLen);
                 } else { // no word found matching the letters at the current spot, output 1 letter
-                    result.append(firstLetter);
+                    addToResultString(result, firstLetter, text);
                     //System.out.println(firstLetter + ": ");
                     text = text.substring(1);
+                    textUpper = textUpper.substring(1);
                 }
                 // append a space if not end of text and next char is not punctuation
                 if (text.length() > 0) {
@@ -137,6 +139,7 @@ public class SplitByWords implements Transform {
                 result.append(firstLetter);
                 //System.out.println(firstLetter + ": ");
                 text = text.substring(1);
+                textUpper = textUpper.substring(1);
 
                 // for some punctuation we add space after, for others (", %, start-braces) we don't
                 if (text.length() > 0
@@ -155,5 +158,36 @@ public class SplitByWords implements Transform {
             }
         }
         return result.toString();
+    }
+
+    private void addToResultString(StringBuilder result, String toAdd, String originalText) {
+        for(int pos = 0; pos < toAdd.length(); pos++) {
+            if (Character.isUpperCase(originalText.charAt(pos)))
+                result.append(Character.toUpperCase(toAdd.charAt(pos)));
+            else
+                result.append(Character.toLowerCase(toAdd.charAt(pos)));
+        }
+    }
+
+    private void addToResultString(StringBuilder result, char toAdd, String originalText) {
+        if (Character.isUpperCase(originalText.charAt(0)))
+            result.append(Character.toUpperCase(toAdd));
+        else
+            result.append(Character.toLowerCase(toAdd));
+    }
+
+    private int getNextPrefixLargestWordLen(String nextTextSection, Map<String, List<String>> wordsWithPrefix) {
+        int nextPrefixLargestWordLen = 0;
+        String nextPrefix = nextTextSection.length() >= 2 ? nextTextSection.substring(0,2) : "";
+        List<String> nextCandidateWords = wordsWithPrefix.get(nextPrefix);
+        if (nextCandidateWords != null) {
+            for (String nextWord : nextCandidateWords) {
+                int nextWordLen = nextWord.length();
+                if (nextWordLen > nextPrefixLargestWordLen && nextTextSection.startsWith(nextWord)) {
+                    nextPrefixLargestWordLen = nextWordLen;
+                }
+            }
+        }
+        return nextPrefixLargestWordLen;
     }
 }

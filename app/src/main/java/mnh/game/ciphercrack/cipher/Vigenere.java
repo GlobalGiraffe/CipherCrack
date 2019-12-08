@@ -3,7 +3,6 @@ package mnh.game.ciphercrack.cipher;
 import android.content.Context;
 import android.os.Parcel;
 import android.text.InputFilter;
-import android.text.InputType;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
@@ -12,13 +11,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import java.util.Properties;
 import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import mnh.game.ciphercrack.R;
 import mnh.game.ciphercrack.language.Dictionary;
 import mnh.game.ciphercrack.language.Language;
@@ -26,6 +23,7 @@ import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.util.Climb;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
+import mnh.game.ciphercrack.util.CrackState;
 import mnh.game.ciphercrack.util.Directives;
 import mnh.game.ciphercrack.staticanalysis.StaticAnalysis;
 
@@ -40,8 +38,32 @@ public class Vigenere extends Cipher {
     private static final View.OnClickListener VIGENERE_ON_CLICK_DELETE = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            EditText k = v.getRootView().findViewById(R.id.extra_vigenere_keyword);
-            k.setText("");
+            switch (v.getId()) {
+                case R.id.extra_vigenere_keyword_delete:
+                    EditText k = v.getRootView().findViewById(R.id.extra_vigenere_keyword);
+                    k.setText("");
+                    break;
+                case R.id.extra_vigenere_crack_length_delete:
+                    EditText l = v.getRootView().findViewById(R.id.extra_vigenere_crack_length);
+                    l.setText("");
+                    break;
+            }
+        }
+    };
+
+    // reassess which fields to see when crack methods chosen
+    private static final View.OnClickListener CRACK_METHOD_ASSESSOR = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            LinearLayout lLen = v.getRootView().findViewById(R.id.extra_vigenere_crack_layout_length);
+            switch (v.getId()) {
+                case R.id.crack_button_dictionary:
+                    lLen.setVisibility(View.GONE);
+                    break;
+                case R.id.crack_button_ioc:
+                    lLen.setVisibility(View.VISIBLE);
+                    break;
+            }
         }
     };
 
@@ -182,53 +204,20 @@ public class Vigenere extends Cipher {
      */
     @Override
     public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
-        TextView lengthLabel = new TextView(context);
-        lengthLabel.setText(context.getString(R.string.length));
-        lengthLabel.setTextColor(ContextCompat.getColor(context, R.color.white));
-        lengthLabel.setLayoutParams(WRAP_CONTENT_BOTH);
+        // this extracts the layout from the XML resource
+        super.addExtraControls(context, layout, R.layout.extra_vigenere_crack);
 
-        EditText keywordLength = new EditText(context);
-        keywordLength.setText("");
-        keywordLength.setPadding(3,3,3,3);
-        keywordLength.setTextColor(ContextCompat.getColor(context, R.color.entry_text_text));
-        keywordLength.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
-        keywordLength.setId(ID_VIGENERE_LENGTH);
-        keywordLength.setBackground(context.getDrawable(R.drawable.entry_text_border));
-        keywordLength.setInputType(InputType.TYPE_CLASS_NUMBER);
+        // ensure we 'delete' the field when the delete button is pressed
+        Button lengthDelete = layout.findViewById(R.id.extra_vigenere_crack_length_delete);
+        lengthDelete.setOnClickListener(VIGENERE_ON_CLICK_DELETE);
 
-        TextView crackLabel = new TextView(context);
-        crackLabel.setText(context.getString(R.string.crack_method));
-        crackLabel.setTextColor(ContextCompat.getColor(context, R.color.white));
-        crackLabel.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
-
-        RadioButton dictButton = new RadioButton(context);
-        dictButton.setId(ID_BUTTON_DICTIONARY);
-        dictButton.setText(context.getString(R.string.crack_dictionary));
-        dictButton.setChecked(true);
-        dictButton.setTextColor(ContextCompat.getColor(context, R.color.white));
-        dictButton.setLayoutParams(WRAP_CONTENT_BOTH);
-
-        RadioButton iocButton = new RadioButton(context);
-        iocButton.setId(ID_BUTTON_IOC);
-        iocButton.setText(context.getString(R.string.crack_ioc));
-        iocButton.setChecked(false);
-        iocButton.setTextColor(ContextCompat.getColor(context, R.color.white));
-        iocButton.setLayoutParams(WRAP_CONTENT_BOTH);
-
-        RadioGroup crackButtonGroup = new RadioGroup(context);
-        crackButtonGroup.check(ID_BUTTON_DICTIONARY);
-        crackButtonGroup.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
-        crackButtonGroup.setOrientation(LinearLayout.HORIZONTAL);
-        crackButtonGroup.addView(dictButton);
-        crackButtonGroup.addView(iocButton);
-
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
-        layout.addView(lengthLabel);
-        layout.addView(keywordLength);
-        layout.addView(crackLabel);
-        layout.addView(crackButtonGroup);
-
+        // assess when radio buttons pressed to show what fields needed for each type of crack
+        RadioGroup group = layout.findViewById(R.id.extra_vigenere_crack_radio_group);
+        for (int child = 0; child < group.getChildCount(); child++) {
+            RadioButton button = (RadioButton)group.getChildAt(child);
+            button.setOnClickListener(CRACK_METHOD_ASSESSOR);
+        }
+        CRACK_METHOD_ASSESSOR.onClick(layout.findViewById(R.id.crack_button_dictionary));
         return true;
     }
 
@@ -241,7 +230,7 @@ public class Vigenere extends Cipher {
     @Override
     public CrackMethod fetchCrackControls(LinearLayout layout, Directives dirs) {
         dirs.setKeywordLength(-2);
-        EditText keywordLengthField = layout.findViewById(ID_VIGENERE_LENGTH);
+        EditText keywordLengthField = layout.findViewById(R.id.extra_vigenere_crack_length);
         String keywordLengthStr = keywordLengthField.getText().toString();
         if (keywordLengthStr.length() == 0)
             dirs.setKeywordLength(-1);
@@ -256,7 +245,7 @@ public class Vigenere extends Cipher {
         }
 
         // locate the kind of crack we've been asked to do
-        RadioButton dictButton = layout.findViewById(ID_BUTTON_DICTIONARY);
+        RadioButton dictButton = layout.findViewById(R.id.crack_button_dictionary);
         return (dictButton.isChecked()) ? CrackMethod.DICTIONARY : CrackMethod.IOC;
     }
 
@@ -326,34 +315,54 @@ public class Vigenere extends Cipher {
      * @return the results of the crack attempt
      */
     private CrackResult crackUsingDictionary(String cipherText, Directives dirs, int crackId) {
+        CrackResults.updateProgressDirectly(crackId, "Starting "+getCipherName()+" dictionary crack");
         String cribString = dirs.getCribs();
         CrackMethod crackMethod = dirs.getCrackMethod();
         StringBuilder explain = new StringBuilder();
+        String reverseCipherText = new StringBuilder(cipherText).reverse().toString();
 
         Set<String> cribs = Cipher.getCribSet(cribString);
         Dictionary dict = dirs.getLanguage().getDictionary();
-        int wordsRead = 0;
-        String foundWord = null;
-        String foundPlainText = null;
+        int wordsRead = 0, foundCount = 0;
+        String foundWord = null, foundPlainText = null;
         for (String word : dict) {
-            if (wordsRead++ % 500 == 499) {
-                Log.i("CipherCrack", "Cracking " + getCipherName() + " Dict: " + wordsRead + " words tried");
-                CrackResults.updatePercentageDirectly(crackId, 100*wordsRead/dict.size());
+            if (wordsRead++ % 200 == 199) {
+                if (CrackResults.isCancelled(crackId))
+                    return new CrackResult(dirs.getCrackMethod(), this, cipherText, "Crack cancelled", CrackState.CANCELLED);
+                Log.i("CipherCrack", "Cracking " + getCipherName() + " Dict: " + wordsRead + " words tried, found "+foundCount);
+                CrackResults.updateProgressDirectly(crackId, wordsRead+" words of "+dict.size()+": "+100*wordsRead/dict.size()+"% complete, found="+foundCount);
             }
             word = word.toUpperCase();
             dirs.setKeyword(word);
             String plainText = decode(cipherText, dirs);
             if (Cipher.containsAllCribs(plainText, cribs)) {
+                foundCount++;
                 explain.append("Success: Searched using ")
                         .append(dict.size())
                         .append(" dictionary words as keys and found all cribs [")
                         .append(cribString)
-                        .append("]\n")
+                        .append("].\n")
                         .append("Keyword ")
                         .append(word)
                         .append(" gave decoded text=")
                         .append(plainText.substring(0, 60))
-                        .append("\n");
+                        .append(".\n");
+                foundWord = word;
+                foundPlainText = plainText;
+            }
+            plainText = decode(reverseCipherText, dirs);
+            if (Cipher.containsAllCribs(plainText, cribs)) {
+                foundCount++;
+                explain.append("Success: REVERSE: Searched using ")
+                        .append(dict.size())
+                        .append(" dictionary words as keys and found all cribs [")
+                        .append(cribString)
+                        .append("] using REVERSE text.\n")
+                        .append("Keyword ")
+                        .append(word)
+                        .append(" gave decoded text=")
+                        .append(plainText.substring(0, 60))
+                        .append(".\n");
                 foundWord = word;
                 foundPlainText = plainText;
             }
@@ -385,7 +394,8 @@ public class Vigenere extends Cipher {
      * @param crackId used to pass progress results around
      * @return the results of the crack attempt
      */
-    private CrackResult crackUsingClimbIOC(String cipherText, Directives dirs, int crackId) {
+    private CrackResult crackIndexOfCoincidence(String cipherText, Directives dirs, int crackId) {
+        CrackResults.updateProgressDirectly(crackId, "Starting "+getCipherName()+" hill climb using IOC fitness");
         String alphabet = dirs.getAlphabet();
         String cribString = dirs.getCribs();
         String paddingChars = dirs.getPaddingChars();
@@ -406,7 +416,6 @@ public class Vigenere extends Cipher {
         crackProps.setProperty(Climb.CLIMB_PADDING_CHARS, paddingChars);
 
         // publisher.publishProgress(crackId, 1);
-        CrackResults.updatePercentageDirectly(crackId, 1);
         if (Climb.doClimb(cipherText, this, crackProps, crackId)) {
             keyword = crackProps.getProperty(Climb.CLIMB_BEST_KEYWORD);
             dirs.setKeyword(keyword);
@@ -417,6 +426,8 @@ public class Vigenere extends Cipher {
                     .append(crackProps.getProperty(Climb.CLIMB_ACTIVITY));
             return new CrackResult(crackMethod, this, dirs, cipherText, crackProps.getProperty(Climb.CLIMB_BEST_DECODE), explain.toString());
         } else { // did not find all cribs, return failed result
+            if (CrackResults.isCancelled(crackId))
+                return new CrackResult(dirs.getCrackMethod(), this, cipherText, "Crack cancelled", CrackState.CANCELLED);
             keyword = null;
             String bestDecode = crackProps.getProperty(Climb.CLIMB_BEST_DECODE);
             explain.append("Fail: Searched for best IOC, but did not find cribs [")
@@ -442,7 +453,7 @@ public class Vigenere extends Cipher {
     public CrackResult crack(String cipherText, Directives dirs, int crackId) {
         CrackMethod crackMethod = dirs.getCrackMethod();
         if (crackMethod == CrackMethod.IOC) {
-            return crackUsingClimbIOC(cipherText, dirs, crackId);
+            return crackIndexOfCoincidence(cipherText, dirs, crackId);
         } else { // do dictionary search
             return crackUsingDictionary(cipherText, dirs, crackId);
         }

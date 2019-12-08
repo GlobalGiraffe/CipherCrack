@@ -199,13 +199,13 @@ public class StaticAnalysisTest {
     public void testGetCyclicIOC() {
         String text = "AHHDIOWPLKQJJSUPOQJKKKQJAIOAIWFSXWWVWPWPWKWLNMXMZBCTDHYWFEWVEJDIUDHEWKIDUEENEGDPQNMNOZGQOGAZCCXRFQPWUEHRNCOMDHGETYEHJEPOPQWVXPGSURJQ";
         double[] ioc = StaticAnalysis.getCyclicIOC(text, null, defaultAlphabet, defaultPadding);
-        assertEquals("CyclicIOC Size ", 30, ioc.length);
+        assertEquals("CyclicIOC Size ", 60, ioc.length);
     }
 
     @Test
     public void testCollectGramFrequency() {
         String text = "ABC DE FGA";
-        Map<String, Integer> grams = StaticAnalysis.collectGramFrequency(text, 1, null);
+        Map<String, Integer> grams = StaticAnalysis.collectGramFrequency(text, 1, false, null);
         assertEquals("Collect Gram Freq ", 7, grams.size()); // A is twice
         assertEquals("Collect Gram A", Integer.valueOf(2), grams.get("A"));
         assertEquals("Collect Gram B", Integer.valueOf(1), grams.get("B"));
@@ -213,7 +213,7 @@ public class StaticAnalysisTest {
         assertNull("Collect Gram B", grams.get("Z"));
 
         text = "AB AB FA";
-        grams = StaticAnalysis.collectGramFrequency(text, 2, null);
+        grams = StaticAnalysis.collectGramFrequency(text, 2, false, null);
         assertEquals("Collect Gram Freq ", 4, grams.size()); // A is twice
         assertEquals("Collect Gram AB", Integer.valueOf(2), grams.get("AB"));
         assertEquals("Collect Gram BA", Integer.valueOf(1), grams.get("BA"));

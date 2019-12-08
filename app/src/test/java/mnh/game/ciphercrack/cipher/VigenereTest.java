@@ -166,6 +166,7 @@ public class VigenereTest {
         assertEquals("CrackFail crack method", CrackMethod.IOC, result.getCrackMethod());
     }
 
+    // takes around 6 seconds
     @Test
     public void testCrackDictSuccess() {
         // attempt dictionary crack of Vigenere cipher and succeeds with good cribs
@@ -206,6 +207,7 @@ public class VigenereTest {
         assertEquals("CrackDict crack method", CrackMethod.DICTIONARY, result.getCrackMethod());
     }
 
+    // takes around 5 seconds
     @Test
     public void testCrackDictFail() {
         // attempt dictionary crack of Vigenere cipher but fails as keyword (MOBYDICK) is not in the dictionary

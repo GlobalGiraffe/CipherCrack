@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/CrackTheme"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="3dp"
+        android:text="@string/symbols"/>
+    <EditText
+        android:id="@+id/extra_morse_symbols"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:text="@string/default_morse_symbols"
+        android:importantForAutofill="no"
+        android:hint="@string/digits"
+        android:padding="1dp"
+        android:textColor="@color/entry_text_text"
+        android:background="@drawable/entry_text_border"
+        android:inputType="textNoSuggestions"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="3dp"
+        android:text="@string/separator"/>
+    <EditText
+        android:id="@+id/extra_morse_separator"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:text="@string/default_morse_separator"
+        android:importantForAutofill="no"
+        android:hint="@string/separator"
+        android:padding="3dp"
+        android:textColor="@color/entry_text_text"
+        android:background="@drawable/entry_text_border"
+        android:inputType="textNoSuggestions"/>
+
+</LinearLayout>

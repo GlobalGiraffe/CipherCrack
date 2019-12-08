@@ -16,6 +16,7 @@ import mnh.game.ciphercrack.transform.RemoveNonAlphabetic;
 import mnh.game.ciphercrack.transform.Transform;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
+import mnh.game.ciphercrack.util.CrackState;
 import mnh.game.ciphercrack.util.Directives;
 
 /**
@@ -75,7 +76,7 @@ public class Skytale extends Cipher {
         String reason = super.canParametersBeSet(dirs);
         if (reason != null)
             return reason;
-        int cycleLength = dirs.getRails();  // overload rails - similar concept
+        int cycleLength = dirs.getCycleLength();
         CrackMethod crackMethod = dirs.getCrackMethod();
         if (crackMethod == null || crackMethod == CrackMethod.NONE) {
             if (cycleLength < 2 || cycleLength > MAX_CYCLE_LENGTH)
@@ -116,7 +117,7 @@ public class Skytale extends Cipher {
     public void fetchExtraControls(LinearLayout layout, Directives dirs) {
         Spinner spinner = layout.findViewById(R.id.extra_skytale_spinner);
         int cycleLength = (int)spinner.getSelectedItem();
-        dirs.setRails(cycleLength);
+        dirs.setCycleLength(cycleLength);
     }
 
     // we don't add any extra controls, but we allow change of cribs
@@ -128,12 +129,12 @@ public class Skytale extends Cipher {
     /**
      * Encode a text using Skytale cipher with the given cycle size
      * @param plainText the text to be encoded
-     * @param dirs a group of directives, we need RAILS (int) only (overloaded)
+     * @param dirs a group of directives, we need CYCLE LENGTH (int) only
      * @return the encoded string
      */
     @Override
     public String encode(String plainText, Directives dirs) {
-        int cycleLength = dirs.getRails();
+        int cycleLength = dirs.getCycleLength();
         plainText = removeNonAlphabetic.apply(context, plainText);
 
         int numberOfCycles = (plainText.length()+(cycleLength-1))/cycleLength;
@@ -158,12 +159,12 @@ public class Skytale extends Cipher {
     /**
      * Decode a cipher text that was encoded with Skytale and the given cycle length
      * @param cipherText the text to be decoded
-     * @param dirs a group of directives, we need RAILS (int) (overloaded)
+     * @param dirs a group of directives, we need CYCLE LENGTH (int)
      * @return the decoded string
      */
     @Override
     public String decode(String cipherText, Directives dirs) {
-        int cycleLength = dirs.getRails();
+        int cycleLength = dirs.getCycleLength();
         StringBuilder[] lines = new StringBuilder[cycleLength];
         for (int i = 0; i < cycleLength; i++) {
             lines[i] = new StringBuilder();
@@ -191,14 +192,18 @@ public class Skytale extends Cipher {
     public CrackResult crack(String cipherText, Directives dirs, int crackId) {
         String cribString = dirs.getCribs();
         Set<String> cribSet = Cipher.getCribSet(cribString);
+        String reverseCipherText = new StringBuilder(cipherText).reverse().toString();
         int maxCycleLength = Math.min(MAX_CYCLE_LENGTH, cipherText.length()/2);
         for (int currentCycleLength=2; currentCycleLength < maxCycleLength; currentCycleLength++) {
-            CrackResults.updatePercentageDirectly(crackId, 100 * currentCycleLength / maxCycleLength);
-            dirs.setRails(currentCycleLength);
+            if (CrackResults.isCancelled(crackId))
+                return new CrackResult(dirs.getCrackMethod(), this, cipherText, "Crack cancelled", CrackState.CANCELLED);
+            CrackResults.updateProgressDirectly(crackId, currentCycleLength+" cycles  of "+maxCycleLength+": "+100*currentCycleLength/maxCycleLength+"% complete");
+
+            dirs.setCycleLength(currentCycleLength);
             String plainText = decode(cipherText, dirs);
             if (Cipher.containsAllCribs(plainText, cribSet)) {
                 cycleLength = currentCycleLength;
-                String explain = "Success: Brute force approach: tried possible cycle lengths from 2 to "
+                String explain = "Success: Brute Force: tried possible cycle lengths from 2 to "
                         + maxCycleLength
                         + " looking for the cribs ["
                         + cribString
@@ -207,9 +212,21 @@ public class Skytale extends Cipher {
                         + " cycle length.\n";
                 return new CrackResult(dirs.getCrackMethod(), this, dirs, cipherText, plainText, explain);
             }
+            plainText = decode(reverseCipherText, dirs);
+            if (Cipher.containsAllCribs(plainText, cribSet)) {
+                cycleLength = currentCycleLength;
+                String explain = "Success: Brute Force REVERSE: tried possible cycle lengths from 2 to "
+                        + maxCycleLength
+                        + " looking for the cribs ["
+                        + cribString
+                        + "] in the decoded REVERSE text and found them with "
+                        + currentCycleLength
+                        + " cycle length.\n";
+                return new CrackResult(dirs.getCrackMethod(), this, dirs, cipherText, plainText, explain);
+            }
         }
-        dirs.setRails(-1);
-        cycleLength=-1;
+        cycleLength = -1;
+        dirs.setCycleLength(cycleLength);
         String explain = "Fail: Brute force approach: tried possible cycle lengths from 2 to "
                 + maxCycleLength
                 + " looking for the cribs ["

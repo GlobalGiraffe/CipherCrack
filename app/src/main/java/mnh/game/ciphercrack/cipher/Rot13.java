@@ -6,6 +6,7 @@ import android.widget.LinearLayout;
 import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
+import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
 import mnh.game.ciphercrack.util.Directives;
@@ -113,6 +114,7 @@ public class Rot13 extends Caesar {
      */
     @Override
     public CrackResult crack(String cipherText, Directives dirs, int crackId) {
+        CrackResults.updateProgressDirectly(crackId, "Started "+getCipherName()+" crack");
         String cribString = dirs.getCribs();
         Set<String> cribSet = Cipher.getCribSet(cribString);
         String plainText = decode(cipherText, dirs);

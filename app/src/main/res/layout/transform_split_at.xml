@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/transform_split_at_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:theme="@style/CrackTheme">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/split_at_char_position"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="3"
+            android:background="@drawable/entry_text_border"
+            android:hint="@string/char_position"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:maxWidth="50dp"
+            android:padding="3dp"
+            android:singleLine="true"
+            android:textColor="@color/entry_text_text" />
+        <Button
+            android:id="@+id/split_at_char_position_delete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@android:drawable/ic_delete" />
+
+        <EditText
+            android:id="@+id/split_at_regular_expression"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="5"
+            android:background="@drawable/entry_text_border"
+            android:hint="@string/regular_expression"
+            android:importantForAutofill="no"
+            android:inputType="textNoSuggestions"
+            android:maxWidth="50dp"
+            android:padding="3dp"
+            android:singleLine="true"
+            android:textColor="@color/entry_text_text" />
+        <Button
+            android:id="@+id/split_at_regular_expression_delete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@android:drawable/ic_delete" />
+
+        <CheckBox
+            android:id="@+id/split_at_keep"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:checked="false"
+            android:text="@string/keep" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:background="#FF909090"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/split_at_add_chars"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="10"
+            android:background="@drawable/entry_text_border"
+            android:hint="@string/add_chars"
+            android:importantForAutofill="no"
+            android:inputType="textNoSuggestions"
+            android:maxWidth="50dp"
+            android:padding="3dp"
+            android:singleLine="true"
+            android:textColor="@color/entry_text_text" />
+        <Button
+            android:id="@+id/split_at_add_chars_delete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@android:drawable/ic_delete" />
+
+        <CheckBox
+            android:id="@+id/split_at_is_after"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:checked="false"
+            android:text="@string/after" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/transform_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        style="?android:attr/buttonBarStyle"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/transform_button_cancel"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:padding="8dp"
+            android:text="@string/cancel"/>
+        <Button
+            android:id="@+id/transform_button_apply"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:padding="8dp"
+            android:text="@string/apply"/>
+    </LinearLayout>
+</LinearLayout>

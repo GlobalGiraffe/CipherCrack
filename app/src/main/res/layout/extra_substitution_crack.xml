@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/CrackTheme"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RadioGroup
+        android:id="@+id/extra_substitution_crack_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:checkedButton="@id/crack_button_dictionary">
+        <RadioButton
+            android:id="@+id/crack_button_dictionary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/crack_dictionary"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/white"/>
+        <RadioButton
+            android:id="@+id/crack_button_word_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/crack_word_count"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/white"/>
+    </RadioGroup>
+</LinearLayout>

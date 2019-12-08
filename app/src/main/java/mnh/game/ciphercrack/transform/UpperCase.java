@@ -5,7 +5,7 @@ import android.content.Context;
 /**
  * Convert the characters in the string to upper case
  */
-public class UpperCase implements Transform {
+public class UpperCase extends Transform {
 
     @Override
     public String apply(Context context, String text) {

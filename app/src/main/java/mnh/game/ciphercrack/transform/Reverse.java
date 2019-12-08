@@ -5,7 +5,7 @@ import android.content.Context;
 /**
  * Reverse the characters in the string
  */
-public class Reverse implements Transform {
+public class Reverse extends Transform {
 
     @Override
     public String apply(Context context, String text) {

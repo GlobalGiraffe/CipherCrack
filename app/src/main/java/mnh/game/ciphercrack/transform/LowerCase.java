@@ -5,7 +5,7 @@ import android.content.Context;
 /**
  * Convert the characters in the string to lower case
  */
-public class LowerCase implements Transform {
+public class LowerCase extends Transform {
 
     @Override
     public String apply(Context context, String text) {

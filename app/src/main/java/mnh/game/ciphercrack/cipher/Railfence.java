@@ -13,6 +13,7 @@ import mnh.game.ciphercrack.R;
 import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
+import mnh.game.ciphercrack.util.CrackState;
 import mnh.game.ciphercrack.util.Directives;
 import mnh.game.ciphercrack.util.Settings;
 
@@ -236,10 +237,15 @@ public class Railfence extends Cipher {
     public CrackResult crack(String cipherText, Directives dirs, int crackId) {
         String cribString = dirs.getCribs();
         Set<String> cribSet = Cipher.getCribSet(cribString);
+        String reverseCipherText = new StringBuilder(cipherText).reverse().toString();
+
         int maxRails = getMaxRails();
         maxRails = Math.min(maxRails, cipherText.length()/2);
         for (int currentRail=2; currentRail < maxRails; currentRail++) {
-            CrackResults.updatePercentageDirectly(crackId, 100 * currentRail / maxRails);
+            if (CrackResults.isCancelled(crackId))
+                return new CrackResult(dirs.getCrackMethod(), this, cipherText, "Crack cancelled", CrackState.CANCELLED);
+            CrackResults.updateProgressDirectly(crackId, currentRail+" rails  of "+maxRails+": "+100*currentRail/maxRails+"% complete");
+
             dirs.setRails(currentRail);
             String plainText = decode(cipherText, dirs);
             if (Cipher.containsAllCribs(plainText, cribSet)) {
@@ -248,6 +254,19 @@ public class Railfence extends Cipher {
                         + " looking for the cribs ["
                         + cribString
                         + "] in the decoded text and found them with "
+                        + currentRail
+                        + " rails.\n";
+                rails = currentRail;
+                return new CrackResult(dirs.getCrackMethod(), this, dirs, cipherText, plainText, explain);
+            }
+            // now try reverse text
+            plainText = decode(reverseCipherText, dirs);
+            if (Cipher.containsAllCribs(plainText, cribSet)) {
+                String explain = "Success: Brute Force REVERSE: tried possible rails from 2 to "
+                        + maxRails
+                        + " looking for the cribs ["
+                        + cribString
+                        + "] in the decoded REVERSE text and found them with "
                         + currentRail
                         + " rails.\n";
                 rails = currentRail;

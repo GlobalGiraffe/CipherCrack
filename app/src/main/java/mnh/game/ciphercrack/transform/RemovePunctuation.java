@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * Remove punctuation chars from a string
  */
-public class RemovePunctuation implements Transform {
+public class RemovePunctuation extends Transform {
 
     @Override
     public String apply(Context context, String text) {

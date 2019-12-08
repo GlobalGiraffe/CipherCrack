@@ -5,6 +5,8 @@ import android.os.Parcel;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import java.util.Arrays;
+
 import androidx.appcompat.app.AppCompatActivity;
 import mnh.game.ciphercrack.R;
 import mnh.game.ciphercrack.language.Language;
@@ -103,16 +105,15 @@ public class Binary extends Cipher {
             }
             separator = binarySep;
 
-            if (separator.length() == 0) {
-                int size = dirs.getNumberSize();
-                if (size <= 0)
-                    return "Number size " + size + " too small";
-                if (size > 50)
-                    return "Number size " + size + " too large";
-                numberSize = size;
-            } else {
-                numberSize = 0;
-            }
+            int size = dirs.getNumberSize();
+            if (size < 0)
+                return "Number size " + size + " too small";
+            if (size == 0 && binarySep.length() == 0)
+                return "Specify either number size or separator";
+            if (size > 50)
+                return "Number size " + size + " too large";
+            numberSize = size;
+
         } else { // crack via Brute Force, i.e. look at text and work out digits and separator, etc
             // this the the only crack possible
             if (crackMethod != CrackMethod.BRUTE_FORCE)
@@ -139,8 +140,12 @@ public class Binary extends Cipher {
 
         EditText numberSizeField = layout.findViewById(R.id.extra_binary_size);
         String numberSize = numberSizeField.getText().toString();
-        this.numberSize = Integer.valueOf(numberSize);
-        dirs.setNumberSize(this.numberSize);
+        try {
+            this.numberSize = Integer.valueOf(numberSize);
+            dirs.setNumberSize(this.numberSize);
+        } catch (NumberFormatException ex) {
+            dirs.setNumberSize(0);
+        }
 
         EditText separatorField = layout.findViewById(R.id.extra_binary_separator);
         String separator = separatorField.getText().toString();
@@ -170,8 +175,14 @@ public class Binary extends Cipher {
         String alphabet = dirs.getAlphabet();
         String digits = dirs.getDigits().toUpperCase();
         String separator = dirs.getSeparator().toUpperCase();
+        int numberSize = dirs.getNumberSize();
         plainText = plainText.toUpperCase();
         StringBuilder result = new StringBuilder(plainText.length()*6);
+
+        // Make a long sequence of 00s for padding before the generated binary numbers
+        char[] tempZeros = new char[numberSize];
+        Arrays.fill(tempZeros, '0');
+        String longSequenceOfZeros = String.valueOf(tempZeros);
 
         // convert the text, one char at a time
         for (int plainPos=0; plainPos < plainText.length(); plainPos++) {
@@ -182,11 +193,11 @@ public class Binary extends Cipher {
             // only include in cipherText if the letter is in the alphabet, i.e. drop punctuation/spaces
             if (plainOrdinal >= 0) {
                 String binaryShort = Integer.toBinaryString(plainOrdinal);
-                if (separator.length() == 0) { // no separator, make n-digits
-                    binaryShort = "0000" + binaryShort;
-                    binaryShort = binaryShort.substring(binaryShort.length()-5);
+                if (numberSize != 0) { // always make n-digits
+                    binaryShort = longSequenceOfZeros + binaryShort;
+                    binaryShort = binaryShort.substring(binaryShort.length()-numberSize);
                 }
-                // now convert from 0/1 to the digits user asked for, e.g. A/B or otherwise
+                // now convert from 0/1 to the digits user asked for, e.g. A/B, or ./- or otherwise
                 for (int digitPos=0; digitPos < digits.length(); digitPos++) {
                     binaryShort = binaryShort.replace((char)('0'+digitPos),digits.charAt(digitPos));
                 }
@@ -213,6 +224,7 @@ public class Binary extends Cipher {
         String digits = dirs.getDigits().toUpperCase();
         cipherText = cipherText.toUpperCase().replace(" ","");
         String separator = dirs.getSeparator();
+        int numberSize = dirs.getNumberSize();
         StringBuilder result = new StringBuilder(cipherText.length());
         while(cipherText.length() > 0) {
             String seq;
@@ -226,15 +238,15 @@ public class Binary extends Cipher {
                     cipherText = "";
                 }
             } else {
-                seq = cipherText.substring(0, 5);
-                cipherText = cipherText.substring(5);
+                seq = cipherText.substring(0, numberSize);
+                cipherText = cipherText.substring(numberSize);
             }
             // replace the text digits (could be A/B) with 0/1
             for(int digitPos=0; digitPos < digits.length(); digitPos++) {
                 seq = seq.replace(digits.charAt(digitPos), (char)('0'+digitPos));
             }
             try {
-                int ordinal = Integer.parseInt(seq, 2);
+                int ordinal = Integer.parseInt(seq, 2); // convert binary to decimal
                 if (ordinal < alphabet.length())
                     result.append(alphabet.charAt(ordinal));
                 else
@@ -253,6 +265,7 @@ public class Binary extends Cipher {
      * @return the result of the crack attempt
      */
     public CrackResult crack(String cipherText, Directives dirs, int crackId) {
+        // TODO: Binary Crack: suggest looking for most common letter => 0, next most common => 1, then decode in 5's, look for cribs, or words
         return new CrackResult(dirs.getCrackMethod(), this, cipherText, "Fail: Not yet able to crack "+getCipherName()+" cipher.\n");
     }
 }

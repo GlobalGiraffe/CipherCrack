@@ -21,7 +21,8 @@ public class CrackResult implements Parcelable {
     private String plainText = null;
     private Directives directives = null;
     private long milliseconds = 0L;
-    private int percentComplete = 0;
+    private String progress = "";
+    private CrackState crackState;
 
     // used to assign unique values to a crack result
     private static int masterId = 10;
@@ -49,16 +50,18 @@ public class CrackResult implements Parcelable {
         this.plainText = plainText;
         this.cipherText = cipherText;
         this.explain = explain;
+        this.crackState = CrackState.COMPLETE;
         this.isSuccess = true;
     }
 
-    // this is called for an unsuccessful crack
+    // this is called for an unsuccessful crack or a cancellation
     public CrackResult(CrackMethod crackMethod, Cipher cipher, String cipherText, String explain) {
         this.id = getNextId();
         this.crackMethod = crackMethod;
         this.cipher = cipher;
         this.cipherText = cipherText;
         this.explain = explain;
+        this.crackState = CrackState.COMPLETE;
         this.isSuccess = false;
     }
 
@@ -70,15 +73,29 @@ public class CrackResult implements Parcelable {
         this.cipherText = cipherText;
         this.explain = explain;
         this.plainText = bestDecode;
+        this.crackState = CrackState.COMPLETE;
+        this.isSuccess = false;
+    }
+
+    // this is called when creating a brand new crack at the start of the CrackService call
+    public CrackResult(CrackMethod crackMethod, Cipher cipher, String cipherText, String explain, CrackState state) {
+        this.id = getNextId();
+        this.crackMethod = crackMethod;
+        this.cipher = cipher;
+        this.cipherText = cipherText;
+        this.explain = explain;
+        this.crackState = state;
         this.isSuccess = false;
     }
 
     public CrackResult(Parcel in) {
         crackMethod = CrackMethod.valueOf(in.readString());
+        crackState = CrackState.valueOf(in.readString());
         cipher = in.readParcelable(Cipher.class.getClassLoader());
         cipherText = in.readString();
         plainText = in.readString();
         explain = in.readString();
+        progress = in.readString();
         isSuccess = (in.readInt() == 1);
         id = in.readInt();
         directives = in.readParcelable(Directives.class.getClassLoader());
@@ -88,6 +105,7 @@ public class CrackResult implements Parcelable {
     // once a result is ready, we need to replace it in the list
     public void setFields(CrackResult result) {
         crackMethod = result.getCrackMethod();
+        crackState = result.getCrackState();
         plainText = result.getPlainText();
         cipherText = result.getCipherText();
         cipher = result.getCipher();
@@ -95,15 +113,18 @@ public class CrackResult implements Parcelable {
         isSuccess = result.isSuccess();
         directives = result.getDirectives();
         milliseconds = result.getMilliseconds();
+        progress = result.getProgress();
     }
 
     @Override
     public void writeToParcel(Parcel p, int flags) {
         p.writeString(crackMethod.name());
+        p.writeString(crackState.name());
         p.writeParcelable(cipher, 0);
         p.writeString(cipherText);
         p.writeString(plainText);
         p.writeString(explain);
+        p.writeString(progress);
         p.writeInt(isSuccess?1:0);
         p.writeInt(id);
         p.writeParcelable(directives, 0);
@@ -118,6 +139,7 @@ public class CrackResult implements Parcelable {
         return id;
     }
     public CrackMethod getCrackMethod() { return crackMethod; }
+    public CrackState getCrackState() { return crackState; }
     public Cipher getCipher() {
         return cipher;
     }
@@ -135,10 +157,11 @@ public class CrackResult implements Parcelable {
     public boolean isSuccess() {
         return isSuccess;
     }
-    public int getPercentComplete() { return percentComplete; }
+    public String getProgress() { return progress; }
 
     public void setMilliseconds(long milliseconds) { this.milliseconds = milliseconds; }
-    public void setPercentComplete(int pct) { this.percentComplete = pct; }
+    public void setProgress(String progress) { this.progress = progress; }
+    public void setCrackState(CrackState state) { this.crackState = state; }
     // these are probably never used - above methods probably suffice
     /*
     public void setExplain(String explain) { this.explain = explain; }

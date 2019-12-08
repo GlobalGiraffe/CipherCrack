@@ -17,7 +17,7 @@ import java.util.List;
  * DIN
  * EJO
  */
-public class SwapRowsAndCols implements Transform {
+public class SwapRowsAndCols extends Transform {
 
     @Override
     public String apply(Context context, String text) {

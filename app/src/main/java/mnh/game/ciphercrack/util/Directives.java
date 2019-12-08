@@ -24,10 +24,12 @@ public class Directives implements Parcelable {
     private int rails;                  // used for railfence, also for cycleLength of skytale cipher
     private int keywordLength;          // used for vigenere
     private String keyword;             // used for vigenere and keyword substitution
-    private String digits;              // used for binary, e.g. "01"
-    private String separator;           // used for binary between letters, e.g. "/"
+    private String digits;              // used for binary, e.g. "01", or morse, e.g. ".-"
+                                        // also used for row headings in Polybius square cipher
+    private String separator;           // used for binary & morse between letters, e.g. "/"
                                         // also used for Polybius replace, e.g. J with I
-    private String heading;             // used for column/row headings in Polybius square cipher
+    private String colHeading;          // used for col headings in Polybius square cipher
+                                        // also used for Hill crib drag cribs
     private int numberSize;             // used for binary, number of digits making a letter = 5
     private int[] permutation;          // use for permutation cipher
     private boolean readAcross;         // read final answer across columns or down (permutation)
@@ -71,7 +73,7 @@ public class Directives implements Parcelable {
         keyword = in.readString();
         digits = in.readString();
         separator = in.readString();
-        heading = in.readString();
+        colHeading = in.readString();
         numberSize = in.readInt();
         int permutationSize = in.readInt();
         permutation = new int[permutationSize];
@@ -98,7 +100,7 @@ public class Directives implements Parcelable {
         p.writeString(keyword);
         p.writeString(digits);
         p.writeString(separator);
-        p.writeString(heading);
+        p.writeString(colHeading);
         p.writeInt(numberSize);
         if (permutation == null) {
             p.writeInt(0);
@@ -127,6 +129,8 @@ public class Directives implements Parcelable {
 
     public void setRails(int rails) { this.rails = rails; }
 
+    public void setCycleLength(int cycleLength) { this.rails = cycleLength; }
+
     public void setPermutation(int[] permutation) { this. permutation = permutation; }
 
     public void setKeyword(String keyword) { this.keyword = keyword; }
@@ -137,7 +141,13 @@ public class Directives implements Parcelable {
 
     public void setSeparator(String separator) { this.separator = separator; }
 
-    public void setHeading(String heading) { this.heading = heading; }
+    public void setColHeading(String colHeading) { this.colHeading = colHeading; }
+
+    public void setRowHeading(String rowHeading) { this.digits = rowHeading; }
+
+    public void setHeadings(String heading) { this.colHeading = heading; this.digits = heading; }
+
+    public void setCribsToDrag(String cribsToDrag) { this.colHeading = cribsToDrag; }
 
     public void setNumberSize(int numberSize) { this.numberSize = numberSize; }
 
@@ -165,6 +175,8 @@ public class Directives implements Parcelable {
 
     public int getRails() { return rails; }
 
+    public int getCycleLength() { return rails; }
+
     public int[] getPermutation() { return permutation; }
 
     public String getKeyword() { return keyword; }
@@ -175,7 +187,11 @@ public class Directives implements Parcelable {
 
     public String getSeparator() { return separator; }
 
-    public String getHeading() { return heading; }
+    public String getColHeading() { return colHeading; }
+
+    public String getRowHeading() { return digits; }
+
+    public String getCribsToDrag() { return colHeading; }
 
     public String getReplace() { return separator; }
 

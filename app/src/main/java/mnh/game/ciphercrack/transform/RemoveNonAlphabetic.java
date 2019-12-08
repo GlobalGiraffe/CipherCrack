@@ -9,7 +9,7 @@ import mnh.game.ciphercrack.util.Settings;
  * Remove all characters except those in the alphabet
  * The alphabet is defined in the application preferences
  */
-public class RemoveNonAlphabetic implements Transform {
+public class RemoveNonAlphabetic extends Transform {
 
     @Override
     public String apply(Context context, String text) {

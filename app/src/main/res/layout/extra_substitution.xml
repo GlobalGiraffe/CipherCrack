@@ -11,7 +11,7 @@
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/extra_substitution_keyword"
+            android:id="@+id/extra_keyword"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="15"
@@ -42,38 +42,45 @@
             android:layout_gravity="center"
             android:text="@string/extend_explain" />
         <RadioGroup
+            android:id="@+id/extra_extend_button_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:checkedButton="@id/extra_substitution_button_max">
+            android:checkedButton="@id/extra_extend_button_max">
             <RadioButton
-                android:id="@+id/extra_substitution_button_first"
+                android:id="@+id/extra_extend_button_first"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/extend_first"
                 android:checked="false"/>
             <RadioButton
-                android:id="@+id/extra_substitution_button_min"
+                android:id="@+id/extra_extend_button_min"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/extend_min"
                 android:checked="false" />
             <RadioButton
-                android:id="@+id/extra_substitution_button_max"
+                android:id="@+id/extra_extend_button_max"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/extend_max"
                 android:checked="true" />
             <RadioButton
-                android:id="@+id/extra_substitution_button_last"
+                android:id="@+id/extra_extend_button_last"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/extend_last"
                 android:checked="false" />
+            <RadioButton
+                android:id="@+id/extra_extend_button_none"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/extend_none"
+                android:checked="false" />
         </RadioGroup>
     </LinearLayout>
     <TextView
-        android:id="@+id/extra_substitution_full_keyword"
+        android:id="@+id/extra_full_keyword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="3dp"

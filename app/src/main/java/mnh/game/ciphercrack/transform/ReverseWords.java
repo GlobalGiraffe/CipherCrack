@@ -8,7 +8,7 @@ import mnh.game.ciphercrack.util.Settings;
 /**
  * Reverse each word in a string in place
  */
-public class ReverseWords implements Transform {
+public class ReverseWords extends Transform {
 
     @Override
     public String apply(Context context, String text) {

@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +52,7 @@ import mnh.game.ciphercrack.transform.RemovePadding;
 import mnh.game.ciphercrack.transform.RemovePunctuation;
 import mnh.game.ciphercrack.transform.Reverse;
 import mnh.game.ciphercrack.transform.ReverseWords;
+import mnh.game.ciphercrack.transform.SplitAt;
 import mnh.game.ciphercrack.transform.SplitByWords;
 import mnh.game.ciphercrack.transform.SwapRowsAndCols;
 import mnh.game.ciphercrack.transform.Transform;
@@ -95,7 +97,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Log.i(TAG, "onCreate");
+        Log.i(TAG, "onCreate, savedInstanceState="+savedInstanceState);
 
         Toolbar toolbar = findViewById(R.id.home_toolbar);
         setSupportActionBar(toolbar);
@@ -323,6 +325,10 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.action_home_edit_split_words:
                 applyEdit(new SplitByWords(), textField);
                 return true;
+            case R.id.action_home_edit_split_at:
+                Transform t = new SplitAt();
+                t.presentDialog(this, textField);
+                return true;
             case R.id.action_home_edit_reverse_words:
                 applyEdit(new ReverseWords(), textField);
                 return true;
@@ -476,6 +482,59 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.action_home_cipher_challenge_2004_8B:
                 setInputText(R.string.cipher_challenge_2004_8B);
                 return true;
+
+            case R.id.action_home_cipher_challenge_2005_00:
+                setInputText(R.string.cipher_challenge_2005_00);
+                return true;
+            case R.id.action_home_cipher_challenge_2005_1A:
+                setInputText(R.string.cipher_challenge_2005_1A);
+                return true;
+            case R.id.action_home_cipher_challenge_2005_1B:
+                setInputText(R.string.cipher_challenge_2005_1B);
+                return true;
+            case R.id.action_home_cipher_challenge_2005_2A:
+                setInputText(R.string.cipher_challenge_2005_2A);
+                return true;
+            case R.id.action_home_cipher_challenge_2005_2B:
+                setInputText(R.string.cipher_challenge_2005_2B);
+                return true;
+            case R.id.action_home_cipher_challenge_2005_3A:
+                setInputText(R.string.cipher_challenge_2005_3A);
+                return true;
+            case R.id.action_home_cipher_challenge_2005_3B:
+                setInputText(R.string.cipher_challenge_2005_3B);
+                return true;
+            case R.id.action_home_cipher_challenge_2005_4A:
+                setInputText(R.string.cipher_challenge_2005_4A);
+                return true;
+            case R.id.action_home_cipher_challenge_2005_4B:
+                setInputText(R.string.cipher_challenge_2005_4B);
+                return true;
+            case R.id.action_home_cipher_challenge_2005_5A:
+                setInputText(R.string.cipher_challenge_2005_5A);
+                return true;
+            case R.id.action_home_cipher_challenge_2005_5B:
+                setInputText(R.string.cipher_challenge_2005_5B);
+                return true;
+            case R.id.action_home_cipher_challenge_2005_6A:
+                setInputText(R.string.cipher_challenge_2005_6A);
+                return true;
+            case R.id.action_home_cipher_challenge_2005_6B:
+                setInputText(R.string.cipher_challenge_2005_6B);
+                return true;
+            case R.id.action_home_cipher_challenge_2005_7A:
+                setInputText(R.string.cipher_challenge_2005_7A);
+                return true;
+            case R.id.action_home_cipher_challenge_2005_7B:
+                setInputText(R.string.cipher_challenge_2005_7B);
+                return true;
+            case R.id.action_home_cipher_challenge_2005_8A:
+                setInputText(R.string.cipher_challenge_2005_8A);
+                return true;
+            case R.id.action_home_cipher_challenge_2005_8B:
+                setInputText(R.string.cipher_challenge_2005_8B);
+                return true;
+
             case R.id.action_home_cipher_challenge_2006_1A:
                 setInputText(R.string.cipher_challenge_2006_1A);
                 return true;
@@ -674,6 +733,506 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.action_home_cipher_challenge_2010_8B:
                 setInputText(R.string.cipher_challenge_2010_8B);
                 return true;
+            case R.id.action_home_cipher_challenge_2011_1A:
+                setInputText(R.string.cipher_challenge_2011_1A);
+                return true;
+            case R.id.action_home_cipher_challenge_2011_1B:
+                setInputText(R.string.cipher_challenge_2011_1B);
+                return true;
+            case R.id.action_home_cipher_challenge_2011_2A:
+                setInputText(R.string.cipher_challenge_2011_2A);
+                return true;
+            case R.id.action_home_cipher_challenge_2011_2B:
+                setInputText(R.string.cipher_challenge_2011_2B);
+                return true;
+            case R.id.action_home_cipher_challenge_2011_3A:
+                setInputText(R.string.cipher_challenge_2011_3A);
+                return true;
+            case R.id.action_home_cipher_challenge_2011_3B:
+                setInputText(R.string.cipher_challenge_2011_3B);
+                return true;
+            case R.id.action_home_cipher_challenge_2011_4A:
+                setInputText(R.string.cipher_challenge_2011_4A);
+                return true;
+            case R.id.action_home_cipher_challenge_2011_4B:
+                setInputText(R.string.cipher_challenge_2011_4B);
+                return true;
+            case R.id.action_home_cipher_challenge_2011_5A:
+                setInputText(R.string.cipher_challenge_2011_5A);
+                return true;
+            case R.id.action_home_cipher_challenge_2011_5B:
+                setInputText(R.string.cipher_challenge_2011_5B);
+                return true;
+            case R.id.action_home_cipher_challenge_2011_6A:
+                setInputText(R.string.cipher_challenge_2011_6A);
+                return true;
+            case R.id.action_home_cipher_challenge_2011_6B:
+                setInputText(R.string.cipher_challenge_2011_6B);
+                return true;
+            case R.id.action_home_cipher_challenge_2011_7A:
+                setInputText(R.string.cipher_challenge_2011_7A);
+                return true;
+            case R.id.action_home_cipher_challenge_2011_7B:
+                setInputText(R.string.cipher_challenge_2011_7B);
+                return true;
+            case R.id.action_home_cipher_challenge_2011_8A:
+                setInputText(R.string.cipher_challenge_2011_8A);
+                return true;
+            case R.id.action_home_cipher_challenge_2011_8B:
+                setInputText(R.string.cipher_challenge_2011_8B);
+                return true;
+            case R.id.action_home_cipher_challenge_2012_0:
+                setInputText(R.string.cipher_challenge_2012_0);
+                return true;
+            case R.id.action_home_cipher_challenge_2012_1A:
+                setInputText(R.string.cipher_challenge_2012_1A);
+                return true;
+            case R.id.action_home_cipher_challenge_2012_1B:
+                setInputText(R.string.cipher_challenge_2012_1B);
+                return true;
+            case R.id.action_home_cipher_challenge_2012_2A:
+                setInputText(R.string.cipher_challenge_2012_2A);
+                return true;
+            case R.id.action_home_cipher_challenge_2012_2B:
+                setInputText(R.string.cipher_challenge_2012_2B);
+                return true;
+            case R.id.action_home_cipher_challenge_2012_3A:
+                setInputText(R.string.cipher_challenge_2012_3A);
+                return true;
+            case R.id.action_home_cipher_challenge_2012_3B:
+                setInputText(R.string.cipher_challenge_2012_3B);
+                return true;
+            case R.id.action_home_cipher_challenge_2012_4A:
+                setInputText(R.string.cipher_challenge_2012_4A);
+                return true;
+            case R.id.action_home_cipher_challenge_2012_4B:
+                setInputText(R.string.cipher_challenge_2012_4B);
+                return true;
+            case R.id.action_home_cipher_challenge_2012_5A:
+                setInputText(R.string.cipher_challenge_2012_5A);
+                return true;
+            case R.id.action_home_cipher_challenge_2012_5B:
+                setInputText(R.string.cipher_challenge_2012_5B);
+                return true;
+            case R.id.action_home_cipher_challenge_2012_6A:
+                setInputText(R.string.cipher_challenge_2012_6A);
+                return true;
+            case R.id.action_home_cipher_challenge_2012_6B:
+                setInputText(R.string.cipher_challenge_2012_6B);
+                return true;
+            case R.id.action_home_cipher_challenge_2012_7A:
+                setInputText(R.string.cipher_challenge_2012_7A);
+                return true;
+            case R.id.action_home_cipher_challenge_2012_7B:
+                setInputText(R.string.cipher_challenge_2012_7B);
+                return true;
+            case R.id.action_home_cipher_challenge_2012_8A:
+                setInputText(R.string.cipher_challenge_2012_8A);
+                return true;
+            case R.id.action_home_cipher_challenge_2012_8B:
+                setInputText(R.string.cipher_challenge_2012_8B);
+                return true;
+            case R.id.action_home_cipher_challenge_2013_0:
+                setInputText(R.string.cipher_challenge_2013_0);
+                return true;
+            case R.id.action_home_cipher_challenge_2013_1A:
+                setInputText(R.string.cipher_challenge_2013_1A);
+                return true;
+            case R.id.action_home_cipher_challenge_2013_1B:
+                setInputText(R.string.cipher_challenge_2013_1B);
+                return true;
+            case R.id.action_home_cipher_challenge_2013_2A:
+                setInputText(R.string.cipher_challenge_2013_2A);
+                return true;
+            case R.id.action_home_cipher_challenge_2013_2B:
+                setInputText(R.string.cipher_challenge_2013_2B);
+                return true;
+            case R.id.action_home_cipher_challenge_2013_3A:
+                setInputText(R.string.cipher_challenge_2013_3A);
+                return true;
+            case R.id.action_home_cipher_challenge_2013_3B:
+                setInputText(R.string.cipher_challenge_2013_3B);
+                return true;
+            case R.id.action_home_cipher_challenge_2013_4A:
+                setInputText(R.string.cipher_challenge_2013_4A);
+                return true;
+            case R.id.action_home_cipher_challenge_2013_4B:
+                setInputText(R.string.cipher_challenge_2013_4B);
+                return true;
+            case R.id.action_home_cipher_challenge_2013_5A:
+                setInputText(R.string.cipher_challenge_2013_5A);
+                return true;
+            case R.id.action_home_cipher_challenge_2013_5B:
+                setInputText(R.string.cipher_challenge_2013_5B);
+                return true;
+            case R.id.action_home_cipher_challenge_2013_6A:
+                setInputText(R.string.cipher_challenge_2013_6A);
+                return true;
+            case R.id.action_home_cipher_challenge_2013_6B:
+                setInputText(R.string.cipher_challenge_2013_6B);
+                return true;
+            case R.id.action_home_cipher_challenge_2013_7A:
+                setInputText(R.string.cipher_challenge_2013_7A);
+                return true;
+            case R.id.action_home_cipher_challenge_2013_7B:
+                setInputText(R.string.cipher_challenge_2013_7B);
+                return true;
+            case R.id.action_home_cipher_challenge_2013_8A:
+                setInputText(R.string.cipher_challenge_2013_8A);
+                return true;
+            case R.id.action_home_cipher_challenge_2013_8B:
+                setInputText(R.string.cipher_challenge_2013_8B);
+                return true;
+            case R.id.action_home_cipher_challenge_2014_0:
+                setInputText(R.string.cipher_challenge_2014_0);
+                return true;
+            case R.id.action_home_cipher_challenge_2014_1A:
+                setInputText(R.string.cipher_challenge_2014_1A);
+                return true;
+            case R.id.action_home_cipher_challenge_2014_1B:
+                setInputText(R.string.cipher_challenge_2014_1B);
+                return true;
+            case R.id.action_home_cipher_challenge_2014_2A:
+                setInputText(R.string.cipher_challenge_2014_2A);
+                return true;
+            case R.id.action_home_cipher_challenge_2014_2B:
+                setInputText(R.string.cipher_challenge_2014_2B);
+                return true;
+            case R.id.action_home_cipher_challenge_2014_3A:
+                setInputText(R.string.cipher_challenge_2014_3A);
+                return true;
+            case R.id.action_home_cipher_challenge_2014_3B:
+                setInputText(R.string.cipher_challenge_2014_3B);
+                return true;
+            case R.id.action_home_cipher_challenge_2014_4A:
+                setInputText(R.string.cipher_challenge_2014_4A);
+                return true;
+            case R.id.action_home_cipher_challenge_2014_4B:
+                setInputText(R.string.cipher_challenge_2014_4B);
+                return true;
+            case R.id.action_home_cipher_challenge_2014_5A:
+                setInputText(R.string.cipher_challenge_2014_5A);
+                return true;
+            case R.id.action_home_cipher_challenge_2014_5B:
+                setInputText(R.string.cipher_challenge_2014_5B);
+                return true;
+            case R.id.action_home_cipher_challenge_2014_6A:
+                setInputText(R.string.cipher_challenge_2014_6A);
+                return true;
+            case R.id.action_home_cipher_challenge_2014_6B:
+                setInputText(R.string.cipher_challenge_2014_6B);
+                return true;
+            case R.id.action_home_cipher_challenge_2014_7A:
+                setInputText(R.string.cipher_challenge_2014_7A);
+                return true;
+            case R.id.action_home_cipher_challenge_2014_7B:
+                setInputText(R.string.cipher_challenge_2014_7B);
+                return true;
+            case R.id.action_home_cipher_challenge_2014_8A:
+                setInputText(R.string.cipher_challenge_2014_8A);
+                return true;
+            case R.id.action_home_cipher_challenge_2014_8B:
+                setInputText(R.string.cipher_challenge_2014_8B);
+                return true;
+            case R.id.action_home_cipher_challenge_2015_0:
+                setInputText(R.string.cipher_challenge_2015_0);
+                return true;
+            case R.id.action_home_cipher_challenge_2015_1A:
+                setInputText(R.string.cipher_challenge_2015_1A);
+                return true;
+            case R.id.action_home_cipher_challenge_2015_1B:
+                setInputText(R.string.cipher_challenge_2015_1B);
+                return true;
+            case R.id.action_home_cipher_challenge_2015_2A:
+                setInputText(R.string.cipher_challenge_2015_2A);
+                return true;
+            case R.id.action_home_cipher_challenge_2015_2B:
+                setInputText(R.string.cipher_challenge_2015_2B);
+                return true;
+            case R.id.action_home_cipher_challenge_2015_3A:
+                setInputText(R.string.cipher_challenge_2015_3A);
+                return true;
+            case R.id.action_home_cipher_challenge_2015_3B:
+                setInputText(R.string.cipher_challenge_2015_3B);
+                return true;
+            case R.id.action_home_cipher_challenge_2015_4A:
+                setInputText(R.string.cipher_challenge_2015_4A);
+                return true;
+            case R.id.action_home_cipher_challenge_2015_4B:
+                setInputText(R.string.cipher_challenge_2015_4B);
+                return true;
+            case R.id.action_home_cipher_challenge_2015_5A:
+                setInputText(R.string.cipher_challenge_2015_5A);
+                return true;
+            case R.id.action_home_cipher_challenge_2015_5B:
+                setInputText(R.string.cipher_challenge_2015_5B);
+                return true;
+            case R.id.action_home_cipher_challenge_2015_6A:
+                setInputText(R.string.cipher_challenge_2015_6A);
+                return true;
+            case R.id.action_home_cipher_challenge_2015_6B:
+                setInputText(R.string.cipher_challenge_2015_6B);
+                return true;
+            case R.id.action_home_cipher_challenge_2015_7A:
+                setInputText(R.string.cipher_challenge_2015_7A);
+                return true;
+            case R.id.action_home_cipher_challenge_2015_7B:
+                setInputText(R.string.cipher_challenge_2015_7B);
+                return true;
+            case R.id.action_home_cipher_challenge_2015_8A:
+                setInputText(R.string.cipher_challenge_2015_8A);
+                return true;
+            case R.id.action_home_cipher_challenge_2015_8B:
+                setInputText(R.string.cipher_challenge_2015_8B);
+                return true;
+            case R.id.action_home_cipher_challenge_2016_1A:
+                setInputText(R.string.cipher_challenge_2016_1A);
+                return true;
+            case R.id.action_home_cipher_challenge_2016_1B:
+                setInputText(R.string.cipher_challenge_2016_1B);
+                return true;
+            case R.id.action_home_cipher_challenge_2016_2A:
+                setInputText(R.string.cipher_challenge_2016_2A);
+                return true;
+            case R.id.action_home_cipher_challenge_2016_2B:
+                setInputText(R.string.cipher_challenge_2016_2B);
+                return true;
+            case R.id.action_home_cipher_challenge_2016_3A:
+                setInputText(R.string.cipher_challenge_2016_3A);
+                return true;
+            case R.id.action_home_cipher_challenge_2016_3B:
+                setInputText(R.string.cipher_challenge_2016_3B);
+                return true;
+            case R.id.action_home_cipher_challenge_2016_4A:
+                setInputText(R.string.cipher_challenge_2016_4A);
+                return true;
+            case R.id.action_home_cipher_challenge_2016_4B:
+                setInputText(R.string.cipher_challenge_2016_4B);
+                return true;
+            case R.id.action_home_cipher_challenge_2016_5A:
+                setInputText(R.string.cipher_challenge_2016_5A);
+                return true;
+            case R.id.action_home_cipher_challenge_2016_5B:
+                setInputText(R.string.cipher_challenge_2016_5B);
+                return true;
+            case R.id.action_home_cipher_challenge_2016_6A:
+                setInputText(R.string.cipher_challenge_2016_6A);
+                return true;
+            case R.id.action_home_cipher_challenge_2016_6B:
+                setInputText(R.string.cipher_challenge_2016_6B);
+                return true;
+            case R.id.action_home_cipher_challenge_2016_7A:
+                setInputText(R.string.cipher_challenge_2016_7A);
+                return true;
+            case R.id.action_home_cipher_challenge_2016_7B:
+                setInputText(R.string.cipher_challenge_2016_7B);
+                return true;
+            case R.id.action_home_cipher_challenge_2016_8A:
+                setInputText(R.string.cipher_challenge_2016_8A);
+                return true;
+            case R.id.action_home_cipher_challenge_2016_8B:
+                setInputText(R.string.cipher_challenge_2016_8B);
+                return true;
+
+            case R.id.action_home_cipher_challenge_2017_1A:
+                setInputText(R.string.cipher_challenge_2017_1A);
+                return true;
+            case R.id.action_home_cipher_challenge_2017_1B:
+                setInputText(R.string.cipher_challenge_2017_1B);
+                return true;
+            case R.id.action_home_cipher_challenge_2017_2A:
+                setInputText(R.string.cipher_challenge_2017_2A);
+                return true;
+            case R.id.action_home_cipher_challenge_2017_2B:
+                setInputText(R.string.cipher_challenge_2017_2B);
+                return true;
+            case R.id.action_home_cipher_challenge_2017_3A:
+                setInputText(R.string.cipher_challenge_2017_3A);
+                return true;
+            case R.id.action_home_cipher_challenge_2017_3B:
+                setInputText(R.string.cipher_challenge_2017_3B);
+                return true;
+            case R.id.action_home_cipher_challenge_2017_4A:
+                setInputText(R.string.cipher_challenge_2017_4A);
+                return true;
+            case R.id.action_home_cipher_challenge_2017_4B:
+                setInputText(R.string.cipher_challenge_2017_4B);
+                return true;
+            case R.id.action_home_cipher_challenge_2017_5A:
+                setInputText(R.string.cipher_challenge_2017_5A);
+                return true;
+            case R.id.action_home_cipher_challenge_2017_5B:
+                setInputText(R.string.cipher_challenge_2017_5B);
+                return true;
+            case R.id.action_home_cipher_challenge_2017_6A:
+                setInputText(R.string.cipher_challenge_2017_6A);
+                return true;
+            case R.id.action_home_cipher_challenge_2017_6B:
+                setInputText(R.string.cipher_challenge_2017_6B);
+                return true;
+            case R.id.action_home_cipher_challenge_2017_7A:
+                setInputText(R.string.cipher_challenge_2017_7A);
+                return true;
+            case R.id.action_home_cipher_challenge_2017_7B:
+                setInputText(R.string.cipher_challenge_2017_7B);
+                return true;
+            case R.id.action_home_cipher_challenge_2017_8A:
+                setInputText(R.string.cipher_challenge_2017_8A);
+                return true;
+            case R.id.action_home_cipher_challenge_2017_8B:
+                setInputText(R.string.cipher_challenge_2017_8B);
+                return true;
+
+            case R.id.action_home_cipher_challenge_2018_1A:
+                setInputText(R.string.cipher_challenge_2018_1A);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_1B:
+                setInputText(R.string.cipher_challenge_2018_1B);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_2A:
+                setInputText(R.string.cipher_challenge_2018_2A);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_2B:
+                setInputText(R.string.cipher_challenge_2018_2B);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_3A:
+                setInputText(R.string.cipher_challenge_2018_3A);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_3B:
+                setInputText(R.string.cipher_challenge_2018_3B);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_4A:
+                setInputText(R.string.cipher_challenge_2018_4A);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_4B:
+                setInputText(R.string.cipher_challenge_2018_4B);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_5A:
+                setInputText(R.string.cipher_challenge_2018_5A);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_5B:
+                setInputText(R.string.cipher_challenge_2018_5B);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_6A:
+                setInputText(R.string.cipher_challenge_2018_6A);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_6B:
+                setInputText(R.string.cipher_challenge_2018_6B);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_7A:
+                setInputText(R.string.cipher_challenge_2018_7A);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_7B:
+                setInputText(R.string.cipher_challenge_2018_7B);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_8A:
+                setInputText(R.string.cipher_challenge_2018_8A);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_8B:
+                setInputText(R.string.cipher_challenge_2018_8B);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_9A:
+                setInputText(R.string.cipher_challenge_2018_9A);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_9B:
+                setInputText(R.string.cipher_challenge_2018_9B);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_10A:
+                setInputText(R.string.cipher_challenge_2018_10A);
+                return true;
+            case R.id.action_home_cipher_challenge_2018_10B:
+                setInputText(R.string.cipher_challenge_2018_10B);
+                return true;
+
+            case R.id.action_home_cipher_challenge_2019_1A:
+                setInputText(R.string.cipher_challenge_2019_1A);
+                return true;
+            case R.id.action_home_cipher_challenge_2019_1B:
+                setInputText(R.string.cipher_challenge_2019_1B);
+                return true;
+            case R.id.action_home_cipher_challenge_2019_2A:
+                setInputText(R.string.cipher_challenge_2019_2A);
+                return true;
+            case R.id.action_home_cipher_challenge_2019_2B:
+                setInputText(R.string.cipher_challenge_2019_2B);
+                return true;
+            case R.id.action_home_cipher_challenge_2019_3A:
+                setInputText(R.string.cipher_challenge_2019_3A);
+                return true;
+            case R.id.action_home_cipher_challenge_2019_3B:
+                setInputText(R.string.cipher_challenge_2019_3B);
+                return true;
+            case R.id.action_home_cipher_challenge_2019_4A:
+                setInputText(R.string.cipher_challenge_2019_4A);
+                return true;
+            case R.id.action_home_cipher_challenge_2019_4B:
+                setInputText(R.string.cipher_challenge_2019_4B);
+                return true;
+            case R.id.action_home_cipher_challenge_2019_5A:
+                setInputText(R.string.cipher_challenge_2019_5A);
+                return true;
+            case R.id.action_home_cipher_challenge_2019_5B:
+                setInputText(R.string.cipher_challenge_2019_5B);
+                return true;
+            case R.id.action_home_cipher_challenge_2019_6A:
+                setInputText(R.string.cipher_challenge_2019_6A);
+                return true;
+            case R.id.action_home_cipher_challenge_2019_6B:
+                setInputText(R.string.cipher_challenge_2019_6B);
+                return true;
+            case R.id.action_home_cipher_challenge_2019_7A:
+                setInputText(R.string.cipher_challenge_2019_7A);
+                return true;
+            case R.id.action_home_cipher_challenge_2019_7B:
+                setInputText(R.string.cipher_challenge_2019_7B);
+                return true;
+            case R.id.action_home_cipher_challenge_2019_8A:
+                setInputText(R.string.cipher_challenge_2019_8A);
+                return true;
+            case R.id.action_home_cipher_challenge_2019_8B:
+                setInputText(R.string.cipher_challenge_2019_8B);
+                return true;
+            case R.id.action_home_cipher_challenge_2019_9A:
+                setInputText(R.string.cipher_challenge_2019_9A);
+                return true;
+            case R.id.action_home_cipher_challenge_2019_9B:
+                setInputText(R.string.cipher_challenge_2019_9B);
+                return true;
+
+            case R.id.action_home_cb_menu_stage_1:
+                setInputText(R.string.cb_text_stage_1);
+                return true;
+            case R.id.action_home_cb_menu_stage_2:
+                setInputText(R.string.cb_text_stage_2);
+                return true;
+            case R.id.action_home_cb_menu_stage_3:
+                setInputText(R.string.cb_text_stage_3);
+                return true;
+            case R.id.action_home_cb_menu_stage_4:
+                setInputText(R.string.cb_text_stage_4);
+                return true;
+            case R.id.action_home_cb_menu_stage_5:
+                setInputText(R.string.cb_text_stage_5);
+                return true;
+            case R.id.action_home_cb_menu_stage_6:
+                setInputText(R.string.cb_text_stage_6);
+                return true;
+            case R.id.action_home_cb_menu_stage_7:
+                setInputText(R.string.cb_text_stage_7);
+                return true;
+            case R.id.action_home_cb_menu_stage_8:
+                setInputText(R.string.cb_text_stage_8);
+                return true;
+            case R.id.action_home_cb_menu_stage_9:
+                setInputText(R.string.cb_text_stage_9);
+                return true;
+            case R.id.action_home_cb_menu_stage_10_shorter:
+                setInputText(R.string.cb_text_stage_10_shorter);
+                return true;
+            case R.id.action_home_cb_menu_stage_10_longer:
+                setInputText(R.string.cb_text_stage_10_longer);
+                return true;
+
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -698,7 +1257,10 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
             String cipherDescription = cipher.getCipherDescription();
             viewWithText.setText(cipherDescription);
             viewWithText.setPadding(10,10,10,10);
-            alert.setView(viewWithText);
+
+            final ScrollView scroller = new ScrollView(this);
+            scroller.addView(viewWithText);
+            alert.setView(scroller);
             alert.setPositiveButton(getString(R.string.close), null);
             alert.show();
         }
@@ -706,10 +1268,11 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
 
     /**
      * Apply a user-requested transform, e.g. remove padding or convert to upper case
+     * Some (such as SplitAt) need a dialog for some options first before applying
      * @param transform the transform the user wants to do
      * @param textField the resulting text after transform
      */
-    private void applyEdit(Transform transform, EditText textField) {
+    public void applyEdit(Transform transform, EditText textField) {
         String entryText = textField.getText().toString();
         String editedText = transform.apply(this, entryText);
         textField.setText(editedText);
@@ -877,7 +1440,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
             boolean controlsNeeded = cipher.addCrackControls(this, extraLayout, alphabet);
             if (controlsNeeded) {
                 popup.setContentView(popupLayout);
-                popup.setWidth(800);
+                popup.setWidth(820);
                 popup.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
                 popup.setFocusable(true);
                 Button cancelButton = popupLayout.findViewById(R.id.popup_crack_button_cancel);
@@ -948,7 +1511,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
 
             // do the cracking now and see send result to the Results view
             String inputText = getInputText();
-            CrackService.startActionCrack(this, cipher.getCipherName(), inputText, cipherDirectives);
+            CrackService.startActionCrack(this, cipher, inputText, cipherDirectives);
             Toast.makeText(this,"Cracking "+cipher.getCipherName()+" via a service", Toast.LENGTH_SHORT).show();
         }
     }

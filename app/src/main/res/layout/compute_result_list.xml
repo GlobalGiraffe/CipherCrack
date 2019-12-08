@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
+    android:background="@drawable/result_text_border_darker"
     app:layoutManager="LinearLayoutManager"
     tools:context=".ComputeResultListActivity"
     tools:listitem="@layout/compute_result_list_content" />

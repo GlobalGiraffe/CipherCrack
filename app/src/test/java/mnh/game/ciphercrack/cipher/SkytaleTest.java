@@ -27,20 +27,20 @@ public class SkytaleTest {
         Directives p = new Directives();
         String reason = cipher.canParametersBeSet(p);
         assertEquals("SkytaleBadParam 0", "Cycle length: 0 must be between 2 and "+Skytale.MAX_CYCLE_LENGTH, reason);
-        p.setRails(-1);
+        p.setCycleLength(-1);
         reason = cipher.canParametersBeSet(p);
         assertEquals("SkytaleBadParam negative", "Cycle length: -1 must be between 2 and "+Skytale.MAX_CYCLE_LENGTH, reason);
-        p.setRails(1);
+        p.setCycleLength(1);
         reason = cipher.canParametersBeSet(p);
         assertEquals("SkytaleBadParam 1", "Cycle length: 1 must be between 2 and "+Skytale.MAX_CYCLE_LENGTH, reason);
-        p.setRails(Skytale.MAX_CYCLE_LENGTH+1);
+        p.setCycleLength(Skytale.MAX_CYCLE_LENGTH+1);
         reason = cipher.canParametersBeSet(p);
         assertEquals("SkytaleBadParam big", "Cycle length: "+(Skytale.MAX_CYCLE_LENGTH+1)+" must be between 2 and "+Skytale.MAX_CYCLE_LENGTH, reason);
-        p.setRails(20);
+        p.setCycleLength(20);
         reason = cipher.canParametersBeSet(p);
         assertNull("SkytaleBadParam encode okay", reason);
 
-        p.setRails(-1);
+        p.setCycleLength(-1);
         p.setCrackMethod(CrackMethod.WORD_COUNT);
         reason = cipher.canParametersBeSet(p);
         assertEquals("Bad Param Method", "Invalid crack method", reason);
@@ -63,7 +63,7 @@ public class SkytaleTest {
         Directives p = new Directives();
         p.setPaddingChars(Settings.DEFAULT_PADDING_CHARS);
         p.setAlphabet(Settings.DEFAULT_ALPHABET);
-        p.setRails(3);
+        p.setCycleLength(3);
         String reason = cipher.canParametersBeSet(p);
         assertNull("Encoding Wiki mixed case reason", reason);
         String encoded = cipher.encode("We are discovered Flee at once", p);
@@ -76,7 +76,7 @@ public class SkytaleTest {
     public void testFoundExample() {
         // encode and then decode a mixed case cipher
         Directives p = new Directives();
-        p.setRails(4);
+        p.setCycleLength(4);
         String reason = cipher.canParametersBeSet(p);
         assertNull("Encoding Found example mixed case reason", reason);
         String encoded = cipher.encode("THIS IS A TEST OF THE SCYTALE CIPHER", p);
@@ -91,12 +91,12 @@ public class SkytaleTest {
         String expectedDecode = new RemoveNonAlphabetic().apply(null, plainText);
         Directives p = new Directives();
         p.setCribs("fine");
-        p.setRails(5);
+        p.setCycleLength(5);
         String reason = cipher.canParametersBeSet(p);
         assertNull("Crack dirs okay1", reason);
 
         String cipherText = cipher.encode(plainText, p);
-        p.setRails(-1);
+        p.setCycleLength(-1);
         p.setCribs("are,fine");
         p.setCrackMethod(CrackMethod.BRUTE_FORCE);
         reason = cipher.canParametersBeSet(p);
@@ -106,7 +106,7 @@ public class SkytaleTest {
         assertTrue("Crack Skytale status", result.isSuccess());
         assertEquals("Crack Skytale text", expectedDecode, result.getPlainText());
         assertEquals("Crack Skytale cipherText", cipherText, result.getCipherText());
-        assertEquals("Crack Skytale rails", 5, result.getDirectives().getRails());
+        assertEquals("Crack Skytale cycle", 5, result.getDirectives().getCycleLength());
         assertNotNull("Crack Skytale explain", result.getExplain());
         assertEquals("Crack Skytale cipher name", "Skytale cipher (cycleLength=5)", result.getCipher().getInstanceDescription());
         assertEquals("WordCountCrack crack method", CrackMethod.BRUTE_FORCE, result.getCrackMethod());
@@ -124,7 +124,7 @@ public class SkytaleTest {
         assertFalse("CrackFail Skytale status", result.isSuccess());
         assertNull("CrackFail Skytale text", result.getPlainText());
         assertEquals("CrackFail Skytale cipherText", cipherText, result.getCipherText());
-        assertNull("CrackFail Skytale rails", result.getDirectives());
+        assertNull("CrackFail Skytale cycle", result.getDirectives());
         assertNotNull("CrackFail Skytale explain", result.getExplain());
         assertEquals("Crack Skytale cipher name", "Skytale cipher (n/a)", result.getCipher().getInstanceDescription());
         assertEquals("WordCountCrack crack method", CrackMethod.BRUTE_FORCE, result.getCrackMethod());
@@ -139,7 +139,7 @@ public class SkytaleTest {
     @Test
     public void testInstanceDescription() {
         Directives p = new Directives();
-        p.setRails(4);
+        p.setCycleLength(4);
         String reason = cipher.canParametersBeSet(p);
         assertNull("Null reason", reason);
         String desc = cipher.getInstanceDescription();

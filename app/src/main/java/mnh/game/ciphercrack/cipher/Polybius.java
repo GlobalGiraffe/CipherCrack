@@ -3,7 +3,6 @@ package mnh.game.ciphercrack.cipher;
 import android.content.Context;
 import android.os.Parcel;
 import android.text.InputFilter;
-import android.text.InputType;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
@@ -12,19 +11,18 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import mnh.game.ciphercrack.R;
 import mnh.game.ciphercrack.language.Dictionary;
 import mnh.game.ciphercrack.language.Language;
 import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
+import mnh.game.ciphercrack.util.CrackState;
 import mnh.game.ciphercrack.util.Directives;
 import mnh.game.ciphercrack.util.KeywordExtend;
 
@@ -49,20 +47,53 @@ public class Polybius extends Cipher {
                     EditText k = v.getRootView().findViewById(R.id.extra_polybius_keyword);
                     k.setText("");
                     break;
-                case R.id.extra_polybius_heading_delete:
-                    EditText h = v.getRootView().findViewById(R.id.extra_polybius_heading);
-                    h.setText("");
+                case R.id.extra_polybius_col_heading_delete:
+                    EditText ch = v.getRootView().findViewById(R.id.extra_polybius_col_heading);
+                    ch.setText("");
+                    break;
+                case R.id.extra_polybius_row_heading_delete:
+                    EditText rh = v.getRootView().findViewById(R.id.extra_polybius_row_heading);
+                    rh.setText("");
                     break;
                 case R.id.extra_polybius_replace_delete:
-                    EditText r = v.getRootView().findViewById(R.id.extra_polybius_replace);
+                    EditText r = v.getRootView().findViewById(R.id.extra_replace);
                     r.setText("");
+                    break;
+                case R.id.extra_polybius_crack_col_heading_delete:
+                    EditText cch = v.getRootView().findViewById(R.id.extra_polybius_crack_col_heading);
+                    cch.setText("");
+                    break;
+                case R.id.extra_polybius_crack_row_heading_delete:
+                    EditText crh = v.getRootView().findViewById(R.id.extra_polybius_crack_row_heading);
+                    crh.setText("");
+                    break;
+            }
+        }
+    };
+
+    // reassess which fields to see when crack methods chosen
+    // extend when more crack methods are added to this cipher
+    private static final View.OnClickListener CRACK_METHOD_ASSESSOR = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            LinearLayout lColHeading = v.getRootView().findViewById(R.id.extra_polybius_crack_layout_col_heading);
+            LinearLayout lRowHeading = v.getRootView().findViewById(R.id.extra_polybius_crack_layout_row_heading);
+            switch (v.getId()) {
+                case R.id.crack_button_dictionary:
+                    lColHeading.setVisibility(View.VISIBLE);
+                    lRowHeading.setVisibility(View.VISIBLE);
+                    break;
+                case R.id.crack_button_brute_force:
+                    lColHeading.setVisibility(View.VISIBLE);
+                    lRowHeading.setVisibility(View.VISIBLE);
                     break;
             }
         }
     };
 
     private String keyword = ""; // represents the grid of letters either 25 or 36 chars long
-    private String heading = ""; // represents the column headings, e.g. ABCDE or 123456
+    private String colHeading = ""; // represents the column headings, e.g. ABCDE or 123456
+    private String rowHeading = ""; // represents the column headings, e.g. ABCDE or 123456
     private String replace = ""; // represents which chars should replace others, e.g. J=>I
 
     Polybius(Context context) {
@@ -74,14 +105,16 @@ public class Polybius extends Cipher {
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeString(keyword);
-        dest.writeString(heading);
+        dest.writeString(colHeading);
+        dest.writeString(rowHeading);
         dest.writeString(replace);
     }
     @Override
     public void unpack(Parcel in) {
         super.unpack(in);
         keyword = in.readString();
-        heading = in.readString();
+        colHeading = in.readString();
+        rowHeading = in.readString();
         replace = in.readString();
     }
 
@@ -113,7 +146,27 @@ public class Polybius extends Cipher {
      */
     @Override
     public String getInstanceDescription() {
-        return getCipherName() + " cipher ("+(keyword==null?"n/a":(keyword + ",heading=" + heading)) + ")";
+        return getCipherName() + " cipher ("+(keyword==null?"n/a":(keyword + ",cols=" + colHeading + ",rows="+rowHeading)) + ")";
+    }
+
+    /**
+     * Determine whether a column or row heading looks reasonable
+     *
+     * @param type either 'Col' or 'Row'
+     * @param headingLetters the letters to be checked, e.g. ABCDE or 12345
+     * @return return the reason for being invalid, or null if the properties ARE valid
+     */
+    private String canHeadingBeSet(String type, String headingLetters) {
+        if (headingLetters == null || headingLetters.length() < 3)
+            return type+" heading is missing or too short";
+        if (headingLetters.length() > 8)
+            return type+" heading is too long";
+        // letters in the code letters should not repeat
+        for (int i = 0; i < headingLetters.length() - 1; i++) {
+            if (headingLetters.indexOf(headingLetters.charAt(i), i + 1) > 0)
+                return "Symbol " + headingLetters.charAt(i) + " is repeated in the "+type+" heading";
+        }
+        return null;
     }
 
     /**
@@ -128,7 +181,8 @@ public class Polybius extends Cipher {
         if (reason != null)
             return reason;
         String keywordValue = dirs.getKeyword();
-        String headingLetters = dirs.getHeading();
+        String colHeadingLetters = dirs.getColHeading();
+        String rowHeadingLetters = dirs.getRowHeading();
         CrackMethod crackMethod = dirs.getCrackMethod();
         String replaceLetters = (dirs.getReplace() == null) ? "" : dirs.getReplace().toUpperCase();
         dirs.setReplace(replaceLetters);
@@ -149,16 +203,15 @@ public class Polybius extends Cipher {
                     return "Symbol " + keywordValue.charAt(i) + " is repeated in the keyword";
             }
 
-            // Check heading letters
-            if (headingLetters == null || headingLetters.length() < 3)
-                return "Heading is missing or too short";
-            if (headingLetters.length() * headingLetters.length() != keywordValue.length())
-                return "Heading length must be square-root of keyword length";
-            // letters in the code letters should not repeat
-            for (int i = 0; i < headingLetters.length() - 1; i++) {
-                if (headingLetters.indexOf(headingLetters.charAt(i), i + 1) > 0)
-                    return "Symbol " + headingLetters.charAt(i) + " is repeated in the Heading";
-            }
+            // Check heading letters have decent lengths and do not contain repeats
+            reason = canHeadingBeSet("Col", colHeadingLetters);
+            if (reason != null)
+                return reason;
+            reason = canHeadingBeSet("Row", rowHeadingLetters);
+            if (reason != null)
+                return reason;
+            if (colHeadingLetters.length() * rowHeadingLetters.length() != keywordValue.length())
+                return "Heading lengths should multiply to give keyword length";
 
             keyword = keywordValue;
         } else {
@@ -175,16 +228,13 @@ public class Polybius extends Cipher {
             if (lang.getDictionary() == null) {
                 return "No " + lang.getName() + " dictionary is defined";
             }
-            // Check heading letters
-            if (headingLetters == null || headingLetters.length() < 3)
-                return "Heading is missing or too short";
-            if (headingLetters.length() > 6)
-                return "Heading too long to crack";
-            // letters in the code letters should not repeat
-            for (int i = 0; i < headingLetters.length() - 1; i++) {
-                if (headingLetters.indexOf(headingLetters.charAt(i), i + 1) > 0)
-                    return "Symbol " + headingLetters.charAt(i) + " is repeated in the Heading";
-            }
+            // Check heading letters have decent lengths and do not contain repeats
+            reason = canHeadingBeSet("Col", colHeadingLetters);
+            if (reason != null)
+                return reason;
+            reason = canHeadingBeSet("Row", rowHeadingLetters);
+            if (reason != null)
+                return reason;
         }
 
         // check the replace field:
@@ -199,7 +249,8 @@ public class Polybius extends Cipher {
                 return "Replace with symbol "+ch2+" must be in the keyword";
         }
 
-        heading = headingLetters;
+        colHeading = colHeadingLetters;
+        rowHeading = rowHeadingLetters;
         replace = replaceLetters;
         return null;
     }
@@ -235,26 +286,36 @@ public class Polybius extends Cipher {
         keywordDelete.setOnClickListener(POLYBIUS_ON_CLICK_DELETE);
 
         // ensure input is in capitals
-        EditText headingText = layout.findViewById(R.id.extra_polybius_heading);
-        editFilters = headingText.getFilters();
+        EditText colHeadingText = layout.findViewById(R.id.extra_polybius_col_heading);
+        editFilters = colHeadingText.getFilters();
         newFilters = new InputFilter[editFilters.length + 1];
         System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
         newFilters[editFilters.length] = new InputFilter.AllCaps();   // ensures capitals
-        headingText.setFilters(newFilters);
+        colHeadingText.setFilters(newFilters);
+        EditText rowHeadingText = layout.findViewById(R.id.extra_polybius_row_heading);
+        editFilters = rowHeadingText.getFilters();
+        newFilters = new InputFilter[editFilters.length + 1];
+        System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
+        newFilters[editFilters.length] = new InputFilter.AllCaps();   // ensures capitals
+        colHeadingText.setFilters(newFilters);
 
-        // ensure we 'delete' the hading text when the delete button is pressed
-        Button headingDelete = layout.findViewById(R.id.extra_polybius_heading_delete);
-        headingDelete.setOnClickListener(POLYBIUS_ON_CLICK_DELETE);
+        // ensure we 'delete' the heading text when the delete button is pressed
+        Button colHeadingDelete = layout.findViewById(R.id.extra_polybius_col_heading_delete);
+        colHeadingDelete.setOnClickListener(POLYBIUS_ON_CLICK_DELETE);
 
-        // ensure input is in capitals
-        EditText replaceText = layout.findViewById(R.id.extra_polybius_replace);
+        // ensure we 'delete' the heading text when the delete button is pressed
+        Button rowHeadingDelete = layout.findViewById(R.id.extra_polybius_row_heading_delete);
+        rowHeadingDelete.setOnClickListener(POLYBIUS_ON_CLICK_DELETE);
+
+        // ensure extra replace input is in capitals
+        EditText replaceText = layout.findViewById(R.id.extra_replace);
         editFilters = replaceText.getFilters();
         newFilters = new InputFilter[editFilters.length + 1];
         System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
         newFilters[editFilters.length] = new InputFilter.AllCaps();   // ensures capitals
         replaceText.setFilters(newFilters);
 
-        // ensure we 'delete' the hading text when the delete button is pressed
+        // ensure we 'delete' the replace text when the delete button is pressed
         Button replaceDelete = layout.findViewById(R.id.extra_polybius_replace_delete);
         replaceDelete.setOnClickListener(POLYBIUS_ON_CLICK_DELETE);
     }
@@ -264,72 +325,36 @@ public class Polybius extends Cipher {
         EditText keywordField = layout.findViewById(R.id.extra_polybius_keyword);
         String keyword = keywordField.getText().toString();
         dirs.setKeyword(keyword);
-        EditText headingField = layout.findViewById(R.id.extra_polybius_heading);
-        String heading = headingField.getText().toString();
-        dirs.setHeading(heading);
-        EditText replaceField = layout.findViewById(R.id.extra_polybius_replace);
+        EditText colHeadingField = layout.findViewById(R.id.extra_polybius_col_heading);
+        String colHeading = colHeadingField.getText().toString();
+        dirs.setColHeading(colHeading);
+        EditText rowHeadingField = layout.findViewById(R.id.extra_polybius_row_heading);
+        String rowHeading = rowHeadingField.getText().toString();
+        dirs.setRowHeading(rowHeading);
+        EditText replaceField = layout.findViewById(R.id.extra_replace);
         String replace = replaceField.getText().toString();
         dirs.setReplace(replace);
     }
 
-    /**
-     * Add crack controls for this cipher: type of crack to be done
-     *
-     * @param context  the context
-     * @param layout   the layout to add any crack controls to
-     * @param alphabet the current alphabet
-     * @return true if controls added, else false
-     */
+    // add 2 buttons, one for dictionary crack, one for brute-force
     @Override
     public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
-        TextView headingLabel = new TextView(context);
-        headingLabel.setText(context.getString(R.string.heading));
-        headingLabel.setTextColor(ContextCompat.getColor(context, R.color.white));
-        headingLabel.setLayoutParams(WRAP_CONTENT_BOTH);
+        // this extracts the layout from the XML resource
+        super.addExtraControls(context, layout, R.layout.extra_polybius_crack);
 
-        EditText headingText = new EditText(context);
-        headingText.setText(context.getString(R.string.default_heading));
-        headingText.setPadding(3, 3, 3, 3);
-        headingText.setTextColor(ContextCompat.getColor(context, R.color.entry_text_text));
-        headingText.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
-        headingText.setId(ID_HEADING_LENGTH);
-        headingText.setBackground(context.getDrawable(R.drawable.entry_text_border));
-        headingText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        // ensure we 'delete' the field when the delete button is pressed
+        Button sizeDelete = layout.findViewById(R.id.extra_polybius_crack_col_heading_delete);
+        sizeDelete.setOnClickListener(POLYBIUS_ON_CLICK_DELETE);
+        Button cribsDragDelete = layout.findViewById(R.id.extra_polybius_crack_row_heading_delete);
+        cribsDragDelete.setOnClickListener(POLYBIUS_ON_CLICK_DELETE);
 
-        TextView crackLabel = new TextView(context);
-        crackLabel.setText(context.getString(R.string.crack_method));
-        crackLabel.setTextColor(ContextCompat.getColor(context, R.color.white));
-        crackLabel.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
-
-        RadioButton dictButton = new RadioButton(context);
-        dictButton.setId(ID_BUTTON_DICTIONARY);
-        dictButton.setText(context.getString(R.string.crack_dictionary));
-        dictButton.setChecked(true);
-        dictButton.setTextColor(ContextCompat.getColor(context, R.color.white));
-        dictButton.setLayoutParams(WRAP_CONTENT_BOTH);
-
-        RadioButton bruteForceButton = new RadioButton(context);
-        bruteForceButton.setId(ID_BUTTON_BRUTE_FORCE);
-        bruteForceButton.setText(context.getString(R.string.crack_brute_force));
-        bruteForceButton.setChecked(false);
-        bruteForceButton.setEnabled(false);
-        bruteForceButton.setTextColor(ContextCompat.getColor(context, R.color.white));
-        bruteForceButton.setLayoutParams(WRAP_CONTENT_BOTH);
-
-        RadioGroup crackButtonGroup = new RadioGroup(context);
-        crackButtonGroup.check(ID_BUTTON_DICTIONARY);
-        crackButtonGroup.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
-        crackButtonGroup.setOrientation(LinearLayout.HORIZONTAL);
-        crackButtonGroup.addView(dictButton);
-        crackButtonGroup.addView(bruteForceButton);
-
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setLayoutParams(MATCH_PARENT_W_WRAP_CONTENT_H);
-        layout.addView(headingLabel);
-        layout.addView(headingText);
-        layout.addView(crackLabel);
-        layout.addView(crackButtonGroup);
-
+        // assess when radio buttons pressed to show what fields needed for each type of crack
+        RadioGroup group = layout.findViewById(R.id.extra_polybius_crack_radio_group);
+        for (int child = 0; child < group.getChildCount(); child++) {
+            RadioButton button = (RadioButton)group.getChildAt(child);
+            button.setOnClickListener(CRACK_METHOD_ASSESSOR);
+        }
+        CRACK_METHOD_ASSESSOR.onClick(layout.findViewById(R.id.crack_button_dictionary));
         return true;
     }
 
@@ -342,12 +367,16 @@ public class Polybius extends Cipher {
      */
     @Override
     public CrackMethod fetchCrackControls(LinearLayout layout, Directives dirs) {
-        EditText headingField = layout.findViewById(ID_HEADING_LENGTH);
-        String headingStr = headingField.getText().toString();
-        dirs.setHeading(headingStr);
+        EditText colHeadingField = layout.findViewById(R.id.extra_polybius_crack_col_heading);
+        String colHeadingStr = colHeadingField.getText().toString();
+        dirs.setColHeading(colHeadingStr);
+
+        EditText rowHeadingField = layout.findViewById(R.id.extra_polybius_crack_row_heading);
+        String rowHeadingStr = rowHeadingField.getText().toString();
+        dirs.setRowHeading(rowHeadingStr);
 
         // locate the kind of crack we've been asked to do
-        RadioButton dictButton = layout.findViewById(ID_BUTTON_DICTIONARY);
+        RadioButton dictButton = layout.findViewById(R.id.crack_button_dictionary);
         return (dictButton.isChecked()) ? CrackMethod.DICTIONARY : CrackMethod.BRUTE_FORCE;
     }
 
@@ -361,9 +390,10 @@ public class Polybius extends Cipher {
     @Override
     public String encode(String plainText, Directives dirs) {
         String keywordUpper = dirs.getKeyword().toUpperCase();
-        String headingUpper = dirs.getHeading().toUpperCase();
+        String colHeadingUpper = dirs.getColHeading().toUpperCase();
+        String rowHeadingUpper = dirs.getRowHeading().toUpperCase();
+        int colHeadingLength = colHeadingUpper.length();
         String replaceUpper = (dirs.getReplace() == null) ? "" : dirs.getReplace().toUpperCase();
-        int headingLength = headingUpper.length();
 
         StringBuilder result = new StringBuilder(plainText.length());
         for (int pos = 0; pos < plainText.length(); pos++) {
@@ -382,9 +412,9 @@ public class Polybius extends Cipher {
             if (posInKeyword < 0) {
                 result.append(plainChar);
             } else {
-                int row = posInKeyword / headingLength;
-                int col = posInKeyword % headingLength;
-                result.append(headingUpper.charAt(row)).append(headingUpper.charAt(col));
+                int row = posInKeyword / colHeadingLength;
+                int col = posInKeyword % colHeadingLength;
+                result.append(rowHeadingUpper.charAt(row)).append(colHeadingUpper.charAt(col));
             }
         }
         return result.toString();
@@ -400,34 +430,57 @@ public class Polybius extends Cipher {
     @Override
     public String decode(String cipherText, Directives dirs) {
         String keywordLower = dirs.getKeyword().toLowerCase();
-        String headingUpper = dirs.getHeading().toUpperCase();
-        int headingLength = headingUpper.length();
+        String colHeadingUpper = dirs.getColHeading().toUpperCase();
+        String rowHeadingUpper = dirs.getRowHeading().toUpperCase();
+        int colHeadingLength = colHeadingUpper.length();
+        //cipherText = cipherText.replaceAll("\\s",""); // does not work with padding
 
         StringBuilder result = new StringBuilder(cipherText.length());
         for (int i = 0; i < cipherText.length(); ) {
+
+            // find first character from the cipher text
             char cipherChar1 = cipherText.charAt(i);
             char cipherCharUpper1 = Character.toUpperCase(cipherChar1);
-            int offset1 = headingUpper.indexOf(cipherCharUpper1);
-            // char is not in the heading, or we're at the end - just add this to result
+            int offset1 = rowHeadingUpper.indexOf(cipherCharUpper1);
+            // char is not in the heading (e.g. space), or we're at the end - just add this to result
             if (offset1 < 0 || i == cipherText.length() - 1) {
                 result.append(cipherChar1);
                 i++;
             } else {
+                // get second character from the cipher text
                 char cipherChar2 = cipherText.charAt(++i);
                 char cipherCharUpper2 = Character.toUpperCase(cipherChar2);
-                int offset2 = headingUpper.indexOf(cipherCharUpper2);
+                int offset2 = colHeadingUpper.indexOf(cipherCharUpper2);
                 // get second char - if this is not in a heading, weird - just add both to output
                 if (offset2 < 0) {
                     result.append(cipherChar1).append(cipherChar2);
                     i++;
                 } else {
                     // decode this pair into the plain letter in the grid at this row/col
-                    result.append(keywordLower.charAt(headingLength * offset1 + offset2));
+                    result.append(keywordLower.charAt(colHeadingLength * offset1 + offset2));
                     i++;
                 }
             }
         }
         return result.toString();
+    }
+
+    /**
+     * Crack a Polybius cipher by various means
+     *
+     * @param cipherText the text to try to crack
+     * @param dirs       the directives with alphabet and cribs
+     * @return the results of the crack attempt
+     */
+    @Override
+    public CrackResult crack(String cipherText, Directives dirs, int crackId) {
+        CrackMethod crackMethod = dirs.getCrackMethod();
+        if (crackMethod == CrackMethod.DICTIONARY) {
+            return crackDictionary(cipherText, dirs, crackId);
+        } else {
+            // TODO - use Word Count Simulated Anealing crack
+            return new CrackResult(crackMethod, this, cipherText, "Unable to crack with that method");
+        }
     }
 
     /**
@@ -437,41 +490,47 @@ public class Polybius extends Cipher {
      * @param dirs       the directives with alphabet and cribs
      * @return the results of the crack attempt
      */
-    @Override
-    public CrackResult crack(String cipherText, Directives dirs, int crackId) {
+    private CrackResult crackDictionary(String cipherText, Directives dirs, int crackId) {
         String alphabet = dirs.getAlphabet();
         String cribString = dirs.getCribs();
         CrackMethod crackMethod = dirs.getCrackMethod();
+        String reverseCipherText = new StringBuilder(cipherText).reverse().toString();
+
         // this will be used to generate the keywords
         alphabet = alphabet.replaceAll("J","");
         dirs.setReplace("JI");
 
         // returns the first decode that has all the cribs
+        CrackResults.updateProgressDirectly(crackId, "Starting "+getCipherName()+" dictionary crack");
         StringBuilder explain = new StringBuilder();
-        if (crackMethod == CrackMethod.DICTIONARY) {
-            Set<String> cribs = Cipher.getCribSet(cribString);
-            Dictionary dict = dirs.getLanguage().getDictionary();
-            int wordsRead = 0;
-            Set<String> triedKeywords = new HashSet<>(2000);
-            for (String word : dict) {
-                if (wordsRead++ % 500 == 499) {
-                    Log.i("CipherCrack", "Cracking " + getCipherName() + " Dict: " + wordsRead + " words tried");
-                    CrackResults.updatePercentageDirectly(crackId, 100 * wordsRead / dict.size());
-                }
-                word = word.toUpperCase();
+        Set<String> cribs = Cipher.getCribSet(cribString);
+        Dictionary dict = dirs.getLanguage().getDictionary();
+        Set<String> triedKeywords = new HashSet<>(2000);
+        int wordsRead = 0, matchesFound = 0;
+        String foundPlainText = null, foundKeyword = null;
+        for (String word : dict) {
+            if (wordsRead++ % 200 == 199) {
+                if (CrackResults.isCancelled(crackId))
+                    return new CrackResult(dirs.getCrackMethod(), this, cipherText, "Crack cancelled", CrackState.CANCELLED);
+                Log.i("CipherCrack", "Cracking " + getCipherName() + " Dict: " + wordsRead + " words tried, found="+matchesFound);
+                CrackResults.updateProgressDirectly(crackId, wordsRead+" words of "+dict.size()+": "+100*wordsRead/dict.size()+"% complete, found="+matchesFound);
+            }
+            word = word.toUpperCase();
 
-                // could be a number of ways of extending a partial keyword
-                for (KeywordExtend extendMethod : KeywordExtend.values()) {
+            // could be a number of ways of extending a partial keyword
+            for (KeywordExtend extendMethod : KeywordExtend.values()) {
+
+                // we need the whole square filled in, ignore the None method
+                if (extendMethod != KeywordExtend.EXTEND_NONE) {
                     String fullKeywordForSquare = applyKeywordExtend(extendMethod, word, alphabet);
+
                     // don't try to decode the cipherText with this keyword if already tried
                     if (!triedKeywords.contains(fullKeywordForSquare)) {
                         triedKeywords.add(fullKeywordForSquare);
                         dirs.setKeyword(fullKeywordForSquare);
                         String plainText = decode(cipherText, dirs);
                         if (Cipher.containsAllCribs(plainText, cribs)) {
-                            keyword = fullKeywordForSquare;
-                            heading = dirs.getHeading();
-                            replace = dirs.getReplace();
+                            matchesFound++;
                             explain.append("Success: Searched using ")
                                     .append(dict.size())
                                     .append(" dictionary words as keys and found all cribs [")
@@ -482,21 +541,46 @@ public class Polybius extends Cipher {
                                     .append(" gave decoded text=")
                                     .append(plainText.substring(0, 60))
                                     .append("\n");
-                            return new CrackResult(crackMethod, this, dirs, cipherText, plainText, explain.toString());
+                            foundPlainText = plainText;
+                            foundKeyword = fullKeywordForSquare;
+                        }
+                        // now try reverse text
+                        plainText = decode(reverseCipherText, dirs);
+                        if (Cipher.containsAllCribs(plainText, cribs)) {
+                            matchesFound++;
+                            explain.append("Success: REVERSE: Searched using ")
+                                    .append(dict.size())
+                                    .append(" dictionary words as keys and found all cribs [")
+                                    .append(cribString)
+                                    .append("] with REVERSE text\n")
+                                    .append("Keyword ")
+                                    .append(fullKeywordForSquare)
+                                    .append(" gave decoded text=")
+                                    .append(plainText.substring(0, 60))
+                                    .append("\n");
+                            foundPlainText = plainText;
+                            foundKeyword = fullKeywordForSquare;
                         }
                     }
                 }
             }
+        }
+        if (foundPlainText != null) {
+            keyword = foundKeyword;
+            colHeading = dirs.getColHeading();
+            rowHeading = dirs.getRowHeading();
+            replace = dirs.getReplace();
+            dirs.setKeyword(foundKeyword);
+            return new CrackResult(crackMethod, this, dirs, cipherText, foundPlainText, explain.toString());
+        } else {
             dirs.setKeyword(null);
-            keyword = null;
+            keyword = colHeading = rowHeading = null;
             explain.append("Fail: Searched using ")
                     .append(dict.size())
                     .append(" dictionary words as keys but did not find all cribs [")
                     .append(cribString)
                     .append("]\n");
             return new CrackResult(crackMethod, this, cipherText, explain.toString());
-        } else {
-            return new CrackResult(crackMethod, this, cipherText, "Unable to crack with that method");
         }
     }
 

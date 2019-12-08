@@ -4,10 +4,16 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
-import android.view.ViewGroup;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -17,10 +23,13 @@ import java.util.TreeSet;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import mnh.game.ciphercrack.R;
+import mnh.game.ciphercrack.language.Dictionary;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
 import mnh.game.ciphercrack.util.Directives;
 import mnh.game.ciphercrack.util.KeywordExtend;
+import mnh.game.ciphercrack.util.Settings;
 
 /**
  * Base class for all ciphers
@@ -30,30 +39,11 @@ import mnh.game.ciphercrack.util.KeywordExtend;
  */
 abstract public class Cipher implements Parcelable {
 
-    // used to locate programmatically added controls on the screen
-    static final int ID_VIGENERE_LENGTH = 9021;
-
-    static final int ID_HEADING_LENGTH = 9031;
-
-    static final int ID_BUTTON_DICTIONARY = 9040;
-    static final int ID_BUTTON_WORD_COUNT = 9041;
-    static final int ID_BUTTON_IOC = 9042;
-    static final int ID_BUTTON_BRUTE_FORCE = 9043;
-
-    static final LinearLayout.LayoutParams WRAP_CONTENT_BOTH = new LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT);
-
-    static final LinearLayout.LayoutParams MATCH_PARENT_W_WRAP_CONTENT_H = new LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT);
-
     // some ciphers remove padding, etc - need to know what padding is there, what alpha is, etc
     final Context context;
     private final String cipherName;
 
     // build a cipher from a parcel
-    @Nullable
     public static Cipher instanceOf(Parcel parcel, Context context) {
         String name = parcel.readString();
         Cipher cipher = instanceOf(name, context);
@@ -103,13 +93,22 @@ abstract public class Cipher implements Parcelable {
                 cipher = new Polybius(context);
                 break;
             case "Hill":
-                // TODO cipher = new Hill(this);
-                break;
-            case "Bifid":
-                // TODO cipher = new Bifid(this);
+                cipher = new Hill(context);
                 break;
             case "Playfair":
-                // TODO cipher = new Playfair(this);
+                cipher = new Playfair(context);
+                break;
+            case "Morse":
+                cipher = new Morse(context);
+                break;
+            case "Porta":
+                // TODO cipher = new Porta(context);
+                break;
+            case "Amsco":
+                // TODO cipher = new Amsco(context);
+                break;
+            case "Bifid":
+                // TODO cipher = new Bifid(context);
                 break;
             default:
                 Toast.makeText(context, "Unknown cipher: "+name, Toast.LENGTH_LONG).show();
@@ -140,58 +139,80 @@ abstract public class Cipher implements Parcelable {
     // subclasses call this, root class does nothing during unpack
     void unpack(Parcel in) { }
 
+
     /**
      * This takes the provided KeywordExtend method and a short keyword and then applies the method
      *  to produce a full-sized keyword with the same length as the alphabet
      * @param extend the method to use to extend the keyword, min, max or last
      * @param keyword the initial keyword, in upper case
+     * @param alphabet the alphabet to use
      * @return the resulting keyword with all alphabet letters
      */
     static String applyKeywordExtend(KeywordExtend extend, String keyword, String alphabet) {
-        StringBuilder sb = new StringBuilder(alphabet.length());
+        return applyKeywordExtend(extend, keyword, alphabet, "");
+    }
 
-        // First, we start to form the full keyword by taking each unique letter of the keyword
-        SortedSet<Character> charsUsed = new TreeSet<>();
-        for (int p =0; p < keyword.length(); p++) {
-            char nextChar = keyword.charAt(p);
-            if (!charsUsed.contains(nextChar)) {
-                sb.append(nextChar);
-                charsUsed.add(nextChar);
+    /**
+     * This takes the provided KeywordExtend method and a short keyword and then applies the method
+     *  to produce a full-sized keyword with the same length as the alphabet, excluding some chars
+     *  if required
+     * @param extend the method to use to extend the keyword, min, max or last
+     * @param keyword the initial keyword, in upper case
+     * @param alphabet the alphabet to use
+     * @param exclude any letters to be excluded from the keyword, e.g. J for some Polybius
+     * @return the resulting keyword with all alphabet letters
+     */
+    static String applyKeywordExtend(KeywordExtend extend, String keyword, String alphabet, String exclude) {
+
+        // e.g. for 6x6 we may have digits - don't extend, just use as-is
+        if (extend == KeywordExtend.EXTEND_NONE) {
+            return keyword;
+        } else {
+            StringBuilder sb = new StringBuilder(alphabet.length());
+
+            // First, we start to form the full keyword by taking each unique letter of the keyword
+            SortedSet<Character> charsUsed = new TreeSet<>();
+            for (int p = 0; p < keyword.length(); p++) {
+                char nextChar = keyword.charAt(p);
+                if (alphabet.indexOf(nextChar) >= 0 && exclude.indexOf(nextChar) == -1 && !charsUsed.contains(nextChar)) {
+                    sb.append(nextChar);
+                    charsUsed.add(nextChar);
+                }
             }
-        }
 
-        // now we decide using the extend method
-        char prevChar = alphabet.charAt(alphabet.length()-1);
-        switch (extend) {
-            case EXTEND_FIRST: // already set up above
-                break;
-            case EXTEND_MIN:
-                if (!charsUsed.isEmpty())
-                    prevChar = charsUsed.first();
-                break;
-            case EXTEND_MAX:
-                if (!charsUsed.isEmpty())
-                    prevChar = charsUsed.last();
-                break;
-            case EXTEND_LAST:
-                if (sb.length() != 0)
-                    prevChar = sb.charAt(sb.length()-1);
-                break;
-        }
-
-        // now scan the alphabet for remaining chars
-        // used double to save having to go back to the start (% length)
-        String doubleAlphabet = alphabet+alphabet;
-        int pos = alphabet.indexOf(prevChar)+1;
-        while (sb.length() < alphabet.length()) {
-            char nextChar = doubleAlphabet.charAt(pos);
-            if (!charsUsed.contains(nextChar)) {
-                sb.append(nextChar);
-                charsUsed.add(nextChar);
+            // now we decide using the extend method
+            char prevChar = alphabet.charAt(alphabet.length() - 1);
+            switch (extend) {
+                case EXTEND_FIRST: // already set up above
+                    break;
+                case EXTEND_MIN:
+                    if (!charsUsed.isEmpty())
+                        prevChar = charsUsed.first();
+                    break;
+                case EXTEND_MAX:
+                    if (!charsUsed.isEmpty())
+                        prevChar = charsUsed.last();
+                    break;
+                case EXTEND_LAST:
+                    if (sb.length() != 0)
+                        prevChar = sb.charAt(sb.length() - 1);
+                    break;
             }
-            pos++;
+
+            // now scan the alphabet for remaining chars
+            // used double to save having to go back to the start (% length)
+            String doubleAlphabet = alphabet + alphabet;
+            int pos = alphabet.indexOf(prevChar) + 1;
+            while (pos < doubleAlphabet.length()) {
+                char nextChar = doubleAlphabet.charAt(pos);
+                if (!charsUsed.contains(nextChar) && exclude.indexOf(nextChar) == -1) {
+                    sb.append(nextChar);
+                    charsUsed.add(nextChar);
+                }
+                pos++;
+            }
+            return sb.toString();
         }
-        return sb.toString();
     }
 
     // return null if parameters can be set, else return the reason why not
@@ -297,5 +318,120 @@ abstract public class Cipher implements Parcelable {
     public static Set<String> getCribSet(String cribs) {
         List<String> listOfCribs = Arrays.asList(cribs.toUpperCase().replaceAll(" ", "").split(","));
         return new HashSet<>(listOfCribs);
+    }
+
+    /**
+     * Static method to convert a permutation or matrix array to a string
+     * @param numbers set if integers, e.g. [1,2,0,3]
+     * @return the equivalent matrix as a comma-separated string, e.g. "1,2,0,3"
+     */
+    @NotNull
+    static String numbersToString(int[] numbers) {
+        if (numbers == null)
+            return "n/a";
+        StringBuilder sb = new StringBuilder();
+        for (int i=0; i < numbers.length; i++) {
+            if (i > 0)
+                sb.append(",");
+            sb.append(numbers[i]);
+        }
+        //return Arrays.asList(matrix).stream().map(n -> n.toString()).collect(Collectors.joining(","));
+        return sb.toString();
+    }
+
+    /**
+     * if the Greatest Common Factor of a and b is not 1 then they're not coprime (relatively prime)
+     * in this case more than one plain letter will map to the same cipher letter and we'll not be able to decode
+     * Used by Affine and Hill ciphers
+     * @param a first int to be checked
+     * @param b second int to be checked
+     * @return true if the only common divisor of a and b are 1, else false
+     */
+    static boolean areCoPrimes(int a, int b) {
+        if (a == 0) // this doesn't give good Affine mappings, all map to same char
+            return false;
+        BigInteger gcf = BigInteger.valueOf(a).gcd(BigInteger.valueOf(b));
+        return gcf.equals(BigInteger.ONE);
+    }
+
+    /**
+     * Looking at the radio buttons, determine the method of keyword extension to be used
+     * @param v the view containing the buttons
+     * @return the keyword extension type to use, based on the buttons
+     */
+    static KeywordExtend getKeywordExtend(View v) {
+        KeywordExtend extend = KeywordExtend.EXTEND_MIN;
+        RadioGroup r = v.findViewById(R.id.extra_extend_button_group);
+        int id = r.getCheckedRadioButtonId();
+        switch (id) {
+            case R.id.extra_extend_button_first:
+                extend = KeywordExtend.EXTEND_FIRST;
+                break;
+            case R.id.extra_extend_button_min:
+                extend = KeywordExtend.EXTEND_MIN;
+                break;
+            case R.id.extra_extend_button_max:
+                extend = KeywordExtend.EXTEND_MAX;
+                break;
+            case R.id.extra_extend_button_last:
+                extend = KeywordExtend.EXTEND_LAST;
+                break;
+            case R.id.extra_extend_button_none:
+                extend = KeywordExtend.EXTEND_NONE;
+                break;
+        }
+        return extend;
+    }
+
+    /**
+     * Look at the keyword and extend method on screen and apply the extension
+     * with the current alphabet to produce a new FULL keyword
+     * This is to keep it updated as the user changes them
+     * @param rootView the view being adjusted
+     */
+    static void adjustFullKeyword(View rootView) {
+        EditText keywordView = rootView.findViewById(R.id.extra_keyword);
+        EditText replaceView = rootView.findViewById(R.id.extra_replace);
+        KeywordExtend keywordExtend = getKeywordExtend(rootView);
+        String alphabet = Settings.instance().getString(rootView.getContext(),R.string.pref_alphabet_plain);
+        String fullKeyword;
+        if (replaceView == null) {
+            fullKeyword = applyKeywordExtend(keywordExtend, keywordView.getText().toString(), alphabet);
+        } else {
+            // if there is a 'REPLACE' entry text then use this to exclude certain letters from the generated keyword, like J
+            StringBuilder exclude = new StringBuilder();
+            String replace = replaceView.getText().toString();
+            for(int pos=0; pos < replace.length(); pos+=2)
+                exclude.append(replace.charAt(pos));
+            fullKeyword = applyKeywordExtend(keywordExtend, keywordView.getText().toString(), alphabet, exclude.toString());
+        }
+
+        TextView fullKeywordView = rootView.findViewById(R.id.extra_full_keyword);
+        fullKeywordView.setText(fullKeyword);
+    }
+
+    /**
+     * Count how many letters of real words in the dictionary this text contains
+     * @param text the text whose fitness is to be checked
+     * @param dirs any directives the fitness check requires
+     * @return the number of letters of dictionary words found in the text, larger is more fit
+     */
+    static double getWordCountFitness(String text, Directives dirs) {
+        int lettersFound = 0;
+        text = text.toUpperCase().replaceAll("\\s","");
+        Dictionary dict = dirs.getLanguage().getDictionary();
+        for (String word : dict) {
+            if (word.length() > 1) {
+                int pos = 0;
+                do {
+                    pos = text.indexOf(word, pos);
+                    if (pos >= 0) {
+                        pos += word.length();  // skip past this word to look further
+                        lettersFound += word.length(); // fitter because we found the word
+                    }
+                } while (pos >= 0);
+            }
+        }
+        return (double)lettersFound;
     }
 }

@@ -13,9 +13,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -25,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import mnh.game.ciphercrack.cipher.Cipher;
 import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.util.CrackResult;
+import mnh.game.ciphercrack.util.CrackState;
 
 import java.util.List;
 
@@ -75,8 +79,6 @@ public class ComputeResultListActivity extends AppCompatActivity {
                 updateView();
             }
         });
-
-
     }
 
     // set the List View to be the current set of results from the Home Activity
@@ -89,6 +91,53 @@ public class ComputeResultListActivity extends AppCompatActivity {
 
         recyclerView.invalidate();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.result_list_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.action_result_list_clear_all);
+        if (item != null) {
+            item.setEnabled(CrackResults.crackResults.size() != 0);
+        }
+        return true;
+    }
+
+    /**
+     * Called when someone clicks on an Options menu item
+     * @param item the menu that was clicked
+     * @return true if this method dealt with the call
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_result_list_clear_all:
+                CrackResults.crackResults.clear();
+                mAdapter.notifyDataSetChanged();
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == ResultActivity.RESULTS_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                String result = data.getStringExtra("RESULT_TEXT");
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("RESULT_TEXT", result);
+                setResult(Activity.RESULT_OK, resultIntent);
+                finish();
+            }
+        }
     }
     /**
      * Adapter for showing the list of crack results
@@ -134,22 +183,23 @@ public class ComputeResultListActivity extends AppCompatActivity {
                                 return true;
 
                             case R.id.menu_list_cancel:
-                                // TODO: implement cancel of a running crack
+                                CrackResults.cancelCrack(crackResult.getId());
                                 return true;
 
                             case R.id.menu_list_details:
                                 AlertDialog.Builder alert = new AlertDialog.Builder(mParentActivity);
-                                alert.setTitle("Cipher: "+crackResult.getCipher().getCipherName());
-                                alert.setMessage("Details");
+                                alert.setTitle(crackResult.getCipher().getCipherName()+" crack attempt");
+                                alert.setMessage("Id: "+crackResult.getId());
 
                                 // Create TextView to show the main description
                                 final TextView viewWithText = new TextView(mParentActivity);
                                 String details = crackResult.getCipher().getInstanceDescription() + "\n"
-                                        + "Id: " + crackResult.getId() + "\n"
-                                        + "Percent Complete: " + crackResult.getPercentComplete() + "\n"
-                                        + "Status: " + crackResult.isSuccess() + "\n"
-                                        + "Seconds: " + crackResult.getMilliseconds() + "\n"
-                                        + crackResult.getExplain();
+                                        + "Method: " + crackResult.getCrackMethod().toString() + "\n"
+                                        + "Progress: " + crackResult.getProgress() + "\n"
+                                        + "Status: " + crackResult.getCrackState().toString() + "\n"
+                                        + "Successful: " + (crackResult.getCrackState() == CrackState.COMPLETE ? crackResult.isSuccess() : "Unknown") + "\n"
+                                        + "Seconds to complete: " + (crackResult.getCrackState() == CrackState.COMPLETE ? crackResult.getMilliseconds()/1000.0 : "Unknown") + "\n"
+                                        + "Explain: " + crackResult.getExplain();
                                 viewWithText.setText(details);
                                 viewWithText.setPadding(6,6,6,6);
 
@@ -165,10 +215,10 @@ public class ComputeResultListActivity extends AppCompatActivity {
                 });
                 popup.inflate(R.menu.list_context_menu);
                 // only allow cancel on running cracks, only allow delete on completed cracks
-                if (crackResult.getPercentComplete() < 100) {
-                    popup.getMenu().findItem(R.id.menu_list_delete).setVisible(false);
-                } else {
+                if (crackResult.getCrackState() == CrackState.COMPLETE || crackResult.getCrackState() == CrackState.CANCELLED) {
                     popup.getMenu().findItem(R.id.menu_list_cancel).setVisible(false);
+                } else {
+                    popup.getMenu().findItem(R.id.menu_list_delete).setVisible(false);
                 }
                 popup.show();
                 return true;
@@ -195,13 +245,17 @@ public class ComputeResultListActivity extends AppCompatActivity {
         public void onBindViewHolder(final ViewHolder holder, int position) {
             CrackResult result = mValues.get(position);
             Cipher cipher = result.getCipher();
-            holder.mIdView.setText(cipher.getInstanceDescription());
-            String status = (result.getPercentComplete() == 0)
-                    ? "Not Started"
-                    : ((result.getPercentComplete() < 100)
-                            ? ("Running: "+result.getPercentComplete()+"%")
-                            : (result.isSuccess()? "Success":"Failure"));
-            holder.mContentView.setText(status);
+            String firstLine = (result.isSuccess() ? cipher.getInstanceDescription() : cipher.getCipherName())+": "+result.getCrackMethod().toString();
+            holder.mIdView.setText(firstLine);
+            CrackState state = result.getCrackState();
+            String secondLine = "Unknown";
+            switch (state) {
+                case QUEUED:    secondLine = "Queued"; break;
+                case RUNNING:   secondLine = "Running: "+result.getProgress(); break;
+                case COMPLETE:  secondLine = "Complete: "+ (result.isSuccess()? "Successful":"Unsuccessful"); break;
+                case CANCELLED: secondLine = "Cancelled"; break;
+            }
+            holder.mContentView.setText(secondLine);
 
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
@@ -221,22 +275,6 @@ public class ComputeResultListActivity extends AppCompatActivity {
                 super(view);
                 mIdView = view.findViewById(R.id.id_text);
                 mContentView = view.findViewById(R.id.content);
-            }
-        }
-    }
-
-    // child activity has finished and perhaps sent result back
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == ResultActivity.RESULTS_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                String result = data.getStringExtra("RESULT_TEXT");
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("RESULT_TEXT", result);
-                setResult(Activity.RESULT_OK, resultIntent);
-                finish();
             }
         }
     }

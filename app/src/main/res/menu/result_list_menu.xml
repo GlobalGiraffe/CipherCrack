@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- this should be on the menu bar at the top -->
+    <item android:id="@+id/action_result_list_clear_all"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="@string/clear"
+        app:showAsAction="always"/>
+
+</menu>

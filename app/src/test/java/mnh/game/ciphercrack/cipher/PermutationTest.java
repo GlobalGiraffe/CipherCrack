@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Test out the Vigenere Cipher code
+ * Test out the Permutation Cipher code
  */
 @RunWith(JUnit4.class)
 public class PermutationTest {
@@ -28,7 +28,7 @@ public class PermutationTest {
     public void testConvertKeywordToColumnsGood() {
         String keyword = "ZEBRA";
         int[] expected = new int[]{4, 2, 1, 3, 0};
-        int[] result = cipher.convertKeywordToColumns(keyword);
+        int[] result = Permutation.convertKeywordToColumns(keyword);
         assertEquals("Convert Keyword Len", expected.length, result.length);
         for (int i = 0; i < result.length; i++) {
             assertEquals("Convert Keyword " + i, expected[i], result[i]);
@@ -37,17 +37,17 @@ public class PermutationTest {
 
     @Test
     public void testConvertKeywordToColumnsBad() {
-        int[] result = cipher.convertKeywordToColumns(null);
+        int[] result = Permutation.convertKeywordToColumns(null);
         assertNull("ConvertBad Null", result);
-        result = cipher.convertKeywordToColumns("");
+        result = Permutation.convertKeywordToColumns("");
         assertNull("ConvertBad Empty", result);
-        result = cipher.convertKeywordToColumns("A1BD0");
+        result = Permutation.convertKeywordToColumns("A1BD0");
         assertNull("ConvertBad Non-alpha", result);
     }
 
     @Test
     public void testConvertKeywordToColumnsRepeat() {
-        int[] result = cipher.convertKeywordToColumns("FLIPPER");
+        int[] result = Permutation.convertKeywordToColumns("FLIPPER");
         assertNull("ConvertRepeat", result);
     }
 
@@ -58,7 +58,7 @@ public class PermutationTest {
         String key = "GERMAN";
         String expectedCipherText = "nededfahteselwtloactfeahXtseXl";
         Directives p = new Directives();
-        int[] perm = cipher.convertKeywordToColumns(key);
+        int[] perm = Permutation.convertKeywordToColumns(key);
         p.setPermutation(perm);
         p.setReadAcross(true);
         String reason = cipher.canParametersBeSet(p);
@@ -213,7 +213,44 @@ public class PermutationTest {
         assertEquals("Crack cipher name", "Permutation cipher (0,2,4,3,1:down)", result.getCipher().getInstanceDescription());
     }
 
-    // this one takes around 15 seconds with max column permutations = 9
+    @Test
+    public void testCrackBruteReverseSuccess() {
+        // attempt Brute Force crack of Permutation cipher looking for cribs in all permutations (up to 9)
+        int[] perm = new int[] { 0, 2, 4, 3, 1 };
+        String plainText = "Call me Ishmael. Some years ago — never mind how long precisely — having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world. It is a way I have of driving off the spleen, and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off — then, I account it high time to get to sea as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the ship. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the ocean with me.X".replaceAll("\\W","");
+        Directives p = new Directives();
+        p.setPermutation(perm);
+        p.setCrackMethod(CrackMethod.NONE);
+        String reason = cipher.canParametersBeSet(p);
+        assertNull("Crack Success: encode param okay", reason);
+        String cipherText = cipher.encode(plainText, p);
+        assertNotNull("Crack Encoding", cipherText);
+
+        // now attempt the crack of the text via brute force
+        p.setPermutation(null);
+        p.setCribs("ishmael,ocean");
+        p.setCrackMethod(CrackMethod.BRUTE_FORCE);
+        reason = cipher.canParametersBeSet(p);
+        assertNull("Crack Success: crack param okay", reason);
+
+        String reverseText = new StringBuilder(cipherText).reverse().toString();
+
+        CrackResult result = cipher.crack(reverseText, p, 0);
+        System.out.println("Decoded "+result.getPlainText());
+        String explain = result.getExplain();
+        System.out.println("Explain "+explain);
+        String decodeKeyword = Permutation.permutationToString(result.getDirectives().getPermutation());
+        System.out.println("Keyword "+decodeKeyword);
+        assertTrue("Crack Success", result.isSuccess());
+        assertEquals("Crack Cipher", reverseText, result.getCipherText());
+        assertEquals("Crack Text", plainText, result.getPlainText());
+        assertEquals("Crack Permutation", "0,2,4,3,1", decodeKeyword);
+        assertNotNull("Crack Explain", explain);
+        assertTrue("Crack Explain", explain.contains("REVERSE"));
+        assertEquals("Crack cipher name", "Permutation cipher (0,2,4,3,1:down)", result.getCipher().getInstanceDescription());
+    }
+
+    // this one takes around 32 seconds with max column permutations = 9
     @Test
     public void testCrackBruteFail() {
         // attempt Brute Force crack of Permutation cipher looking for cribs in all permutations (up to 9)
@@ -254,7 +291,7 @@ public class PermutationTest {
         String plainText = "Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much. " +
                 "They were the last people you'd expect to be involved in anything strange or mysterious, because they just didn't hold with such nonsense.";
         Directives p = new Directives();
-        int[] encodePerm = cipher.convertKeywordToColumns(keyword);
+        int[] encodePerm = Permutation.convertKeywordToColumns(keyword);
         p.setPermutation(encodePerm);
         p.setReadAcross(true);
         String reason = cipher.canParametersBeSet(p);
@@ -280,7 +317,7 @@ public class PermutationTest {
         System.out.println("Permutation "+Permutation.permutationToString(decodePermutation));
         assertTrue("CrackDict success", result.isSuccess());
         assertEquals("CrackDict Cipher", cipherText, result.getCipherText());
-        assertEquals("CrackDict Text", plainText.replaceAll("\\W","")+"XXX", result.getPlainText());
+        assertEquals("CrackDict Text", plainText.replaceAll("\\s","")+"XX", result.getPlainText());
         assertEquals("CrackDict Keyword", keyword, decodeKeyword);
         assertEquals("CrackDict Permutation", expectedPermutation, Permutation.permutationToString(decodePermutation));
         assertNotNull("CrackDict Explain", explain);
@@ -295,7 +332,7 @@ public class PermutationTest {
         String plainText = "Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much. " +
                 "They were the last people you'd expect to be involved in anything strange or mysterious, because they just didn't hold with such nonsense.";
         Directives p = new Directives();
-        int[] encodePerm = cipher.convertKeywordToColumns(keyword);
+        int[] encodePerm = Permutation.convertKeywordToColumns(keyword);
         p.setPermutation(encodePerm);
         String reason = cipher.canParametersBeSet(p);
         assertNull("CrackDictSuccess: encode param okay", reason);
@@ -328,7 +365,7 @@ public class PermutationTest {
     public void testDescription() {
         String desc = cipher.getCipherDescription();
         assertNotNull("Description", desc);
-        assertTrue("Description content", desc.contains("Permutation"));
+        assertTrue("Description content", desc.contains("permutation"));
     }
 
     @Test

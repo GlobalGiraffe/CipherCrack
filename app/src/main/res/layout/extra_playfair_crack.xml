@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/CrackTheme"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RadioGroup
+        android:id="@+id/extra_playfair_crack_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:checkedButton="@id/crack_button_dictionary">
+        <RadioButton
+            android:id="@+id/crack_button_dictionary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/crack_dictionary"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/white"/>
+        <!-- the next button is disabled - can't do word-count playfair crack yet -->
+        <RadioButton
+            android:id="@+id/crack_button_word_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/crack_word_count"
+            android:enabled="false"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/white"/>
+    </RadioGroup>
+    <LinearLayout
+        android:id="@+id/extra_playfair_crack_layout_rows_cols"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/size"
+            android:padding="6dp"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/white"/>
+        <EditText
+            android:id="@+id/extra_playfair_crack_rows_cols"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="13"
+            android:hint="@string/count_rows_cols_hint"
+            android:importantForAutofill="no"
+            android:maxWidth="70dp"
+            android:singleLine="true"
+            android:inputType="number"
+            android:padding="3dp"
+            android:layout_gravity="center"
+            android:textColor="@color/entry_text_text"
+            android:background="@drawable/entry_text_border" />
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:layout_gravity="center"
+            android:id="@+id/extra_playfair_crack_rows_cols_delete"
+            android:background="@android:drawable/ic_delete"/>
+    </LinearLayout>
+</LinearLayout>

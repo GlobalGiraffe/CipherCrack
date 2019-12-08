@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="3"
-        android:background="@drawable/explain_text_border"
+        android:background="@drawable/result_text_border_mid"
         android:padding="10sp"
         android:textColor="@color/explain_text_text"
         android:textIsSelectable="true"

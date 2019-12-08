@@ -37,12 +37,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
-            android:id="@+id/extra_polybius_heading"
+            android:id="@+id/extra_polybius_col_heading"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="6"
-            android:text="@string/default_heading"
-            android:hint="@string/heading"
+            android:text="@string/default_col_heading"
+            android:hint="@string/col_heading"
             android:importantForAutofill="no"
             android:maxWidth="50dp"
             android:singleLine="true"
@@ -56,13 +56,35 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="center"
-            android:id="@+id/extra_polybius_heading_delete"
+            android:id="@+id/extra_polybius_col_heading_delete"
             android:background="@android:drawable/ic_delete"/>
         <EditText
-            android:id="@+id/extra_polybius_replace"
+            android:id="@+id/extra_polybius_row_heading"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="6"
+            android:text="@string/default_row_heading"
+            android:hint="@string/row_heading"
+            android:importantForAutofill="no"
+            android:maxWidth="50dp"
+            android:singleLine="true"
+            android:inputType="textNoSuggestions"
+            android:padding="3dp"
+            android:layout_gravity="center"
+            android:textColor="@color/entry_text_text"
+            android:background="@drawable/entry_text_border" />
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:id="@+id/extra_polybius_row_heading_delete"
+            android:background="@android:drawable/ic_delete"/>
+        <EditText
+            android:id="@+id/extra_replace"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
             android:text="@string/default_replace"
             android:hint="@string/replace"
             android:importantForAutofill="no"

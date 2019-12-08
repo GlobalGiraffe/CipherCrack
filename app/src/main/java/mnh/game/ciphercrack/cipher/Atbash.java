@@ -6,6 +6,7 @@ import android.widget.LinearLayout;
 import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
+import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
 import mnh.game.ciphercrack.util.Directives;
@@ -112,6 +113,8 @@ public class Atbash extends Cipher {
      * @return the result of the crack attempt
      */
     public CrackResult crack(String cipherText, Directives dirs, int crackId) {
+        // we're very fast, but just in case, show some progress
+        CrackResults.updateProgressDirectly(crackId, "Started "+getCipherName()+" crack");
         String cribString = dirs.getCribs();
         Set<String> cribSet = Cipher.getCribSet(cribString);
         String plainText = decode(cipherText, dirs);

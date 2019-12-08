@@ -59,7 +59,7 @@ public class BinaryTest {
         assertEquals("BadParam numberSize", "Number size -1 too small", reason);
         p.setNumberSize(0);
         reason = binary.canParametersBeSet(p);
-        assertEquals("BadParam numberSize", "Number size 0 too small", reason);
+        assertEquals("BadParam numberSize", "Specify either number size or separator", reason);
         p.setNumberSize(100);
         reason = binary.canParametersBeSet(p);
         assertEquals("BadParam numberSize", "Number size 100 too large", reason);
@@ -91,11 +91,59 @@ public class BinaryTest {
         // encode and then decode a mixed case cipher
         Directives p = new Directives();
         p.setDigits("01");
+        p.setNumberSize(5);
         p.setSeparator("");
+        String reason = binary.canParametersBeSet(p);
+        assertNull("Encoding other digits", reason);
         String encoded = binary.encode("AbcDz", p);
         assertEquals("Encoding default Alphabet mixed case", "0000000001000100001111001", encoded);
         String decoded = binary.decode(encoded, p);
         assertEquals("Decoding default Alphabet mixed case", "ABCDZ", decoded);
+    }
+
+    @Test
+    public void testDefaultAlphabetLength7() {
+        // encode and then decode a mixed case cipher
+        Directives p = new Directives();
+        p.setDigits("01");
+        p.setNumberSize(6);
+        p.setSeparator(":");
+        String reason = binary.canParametersBeSet(p);
+        assertNull("Encoding other digits", reason);
+        String encoded = binary.encode("HeLLoWorlD", p);
+        assertEquals("Encoding default Alphabet mixed case", "000111:000100:001011:001011:001110:010110:001110:010001:001011:000011", encoded);
+        String decoded = binary.decode(encoded, p);
+        assertEquals("Decoding default Alphabet mixed case", "HELLOWORLD", decoded);
+    }
+
+    @Test
+    public void testDefaultAlphabetLengthsAndSeps() {
+        Directives p = new Directives();
+        p.setDigits("-+");
+        p.setSeparator("");
+        p.setNumberSize(4);
+        String reason = binary.canParametersBeSet(p);
+        assertNull("Encoding other digits", reason);
+        String encoded = binary.encode("beading", p);
+        assertEquals("Encoding default no sep size 4", "---+-+--------+++---++-+-++-", encoded);
+        String decoded = binary.decode(encoded, p);
+        assertEquals("Decoding default no sep size 4", "BEADING", decoded);
+        p.setSeparator(":");
+        p.setNumberSize(4);
+        reason = binary.canParametersBeSet(p);
+        assertNull("Encoding other digits", reason);
+        encoded = binary.encode("beading", p);
+        assertEquals("Encoding default sep: size 4", "---+:-+--:----:--++:+---:++-+:-++-", encoded);
+        decoded = binary.decode(encoded, p);
+        assertEquals("Decoding default sep: size 4", "BEADING", decoded);
+        p.setSeparator("!");
+        p.setNumberSize(0);
+        reason = binary.canParametersBeSet(p);
+        assertNull("Encoding other digits", reason);
+        encoded = binary.encode("beading", p);
+        assertEquals("Encoding default sep! size 0", "+!+--!-!++!+---!++-+!++-", encoded);
+        decoded = binary.decode(encoded, p);
+        assertEquals("Decoding default sep! size 0", "BEADING", decoded);
     }
 
     @Test
@@ -113,6 +161,7 @@ public class BinaryTest {
         assertEquals("Decoding other digits", "ADCZ", decoded);
 
         p.setSeparator("/");
+        p.setNumberSize(0);
         encoded = binary.encode("AdGz", p);
         assertEquals("Encoding other digits and sep", "A/BB/BBA/BBAAB", encoded);
         decoded = binary.decode(encoded, p);

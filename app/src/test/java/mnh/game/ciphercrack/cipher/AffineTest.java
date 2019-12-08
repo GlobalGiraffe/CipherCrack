@@ -53,16 +53,18 @@ public class AffineTest {
         p.setValueA(-2);
         reason = affine.canParametersBeSet(p);
         assertEquals("Bad Param ValueB Wrong", "Values for A (-2) and B (0) must be greater than zero", reason);
-        p.setValueA(9);
+        p.setValueA(13);
         reason = affine.canParametersBeSet(p);
-        assertEquals("Bad Param ValueB Null", "Values for A (9) and B (0) are not co-prime", reason);
+        //'a' can only be 1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, and 25 with alphabet of length 26
+        assertEquals("Bad Param ValueB Null", "Values for A (13) and alphabet length (26) are not co-prime", reason);
         p.setValueB(-2);
         reason = affine.canParametersBeSet(p);
-        assertEquals("Bad Param ValueB Wrong", "Values for A (9) and B (-2) must be greater than zero", reason);
-        p.setValueB(3);
+        assertEquals("Bad Param ValueB Wrong", "Values for A (13) and B (-2) must be greater than zero", reason);
+        p.setValueB(9);
+        p.setValueA(12);
         reason = affine.canParametersBeSet(p);
-        assertEquals("Bad Param CoPrime", "Values for A (9) and B (3) are not co-prime", reason);
-        p.setValueB(4);
+        assertEquals("Bad Param CoPrime", "Values for A (12) and alphabet length (26) are not co-prime", reason);
+        p.setValueA(25);
         reason = affine.canParametersBeSet(p);
         assertNull("Null reason", reason); // now all good
 
@@ -145,12 +147,12 @@ public class AffineTest {
     @Test
     public void testInstanceDescription() {
         Directives p = new Directives();
-        p.setValueA(12);
+        p.setValueA(15);
         p.setValueB(7);
         String reason = affine.canParametersBeSet(p);
         assertNull("Null reason", reason);
         String desc = affine.getInstanceDescription();
         assertNotNull("Instance Description", desc);
-        assertEquals("Instance Description", "Affine cipher (a=12, b=7)", desc);
+        assertEquals("Instance Description", "Affine cipher (a=15, b=7)", desc);
     }
 }

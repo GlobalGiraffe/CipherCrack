@@ -26,47 +26,9 @@ import mnh.game.ciphercrack.util.Settings;
 
 public class FrequencyFragment extends Fragment {
 
-    // used to specify which order we're using in the table
-    public enum ColumnOrder {
-        GRAM_HIGH_TO_LOW,
-        GRAM_LOW_TO_HIGH,
-        COUNT_HIGH_TO_LOW,
-        COUNT_LOW_TO_HIGH,
-        PERCENT_HIGH_TO_LOW,
-        PERCENT_LOW_TO_HIGH,
-        NORMAL_HIGH_TO_LOW,
-        NORMAL_LOW_TO_HIGH
-    }
-
-    /**
-     * A class to hold the frequencies that go in the tables
-     */
-    private class FrequencyEntry implements Comparable<FrequencyEntry> {
-
-        private final String gram;
-        private final int count;
-        private final float percent;
-        private final float normal;
-
-        FrequencyEntry(String gram, int count, float percent, float normal) {
-            this.gram = gram;
-            this.count = count;
-            this.percent = percent;
-            this.normal = normal;
-        }
-
-        String getGram() { return gram; }
-        int getCount() { return count; }
-        float getPercent() { return percent; }
-        float getNormal() { return normal; }
-
-        public int compareTo(FrequencyEntry other) {
-            return 0;
-        }
-    }
-
     private final String text;
-    private final int gramSize;  // 1 for letter, 2 for bigram, 3 for trigram
+    private final int gramSize;         // 1 for letter, 2 for bigram, 3 for trigram
+    private final boolean aligned;      // whether to do only aligned grams, i.e. not overlapping
     private final int overallLayoutId;  // xml file containing the main view
     private final int tableLayoutId;    // layout withing the view containing the table
 
@@ -75,22 +37,23 @@ public class FrequencyFragment extends Fragment {
     private ColumnOrder ordering;
     private List<FrequencyEntry> frequenciesOfThisGram;
 
-    FrequencyFragment(String text, int gramSize, int overallLayoutId, int tableLayoutId) {
+    FrequencyFragment(Context context, String text, int gramSize, boolean aligned, int overallLayoutId, int tableLayoutId) {
+        super();
         this.text = text;
         this.gramSize = gramSize;
+        this.aligned = aligned;
         this.overallLayoutId = overallLayoutId;
         this.tableLayoutId = tableLayoutId;
         this.ordering = ColumnOrder.COUNT_HIGH_TO_LOW;
+
+        // gather frequencies for the bi-grams
+        frequenciesOfThisGram = gatherGramFrequency(context);
     }
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(overallLayoutId, container, false);
-        Context context = view.getContext();
         tableLayout = view.findViewById(tableLayoutId);
-
-        // gather frequencies for the bi-grams
-        frequenciesOfThisGram = gatherGramFrequency(context, gramSize, text);
 
         // place them on the screen, default ordering
         populateGramFrequency(ordering);
@@ -100,16 +63,14 @@ public class FrequencyFragment extends Fragment {
     /**
      * In the text provided, count the number of instances of each sequence of chars of length gramSize
      * @param context current context, used to remove spaces and punctuation
-     * @param gramSize how many letters to include in each gram
-     * @param text the text being analysed
      * @return a list of pairs of grams and their frequencies
      */
-    private List<FrequencyEntry> gatherGramFrequency(Context context, int gramSize, String text) {
+    private List<FrequencyEntry> gatherGramFrequency(Context context) {
 
         Language language = Language.instanceOf(Settings.instance().getString(context, R.string.pref_language));
 
         // find the bigrams in the condensed upper-case text, with count for each
-        Map<String, Integer> freqUpper = StaticAnalysis.collectGramFrequency(text, gramSize, context);
+        Map<String, Integer> freqUpper = StaticAnalysis.collectGramFrequency(text, gramSize, aligned, context);
 
         // work out how many grams in total there are
         int countGrams = 0;
@@ -226,4 +187,6 @@ public class FrequencyFragment extends Fragment {
     }
 
     public ColumnOrder getColumnOrder() { return ordering; }
+
+    public List<FrequencyEntry> getFrequenciesOfThisGram() { return frequenciesOfThisGram; }
 }
