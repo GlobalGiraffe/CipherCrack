@@ -31,8 +31,11 @@ public class Directives implements Parcelable {
     private String colHeading;          // used for col headings in Polybius square cipher
                                         // also used for Hill crib drag cribs
     private int numberSize;             // used for binary, number of digits making a letter = 5
-    private int[] permutation;          // use for permutation cipher
+    private int[] permutation;          // use for permutation cipher as the sequence of columns
+                                        // also for matrix used by the hill cipher
     private boolean readAcross;         // read final answer across columns or down (permutation)
+    private boolean stopAtFirst;        // when cracking, stop at first match
+    private boolean considerReverse;    // when cracking, look at the reverse cipherText too
     private CrackMethod crackMethod;    // used only when cracking any cipher
     // if any more, add to Parcel methods below...
 
@@ -79,6 +82,8 @@ public class Directives implements Parcelable {
         permutation = new int[permutationSize];
         in.readIntArray(permutation);
         readAcross = in.readInt() == 1;
+        stopAtFirst = in.readInt() == 1;
+        considerReverse = in.readInt() == 1;
         String crackText = in.readString();
         crackMethod = CrackMethod.valueOf(crackText);
     }
@@ -110,9 +115,12 @@ public class Directives implements Parcelable {
             p.writeIntArray(permutation);
         }
         p.writeInt(readAcross?1:0);
+        p.writeInt(stopAtFirst?1:0);
+        p.writeInt(considerReverse?1:0);
         p.writeString(crackMethod == null? CrackMethod.NONE.name() : crackMethod.name());
     }
 
+    // general
     public void setLanguage(Language language) { this.language = language; }
 
     public void setAlphabet(String alphabet) { this.alphabet = alphabet; }
@@ -121,6 +129,13 @@ public class Directives implements Parcelable {
 
     public void setPaddingChars(String paddingChars) { this.paddingChars = paddingChars; }
 
+    public void setCrackMethod(CrackMethod crackMethod) { this.crackMethod = crackMethod; }
+
+    public void setStopAtFirst(boolean stopAtFirst) { this.stopAtFirst = stopAtFirst; }
+
+    public void setConsiderReverse(boolean considerReverse) { this.considerReverse = considerReverse; }
+
+    // cipher-specific
     public void setValueA(int valueA) { this.valueA = valueA; }
 
     public void setValueB(int valueB) { this.valueB = valueB; }
@@ -131,7 +146,9 @@ public class Directives implements Parcelable {
 
     public void setCycleLength(int cycleLength) { this.rails = cycleLength; }
 
-    public void setPermutation(int[] permutation) { this. permutation = permutation; }
+    public void setPermutation(int[] permutation) { this.permutation = permutation; }
+
+    public void setMatrix(int[] matrix) { this.permutation = matrix; }
 
     public void setKeyword(String keyword) { this.keyword = keyword; }
 
@@ -153,10 +170,9 @@ public class Directives implements Parcelable {
 
     public void setKeywordLength(int keywordLength) { this.keywordLength = keywordLength; }
 
-    public void setCrackMethod(CrackMethod crackMethod) { this.crackMethod = crackMethod; }
-
     public void setReadAcross(boolean readAcross) { this.readAcross = readAcross; }
 
+    // general getters
     public Language getLanguage() { return language; }
 
     public String getAlphabet() { return alphabet; }
@@ -167,6 +183,11 @@ public class Directives implements Parcelable {
 
     public CrackMethod getCrackMethod() { return crackMethod; }
 
+    public boolean stopAtFirst() { return stopAtFirst; }
+
+    public boolean considerReverse() { return considerReverse; }
+
+    // cipher-specific getters
     public int getValueA() { return valueA; }
 
     public int getValueB() { return valueB; }
@@ -178,6 +199,8 @@ public class Directives implements Parcelable {
     public int getCycleLength() { return rails; }
 
     public int[] getPermutation() { return permutation; }
+
+    public int[] getMatrix() { return permutation; }
 
     public String getKeyword() { return keyword; }
 

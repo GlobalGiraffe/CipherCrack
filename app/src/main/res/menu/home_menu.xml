@@ -523,6 +523,85 @@
                 </menu>
             </item>
             <item
+                android:id="@+id/action_home_cipher_challenge_2008"
+                android:title="@string/cc_2008"
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2008_0A"
+                        android:title="@string/cc_2008_0A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2008_0B"
+                        android:title="@string/cc_2008_0B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2008_1A"
+                        android:title="@string/cc_2008_1A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2008_1B"
+                        android:title="@string/cc_2008_1B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2008_2A"
+                        android:title="@string/cc_2008_2A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2008_2B"
+                        android:title="@string/cc_2008_2B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2008_3A"
+                        android:title="@string/cc_2008_3A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2008_3B"
+                        android:title="@string/cc_2008_3B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2008_4A"
+                        android:title="@string/cc_2008_4A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2008_4B"
+                        android:title="@string/cc_2008_4B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2008_5A"
+                        android:title="@string/cc_2008_5A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2008_5B"
+                        android:title="@string/cc_2008_5B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2008_6A"
+                        android:title="@string/cc_2008_6A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2008_6B"
+                        android:title="@string/cc_2008_6B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2008_7A"
+                        android:title="@string/cc_2008_7A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2008_7B"
+                        android:title="@string/cc_2008_7B"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2008_8A"
+                        android:title="@string/cc_2008_8A"
+                        app:showAsAction="ifRoom" />
+                    <item
+                        android:id="@+id/action_home_cipher_challenge_2008_8B"
+                        android:title="@string/cc_2008_8B"
+                        app:showAsAction="ifRoom" />
+                </menu>
+            </item>
+            <item
                 android:id="@+id/action_home_cipher_challenge_2009"
                 android:title="@string/cc_2009"
                 app:showAsAction="ifRoom">

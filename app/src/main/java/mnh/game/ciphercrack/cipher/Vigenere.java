@@ -162,13 +162,8 @@ public class Vigenere extends Cipher {
         // this extracts the layout from the XML resource
         super.addExtraControls(context, layout, R.layout.extra_vigenere);
 
-        // ensure input is in capitals
-        EditText keyword = layout.findViewById(R.id.extra_vigenere_keyword);
-        InputFilter[] editFilters = keyword.getFilters();
-        InputFilter[] newFilters = new InputFilter[editFilters.length + 2];
-        System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
-        newFilters[editFilters.length] = new InputFilter.AllCaps();   // ensures capitals
-        newFilters[editFilters.length+1] = new InputFilter() {
+        // custom filter to ensure a field only has alphabetic text
+        InputFilter ensureAlphabetic = new InputFilter() {
             public CharSequence filter(CharSequence source, int start, int end,
                                        Spanned dest, int dstart, int dend) {
                 // only allow chars in the alphabet to be added
@@ -181,7 +176,9 @@ public class Vigenere extends Cipher {
                 return null;
             }
         };
-        keyword.setFilters(newFilters);
+
+        // ensure input is in capitals
+        Cipher.addInputFilters(layout, R.id.extra_vigenere_keyword, true, 0, ensureAlphabetic);
 
         // ensure we 'delete' the keyword text when the delete button is pressed
         Button keywordDelete = layout.findViewById(R.id.extra_vigenere_keyword_delete);
@@ -203,7 +200,8 @@ public class Vigenere extends Cipher {
      * @return true if controls added, else false
      */
     @Override
-    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String cipherText,
+                                    Language language, String alphabet, String paddingChars) {
         // this extracts the layout from the XML resource
         super.addExtraControls(context, layout, R.layout.extra_vigenere_crack);
 
@@ -217,7 +215,7 @@ public class Vigenere extends Cipher {
             RadioButton button = (RadioButton)group.getChildAt(child);
             button.setOnClickListener(CRACK_METHOD_ASSESSOR);
         }
-        CRACK_METHOD_ASSESSOR.onClick(layout.findViewById(R.id.crack_button_dictionary));
+        CRACK_METHOD_ASSESSOR.onClick(layout.findViewById(group.getCheckedRadioButtonId()));
         return true;
     }
 
@@ -318,13 +316,18 @@ public class Vigenere extends Cipher {
         CrackResults.updateProgressDirectly(crackId, "Starting "+getCipherName()+" dictionary crack");
         String cribString = dirs.getCribs();
         CrackMethod crackMethod = dirs.getCrackMethod();
-        StringBuilder explain = new StringBuilder();
         String reverseCipherText = new StringBuilder(cipherText).reverse().toString();
 
         Set<String> cribs = Cipher.getCribSet(cribString);
         Dictionary dict = dirs.getLanguage().getDictionary();
         int wordsRead = 0, foundCount = 0;
-        String foundWord = null, foundPlainText = null;
+        String foundWord = null, foundPlainText = "";
+        StringBuilder successResult = new StringBuilder()
+                .append("Success: Dictionary scan: Searched using ")
+                .append(dict.size())
+                .append(" dictionary words as keywords looking for cribs [")
+                .append(cribString)
+                .append("].\n");
         for (String word : dict) {
             if (wordsRead++ % 200 == 199) {
                 if (CrackResults.isCancelled(crackId))
@@ -336,54 +339,57 @@ public class Vigenere extends Cipher {
             dirs.setKeyword(word);
             String plainText = decode(cipherText, dirs);
             if (Cipher.containsAllCribs(plainText, cribs)) {
-                foundCount++;
-                explain.append("Success: Searched using ")
-                        .append(dict.size())
-                        .append(" dictionary words as keys and found all cribs [")
-                        .append(cribString)
-                        .append("].\n")
-                        .append("Keyword ")
+                successResult.append("Keyword ")
                         .append(word)
-                        .append(" gave decoded text=")
-                        .append(plainText.substring(0, 60))
-                        .append(".\n");
-                foundWord = word;
-                foundPlainText = plainText;
+                        .append(" gave decoded text: ")
+                        .append(plainText.substring(0, Math.min(Cipher.CRACK_PLAIN_LENGTH, plainText.length())))
+                        .append("\n");
+                if (dirs.stopAtFirst()) {
+                    keyword = word;
+                    return new CrackResult(crackMethod, this, dirs, cipherText, plainText, successResult.toString());
+                } else {
+                    foundCount++;
+                    foundWord = word;
+                    foundPlainText = plainText;
+                }
             }
-            plainText = decode(reverseCipherText, dirs);
-            if (Cipher.containsAllCribs(plainText, cribs)) {
-                foundCount++;
-                explain.append("Success: REVERSE: Searched using ")
-                        .append(dict.size())
-                        .append(" dictionary words as keys and found all cribs [")
-                        .append(cribString)
-                        .append("] using REVERSE text.\n")
-                        .append("Keyword ")
-                        .append(word)
-                        .append(" gave decoded text=")
-                        .append(plainText.substring(0, 60))
-                        .append(".\n");
-                foundWord = word;
-                foundPlainText = plainText;
+            // now try reverse text decoding
+            if (dirs.considerReverse()) {
+                plainText = decode(reverseCipherText, dirs);
+                if (Cipher.containsAllCribs(plainText, cribs)) {
+                    successResult.append("Keyword ")
+                            .append(word)
+                            .append(" gave decoded REVERSE text: ")
+                            .append(plainText.substring(0, Math.min(Cipher.CRACK_PLAIN_LENGTH, plainText.length())))
+                            .append("\n");
+                    if (dirs.stopAtFirst()) {
+                        keyword = word;
+                        return new CrackResult(crackMethod, this, dirs, cipherText, plainText, successResult.toString());
+                    } else {
+                        foundCount++;
+                        foundWord = word;
+                        foundPlainText = plainText;
+                    }
+                }
             }
         }
 
         // let's see what we found, could be zero or multiple words
-        if (foundWord != null) {
+        if (foundPlainText.length() > 0) {
             dirs.setKeyword(foundWord);
             keyword = foundWord;
-            return new CrackResult(crackMethod, this, dirs, cipherText, foundPlainText, explain.toString());
+            return new CrackResult(crackMethod, this, dirs, cipherText, foundPlainText, successResult.toString());
         }
 
         // nothing found
         dirs.setKeyword(null);
         keyword = null;
-        explain.append("Fail: Searched using ")
-                .append(dict.size())
-                .append(" dictionary words as keys but did not find all cribs [")
-                .append(cribString)
-                .append("]\n");
-        return new CrackResult(crackMethod, this, cipherText, explain.toString());
+        String failResult = "Fail: Searched using "
+                + dict.size()
+                + " dictionary words as keywords, looking for cribs ["
+                + cribString
+                + "] but found none.\n";
+        return new CrackResult(crackMethod, this, cipherText, failResult);
     }
 
     /**
@@ -394,7 +400,7 @@ public class Vigenere extends Cipher {
      * @param crackId used to pass progress results around
      * @return the results of the crack attempt
      */
-    private CrackResult crackIndexOfCoincidence(String cipherText, Directives dirs, int crackId) {
+    private CrackResult crackUsingIndexOfCoincidence(String cipherText, Directives dirs, int crackId) {
         CrackResults.updateProgressDirectly(crackId, "Starting "+getCipherName()+" hill climb using IOC fitness");
         String alphabet = dirs.getAlphabet();
         String cribString = dirs.getCribs();
@@ -435,7 +441,7 @@ public class Vigenere extends Cipher {
                     .append("], best key was ")
                     .append(crackProps.getProperty(Climb.CLIMB_BEST_KEYWORD))
                     .append(", which gave text starting: ")
-                    .append(bestDecode.substring(0,Math.min(bestDecode.length(), 40)))
+                    .append(bestDecode.substring(0,Math.min(Cipher.CRACK_PLAIN_LENGTH, bestDecode.length())))
                     .append("\n")
                     .append(crackProps.getProperty(Climb.CLIMB_ACTIVITY));
             return new CrackResult(crackMethod, this, cipherText, explain.toString(), bestDecode);
@@ -453,7 +459,7 @@ public class Vigenere extends Cipher {
     public CrackResult crack(String cipherText, Directives dirs, int crackId) {
         CrackMethod crackMethod = dirs.getCrackMethod();
         if (crackMethod == CrackMethod.IOC) {
-            return crackIndexOfCoincidence(cipherText, dirs, crackId);
+            return crackUsingIndexOfCoincidence(cipherText, dirs, crackId);
         } else { // do dictionary search
             return crackUsingDictionary(cipherText, dirs, crackId);
         }

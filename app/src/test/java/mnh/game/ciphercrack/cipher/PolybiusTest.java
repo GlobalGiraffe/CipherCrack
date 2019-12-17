@@ -45,13 +45,13 @@ public class PolybiusTest {
         assertTrue("Decoding Example", decoded.contains("proxy"));
     }
 
-    // takes around
+    // takes around 2 mins to run, depends on size of alphabet, have seen complete in 7 seconds!
     @Test
-    public void testCrackCipherChallenge2019_8B() {
+    public void testDictionaryCrackCC2019_8B() {
         String encoding = "FBGAI AGCFE KEFEK CIAGC FCGAF CIBHD HEFCF AFBFA GDFCH DFEKC IAKCI BGBGC IAHAF EKCFA KAIAG CFBFA GBFBI AFBHE IAGCK CIAFC IBHDF EGAGA FCHDI AHEIA FCKDF CFAIA KCFBF AIAGC FEHEF CICFB FEIAH EFDKA HBHDF CIEKA IDKCH DHEFB HEKEF CFCHA FEKEK CHEHA KAGEF CKCIA GCFBF AGBFC GAIAG CFEHE FCICF BFEIA FEHAH BFBHD FEIDK CHEHE IAFCG DFEKE FDKAG CFBHE KEFEK CIAGC IAGCF EIBHE HEHDG AFEFE KEHEF CFAIA GCFEK CFAGB FEHDI AGCKC IAIDF EHEIA FBHDI BHBID FBIAG CFEKC KDGCI DKCHD IDFEG AFBGB GCIAF BFAFB IAHEH BIBHB HBFEI AHEIA KCIAF EHEID FEGCK CICFE IAHDF BFEKE IAFCK DFCFA IAKCF BFAFB IAFDI BIAFB FAFCI DHDFE KCGEF BHEFE IAGCK CIAID FEKDK CFAFC FAGEK AKEFE GAFEK CIAFB IAIAG CFEID KCKAI DFEGA FCIBG BGCIA GAKCH EKDFB HEHAF DKAIA KCGDF BFAGB FCFAF BIAHE HAFBG BGCIA FBFAF CHBFE FAIDK CHDFC IBHDH BFCGE FBIAF BKDFB KCFAH EGCKC ICFEH EGCHD IBFAG DGAHD FCHAI AGCFE KDFCF AGAGE FBKDI AKCFA KEIAG CFEKA FAFEF EKEKC HDFEK CHEFC FAIAF CKDFC FAGAH DFCFA IAIAG CFEFE ICFBG EFEIC FEFAI AGCFE IAGCH DFEKC IAFCG AFAIB KDGEF EKCHD HAFBH EHEFB GEFEH EFDKC HEFEK EFBFA KDIBF DKCKE FBKEF AFCIA GBFBI CFEIA GCFEH AIAGC FEHAF EIAIA GEFEI AFCGA FBGBG CIAFB FAHEI AFEKC KEIAG CFEKA GCKCI CFEKD FCFAI CFBFA KDFEK EIAGC FEHAH EFEGE ICFEH EIAGC KCIAI AGCFE HAKCK EKEFC KDIAH DFBFA FEFCG AHAIB IAIBK CGEGE KAKCH EHEIB HDFEK EKEFE HEIAH DIBKD IAFBF CFAID FBGEG EHBHD FCIAF EKDIA IBHEK CFAKE IAGCK CIAHB FEKCK DFEKD KCFAF DFEHA KCFBF AIAKC FBFAF EKEIB FAKEF EHDIA GCFEH EGCFE GEIAF EHDFC GAIAG CFEFA IBKDG EFEKC HDIBH AFDHD FEGEG EKCIA GCFEK AKEFC FAFCI AHEFE FEHAI AFCHE FEFEI AGCKC IAIAG CFEGE FCFAG BFEHD IDFEK DFCID FEHDF BFAIA GCFBH EHEGC KCKEF CIDIA GCFEH AFCHD FEIAG CFEIA IDFCH EFBKE FEHEI DFBGE GEFBF AICFE HEIAF BFAIA GCFEH EFEKC IDGAI BGEID FEKCH BFCFA HEFDF EGAFC HDFEG EFCFA GBFBI AIDFB GEGEF DFEFB HAHBF CHEHE FBFDG EFEIA FCGAF BGBGC IAKCI AKCGE GEIDF BIAGC FCIBI AIAGC FEIAG CHDFE KCIAF CGAIA FCIAK CGEKC FAFAF BGCFB GEKCI AFBFC FAKCF AKEID GCFEF AIAGC KCIAK EKCKA KDFCH AFEHE IDFEI DFBGE GEKCG EGEFD FEFEF AHEGE KCICF EKEFD KAIDG CFCFE ICFEH DFBHE HAFCH DFEHD IBIAG CGEFE HEHEG EFCHE FEKCF AKEID FEIDF BGEGE FDFEI AGCFE HEGEK CICFE HEIAG CFEHB HDFBK DFEFC GAIDF BFAFA FBFAG BHAFB GBGCI AFDFE IDFCH DHEFE KCIAG AFBHD HEIAF BGCFC HBFEK EIAGC KCIAI AGCFE HEHBK CKDFE HDKCK DFEID FCIBG EKEGC FEGEH BIBHE IAIBH DFAFB FAGBI AGCFE HAFBH EHEFB GEFEH EGAHD FCHAI DFEKC HBFCF AHEFC GAIDK CHDIA FCKDK CHDHD FBFEH DHEFC GAHBF EKCKD FEKCF AKEGD FEFAF AFEKE KAHEF EFEHA FEKEI AFCGC KCICF EIAGC KCIAF BFAHA FBFAK EIDGC FEFAG CFEHE FEIAG CFBHE HBHDF CGBHD KCHAI AFCGE KCFAK EFCFA IAGCF EHAFC FCFAF DKAID FBFAF AFBFA GBIAG CFEHE HBKCK DFEHD KCKDF EIAGC FEKCK EHAFB FAFBH EIAHD KCIAF BFCFA GCFCH BFEKE IAFCF EHEIA KCFDG EFBHE GCIAG CFEHE IBHBH DFEHA KCKDK AFCGA IAGCF EKDKC HBFBI AKCGE FBHEI AHEKA HEIAF EHAFC ICFEH DKDFC HAHAI BFAFB HEHAK DFCID FBFAG BFCIB HDFEF AFEHA FBFEH EKCFA KEHEF EIAIA FBFAG BFCIB HDGCF EKCHD IAHEK CFAKE HAFBF AKEHE FCFAI AGCFE KDFCF AHCIB FEHEI AFCGA KCFAF EIDGA HDFCF AIAFB FEHDF DIBIA FDHDF EKBGC FAFEI CHEFE FEHAH EIBFA KEFEI AFEHD HDFEK EKCFA KEFEI CFEFA FDFEG AFCHD FEIAG CFEGE KCIBF AKDGC FCGAK CHBFC GEGEF CIEFB IAGCF EKCHA FEHDF BKDKC FAHBI BFDGE FBKDF BHEFD FEGBF BFAFA FBFAG BIAFC GBFEI AFDFC HDFEK EIAGC FEIAG CHDFE KCIAF CGAFA IBKDG EFEKC HDIDK CHDFB HEHDF BHEFB FAGBK CFAKE IAGCF EHBFE KCKDF EHBHD FCIAF EHEIA HEIDG CFBKD GCKCH DFEFB FAIAF EFAKE FEKEI AFCHB HDFEI CFEFA IAFBI AKCHD FEFEF AKDFC IBHDK CGBFB FAGBF CIBHD FEFAF EHAFB FEHEI AFCFD FEGEF BFEIC FEIAG CKCIA IAGCF EKAKD KCFAI DFBFA IDKCH DFBHE IBFAK CICFC FBKEK CFDGE FEIAF CHEIB HDICF BICFE FBIAI DFEHA IBHEI AGAFB GBGCI AFBIA FAFCI DFCFA FCIBH DFCID FAIAF EHDHA HEFDF EGAFC HDFEI AGCFE FAIBK DGEFE KCHDK CHDHE FEFAK CGEHE GBHDF CIDIA FCFCH BFCID FEHDG AIBGE FBGAF CIBHD GEFEK CKEFE HDHEI DFBGE GEFAF CIAKC KDIAF CGAIA GCFEF BHDFC IDFAI CFCGE FBIAF BFCFA IAGCF EFAFB IDFBG EGEHB HDFCI CFCGD FEIAG CFEHD FEHCI BFBHD FEKEK DFCFA GAHDF CFAIA KCIAF BFCFA FBIDF BGEGE KDFCF AICFB FAKDF EIAGC FEHAI AGCKC IAIAG CFEHD IBHEH EFBKC FAHEG CKCIC FEHEK CFDFC IAKCG BFEKE IAGCF EGEIB FAKCH DHBHD FCGBH DKCHA KCFAK EGDFB GEGEF EKEFC HDKCI AIAFE HAHBI AFEKE IAFCG DFBGE GEFCI BHDKC HEIAH DFCFA KCIBI AHEIA GCFEH DIBHE HEFBK CFAHE IDFBG EGEFA FEICF EHDFD FEKCF DGEFE IAFCH BHDFC ICFEI AGCKC IAIAG CFEKA KCHDF EFBFA FAFCK DFEFA IAKCF AKEFC IBHDH BFCGE FBIAF BKDFB KCFAH EKCFA KEGBF EFAFE HDKCG EHEID FBGEG EFDFE GAFCH DKDFE KEIAF CHEIA HDFBG DFEFD KCKDG DIAGC FEHDI BHEHE FBKCF AHEID FBGEG EFEHE KDKCG EKCIA FEFBF AFCHD KEFEH DIAFC FAFCI AGEFC FCGDI DFEKC GDKCF AKEFC FAKDF EIAGC FEKAG CKCIC FEKDF CHAHA FBIAI AFEKE IAGCF EHAHE FEGEI CFEHE IAGCF EHDFE IDFBG EGEFD FEFAF CIAIB HDFAF BFAGB FDKCK DGDIA GCFEI BFAKC ICFCF BKEKC FDGEF EIDKC HDIDF BGEGE GCKCI CFEIA FCFDF EGAFC IBGBG CIAIA FCFBI AHEKD FCFAK DGEIB HEFBF CFA".replaceAll(" ", "");
-        String colHeading = "ABCDE"; // different rows and column headings
+        // different rows and column headings
+        String colHeading = "ABCDE";
         String rowHeading = "FGHIK";
-        //String keyword = "ABCDEFGHIKLMNOPQRSTUVWXYZ";
         String keyword = "ABCDEFGHIKLMNOPQRSTUVWXYZ"; // which letters are allowed
         Directives dirs = new Directives();
         dirs.setKeyword(keyword);
@@ -59,6 +59,9 @@ public class PolybiusTest {
         dirs.setRowHeading(rowHeading);
         dirs.setReplace("JI");
         dirs.setCribs("the,and,that");
+        // this does not achieve a full match, since keyword for CC2019 8B is not in the dictionary, but gets close
+        // close keyword is NOBLEFGHIKMPQRSTUVWXYZACD
+        // real  keyword is NIOBEFGHKLMPQRSTUVWXYZACD
         dirs.setAlphabet(Settings.DEFAULT_ALPHABET);
         dirs.setLanguage(Language.instanceOf("English"));
         dirs.setCrackMethod(CrackMethod.DICTIONARY);
@@ -304,9 +307,6 @@ public class PolybiusTest {
         p.setLanguage(null);
         reason = polybius.canParametersBeSet(p);
         assertEquals("BadParam: missing language", "Missing language", reason);
-        p.setLanguage(Language.instanceOf("German"));
-        reason = polybius.canParametersBeSet(p);
-        assertEquals("BadParam: missing language", "No German dictionary is defined", reason);
         p.setLanguage(Language.instanceOf("English"));
 
         p.setHeadings("");
@@ -326,7 +326,7 @@ public class PolybiusTest {
 
     @Test
     public void testCrackDictSuccess() {
-        // attempt dictionary crack of Vigenere cipher and succeeds with good cribs
+        // attempt dictionary crack of Polybius cipher and succeeds with good cribs
         String keyword = "ENRGYABCDFHIKLMOPQSTUVWXZ";  // ENERGY, 5x5
         String heading = "ABCDE";
         String plainText = "I must not fear. Fear is the mind-killer. Fear is the little-death that brings total obliteration. I will face my fear. I will permit it to pass over me and through me. And when it has gone past I will turn the inner eye to see its path. Where the fear has gone there will be nothing. Only I will remain.";
@@ -347,6 +347,48 @@ public class PolybiusTest {
         p.setCribs("total,fear,killer");
         p.setLanguage(Language.instanceOf("English"));
         p.setCrackMethod(CrackMethod.DICTIONARY);
+        reason = polybius.canParametersBeSet(p);
+        assertNull("CrackDictSuccess: crack param okay", reason);
+
+        CrackResult result = polybius.crack(cipherText, p, 0);
+        System.out.println("Decoded "+result.getPlainText());
+        String explain = result.getExplain();
+        System.out.println("Explain "+explain);
+        String decodeKeyword = result.getDirectives().getKeyword();
+        System.out.println("Keyword "+decodeKeyword);
+        assertTrue("CrackDict success", result.isSuccess());
+        assertEquals("CrackDict Cipher", cipherText, result.getCipherText());
+        assertEquals("CrackDict Text", plainText.toLowerCase(), result.getPlainText());
+        assertEquals("CrackDict Keyword", keyword, decodeKeyword);
+        assertNotNull("CrackDict Explain", explain);
+        assertEquals("CrackDict cipher name", "Polybius cipher (ENRGYABCDFHIKLMOPQSTUVWXZ,cols=ABCDE,rows=ABCDE)", result.getCipher().getInstanceDescription());
+        assertEquals("CrackDict crack method", CrackMethod.DICTIONARY, result.getCrackMethod());
+    }
+
+    @Test
+    public void testCrackDictReverseSuccess() {
+        // attempt dictionary crack of Polybius cipher and succeeds with good cribs
+        String keyword = "ENRGYABCDFHIKLMOPQSTUVWXZ";  // ENERGY, 5x5
+        String heading = "ABCDE";
+        String plainText = "I must not fear. Fear is the mind-killer. Fear is the little-death that brings total obliteration. I will face my fear. I will permit it to pass over me and through me. And when it has gone past I will turn the inner eye to see its path. Where the fear has gone there will be nothing. Only I will remain.";
+        Directives p = new Directives();
+        p.setKeyword(keyword);
+        p.setHeadings(heading);
+        String reason = polybius.canParametersBeSet(p);
+        assertNull("CrackDictSuccess: encode param okay", reason);
+        String cipherText = polybius.encode(new StringBuilder(plainText).reverse().toString(), p);
+        assertNotNull("CrackDictSuccess: Encoding", cipherText);
+
+        String decodedText = polybius.decode(cipherText, p);
+        assertNotNull("CrackDictSuccess: Decoding", decodedText);
+
+        // now attempt the crack of the text via Dictionary
+        p.setKeyword(null);
+        p.setHeadings("ABCDE");
+        p.setCribs("total,fear,killer");
+        p.setLanguage(Language.instanceOf("English"));
+        p.setCrackMethod(CrackMethod.DICTIONARY);
+        p.setConsiderReverse(true);
         reason = polybius.canParametersBeSet(p);
         assertNull("CrackDictSuccess: crack param okay", reason);
 

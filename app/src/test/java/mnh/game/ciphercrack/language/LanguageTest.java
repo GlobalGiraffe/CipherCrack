@@ -26,17 +26,24 @@ public class LanguageTest {
     }
 
     @Test
+    public void testInfrequentLetters() {
+        String letters = Language.instanceOf("English").getInfrequentLetters();
+        assertTrue("InfrequentLetters", letters.contains("ZQX"));
+    }
+
+    @Test
     public void testDictionaryLoad() {
         Dictionary dict = Language.instanceOf("English").getDictionary();
         assertNotNull("Dictionary null", dict);
         // if fails, we've been adding to TEST dictionary!
-        assertEquals("Dictionary size", 11045, dict.size());
+        assertEquals("Dictionary size", 11046, dict.size());
         assertTrue("Dictionary contains 'the'", dict.contains("THE"));
         assertTrue("Dictionary contains 'scuttled'", dict.contains("SCUTTLED")); // last word
 
         // first has no dictionary, second is not a language
-        dict = Language.instanceOf("German").getDictionary();
-        assertNull("Dictionary not exist = null", dict);
+        // ah, but now German has a dictionary
+        //dict = Language.instanceOf("German").getDictionary();
+        //assertNull("Dictionary not exist = null", dict);
         dict = Language.instanceOf("Martian").getDictionary(); // should load English
         assertNotNull("Dictionary default not null", dict);
 

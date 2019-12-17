@@ -10,6 +10,7 @@ import java.util.Map;
 
 import androidx.appcompat.app.AppCompatActivity;
 import mnh.game.ciphercrack.R;
+import mnh.game.ciphercrack.language.Language;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
 import mnh.game.ciphercrack.util.Directives;
@@ -188,7 +189,8 @@ public class Morse extends Cipher {
 
     // we don't add any extra controls, but we allow change of cribs
     @Override
-    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String cipherText,
+                                    Language language, String alphabet, String paddingChars) {
         return true;
     }
 
@@ -281,7 +283,7 @@ public class Morse extends Cipher {
      * @return the result of the crack attempt
      */
     public CrackResult crack(String cipherText, Directives dirs, int crackId) {
-        // TODO: Morse Crack: suggest looking for most common symbol => ".", next most common => "-", and third is separator, look for cribs, or words
-        return new CrackResult(dirs.getCrackMethod(), this, cipherText, "Fail: Not yet able to crack "+getCipherName()+" cipher.\n");
+        // Morse Crack: perhaps suggest looking for most common symbol => ".", next most common => "-", and third is separator, look for cribs, or words
+        return new CrackResult(dirs.getCrackMethod(), this, cipherText, "No crack of "+getCipherName()+" available, use inspection and decode.\n");
     }
 }

@@ -23,11 +23,13 @@
             android:title="Plain Alphabet"
             android:summary="Symbols used in the plain text"
             android:defaultValue="@string/default_alphabet"
+            android:inputType="textCapCharacters"
             android:key="@string/pref_alphabet_plain"/>
         <EditTextPreference
             android:title="Cipher Alphabet"
             android:summary="Symbols used in the cipher text"
             android:defaultValue="@string/default_alphabet"
+            android:inputType="textCapCharacters"
             android:key="@string/pref_alphabet_cipher"/>
         <EditTextPreference
             android:title="Padding Characters"

@@ -18,6 +18,7 @@ public class SuggestCipherFragment extends Fragment {
 
     private final AnalysisProvider analysis;
     private final Language language;
+    private String suggestions = null;
 
     public SuggestCipherFragment(AnalysisActivity analysis, Language language) {
         this.analysis = analysis;
@@ -28,9 +29,10 @@ public class SuggestCipherFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_analysis_suggest, container, false);
         // gather analysis and place on the screen
-        String stats = StaticAnalysis.produceSuggestionsForCipher(analysis, language);
+        if (suggestions == null)
+            suggestions = StaticAnalysis.produceSuggestionsForCipher(analysis, language);
         TextView textView = view.findViewById(R.id.stats_suggest_text);
-        textView.setText(stats);
+        textView.setText(suggestions);
         return view;
     }
 

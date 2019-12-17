@@ -92,6 +92,9 @@ public class Dutch extends Language {
     public Dutch() { super("Dutch"); }
 
     @Override
+    public String getInfrequentLetters() { return "QYXFC"; }
+
+    @Override
     public double getExpectedIOC() { return 0.0798; } // https://elec5616.com/static/lectures/2016/03_ciphers.pdf
 
     @Override

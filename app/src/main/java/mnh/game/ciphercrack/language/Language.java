@@ -59,6 +59,8 @@ public abstract class Language {
     abstract protected Map<String, Float> getBigramFrequencies();
     abstract protected Map<String, Float> getTrigramFrequencies();
     abstract public double getExpectedIOC();
+    abstract public String getInfrequentLetters();
+
 
     // some languages with other letters may override this
     public String getAlphabet() {

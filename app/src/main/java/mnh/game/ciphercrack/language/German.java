@@ -98,10 +98,16 @@ public class German extends Language {
     public German() { super("German"); }
 
     @Override
+    public String getInfrequentLetters() { return "QXYJßÖÄPV"; }
+
+    @Override
     public String getAlphabet() { return GERMAN_ALPHABET; } // 30 letters
 
     @Override
     public double getExpectedIOC() { return 0.076667; } // https://elec5616.com/static/lectures/2016/03_ciphers.pdf
+
+    @Override
+    public String getDictionaryResourceName() { return "dictionary_german"; }
 
     @Override
     public Map<String, Float> getLetterFrequencies() { return freqLetters; }

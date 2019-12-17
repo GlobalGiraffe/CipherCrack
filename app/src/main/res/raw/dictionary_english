@@ -148,6 +148,8 @@ city
 add
 policy
 number
+numbered
+outnumbered
 such
 pleas
 please
@@ -258,6 +260,7 @@ didnt
 wasnt
 couldnt
 wouldnt
+hasnt
 wont
 youll
 send
@@ -1147,6 +1150,7 @@ effective
 believe
 organization
 effect
+effected
 asked
 eur
 mind
@@ -1256,7 +1260,6 @@ annihilation
 politburo
 manned
 baikonur
-orbiter
 landings
 humiliation
 striving
@@ -1404,6 +1407,7 @@ regular
 secure
 securing
 navigation
+navigational
 operations
 therefore
 simply
@@ -1466,6 +1470,8 @@ kit
 classic
 basis
 command
+commando
+commandos
 cities
 william
 express
@@ -1620,6 +1626,7 @@ academic
 assistance
 completed
 skin
+graphite
 graphics
 indian
 prev
@@ -2263,6 +2270,7 @@ immediately
 admin
 nursing
 defense
+defenses
 machines
 designated
 tags
@@ -2296,6 +2304,7 @@ rich
 im
 campaign
 marine
+marines
 improvement
 guitar
 finding
@@ -2459,6 +2468,7 @@ golden
 completely
 teams
 fort
+forts
 lighting
 senate
 forces
@@ -2496,6 +2506,7 @@ evening
 assembly
 nuclear
 nucleus
+nuclei
 taxes
 mouse
 signal
@@ -2613,6 +2624,7 @@ experts
 signs
 lack
 depth
+depths
 iowa
 whatever
 logged
@@ -3020,6 +3032,7 @@ circuit
 layer
 printed
 slow
+slowed
 removal
 easier
 src
@@ -3056,6 +3069,7 @@ optical
 promotion
 relative
 relativity
+relativistic
 amazing
 clock
 dot
@@ -3825,6 +3839,7 @@ insert
 baltimore
 gateway
 dont
+arent
 alumni
 drawing
 candidates
@@ -3837,6 +3852,7 @@ happens
 preferences
 spy
 spied
+spying
 romance
 instrument
 bruce
@@ -3893,6 +3909,7 @@ charring
 indexed
 pittsburgh
 superior
+superiority
 preferred
 saved
 paying
@@ -4106,6 +4123,7 @@ strangely
 strangle
 sustainable
 sustain
+sustaining
 philippines
 statistical
 beds
@@ -4138,6 +4156,7 @@ blank
 enhanced
 entitled
 severe
+severely
 generate
 stainless
 newspapers
@@ -4197,16 +4216,18 @@ eventually
 marked
 driven
 measured
-medline
+midline
 bottle
 agreements
 considering
 innovative
 marshall
+marshal
 massage
 rubber
 conclusion
 conclusively
+conclusive
 closing
 tampa
 thousand
@@ -4244,6 +4265,7 @@ gate
 holder
 proposals
 moderator
+moderating
 tutorials
 settlement
 portugal
@@ -4325,6 +4347,8 @@ approaches
 approached
 biz
 alarm
+alarms
+alarmed
 alarming
 voltage
 anthony
@@ -4358,7 +4382,6 @@ possibility
 analyst
 commissioner
 commissioned
-dangerous
 garage
 excite
 excites
@@ -4512,6 +4535,7 @@ simulation
 layout
 ill
 concentration
+concentrating
 classics
 lbs
 lay
@@ -5224,6 +5248,8 @@ diplomatic
 diplomat
 diplomats
 danger
+dangers
+dangerous
 vitamin
 widely
 processed
@@ -5706,6 +5732,7 @@ discipline
 demonstrated
 dialogue
 identifying
+alphabet
 alphabetical
 camps
 declared
@@ -6120,6 +6147,7 @@ schemes
 suffering
 neutral
 neutron
+neutrons
 fisher
 rat
 spears
@@ -6348,6 +6376,7 @@ hacking
 madrid
 similarly
 margin
+marginal
 coin
 solely
 fake
@@ -6430,6 +6459,7 @@ mat
 rachel
 solving
 transmitted
+transmitter
 weekends
 screenshots
 produces
@@ -6584,6 +6614,7 @@ explicit
 calculation
 villas
 alchemist
+alchemists
 admiral
 admiralty
 fuhrer
@@ -6644,6 +6675,7 @@ beijing
 peoples
 victor
 victories
+victorious
 mario
 pos
 attach
@@ -6845,6 +6877,7 @@ encrypt
 encryption
 encrypting
 encrypted
+reencrypted
 cryptic
 punctuation
 spacing
@@ -7657,6 +7690,7 @@ regulated
 triangle
 amend
 anticipated
+orient
 oriental
 reward
 windsor
@@ -7706,6 +7740,7 @@ unified
 bones
 breed
 detector
+detectors
 ignored
 polar
 fallen
@@ -8072,12 +8107,12 @@ expo
 dominant
 twist
 specifics
-itunes
 stomach
 partially
 buried
 newbie
 minimize
+minimise
 darwin
 ranks
 bleak
@@ -8117,6 +8152,7 @@ sandra
 adelaide
 encouraging
 furnished
+furnish
 monaco
 settled
 folding
@@ -8129,6 +8165,7 @@ distributions
 vaccine
 belize
 fate
+fates
 viewpicture
 promised
 volvo
@@ -8427,6 +8464,8 @@ revolutionary
 bracelets
 sync
 syncing
+synchronised
+synchronized
 civilian
 telephony
 mesa
@@ -8816,7 +8855,9 @@ influencing
 influenced
 banners
 reject
+abandon
 abandoned
+abandoning
 circles
 circled
 italic
@@ -9216,6 +9257,8 @@ aruba
 cottages
 realtor
 merge
+merged
+merges
 privilege
 edgar
 develops
@@ -9466,7 +9509,9 @@ dosage
 receivers
 customise
 disposition
+dispositions
 variance
+variances
 navigator
 investigators
 cameroon
@@ -9515,6 +9560,9 @@ token
 editorials
 zinc
 sacrifice
+sacrifices
+sacrificing
+sacrificed
 seekers
 guru
 removable
@@ -9820,6 +9868,8 @@ travis
 endless
 figured
 orbit
+orbiter
+orbiting
 currencies
 niger
 bacon
@@ -9873,6 +9923,8 @@ intranet
 closes
 psychiatry
 persistent
+persist
+persists
 deborah
 conf
 marco
@@ -10274,6 +10326,8 @@ decipher
 deciphered
 deciphering
 cypher
+cyphers
+chiffre
 decypher
 watling
 polybius
@@ -10491,9 +10545,11 @@ zeus
 ingenious
 ingenuity
 obtrusive
+speculative
 speculatively
 spike
 spikes
+spiked
 heterogeneous
 oslo
 retainer
@@ -10588,6 +10644,7 @@ cryptography
 cryptographer
 cryptographic
 cryptanalysis
+cryptanalyse
 cryptology
 infiltrating
 deliberations
@@ -10716,10 +10773,13 @@ heil
 hitler
 deception
 absorb
+absorbs
 illumination
 tiberius
 hawksmoor
 revoke
+revokes
+revoked
 codicils
 otto
 hahn
@@ -10800,6 +10860,7 @@ wipes
 wiped
 wiping
 beacon
+beacons
 blew
 evacuate
 evacuating
@@ -10841,6 +10902,7 @@ almighty
 irresistible
 defending
 napoleon
+napoleons
 consigned
 aptly
 prescience
@@ -10851,6 +10913,9 @@ verge
 unintelligible
 scrambling
 unscrambling
+scramble
+scrambled
+unscramble
 unscrambled
 idiotic
 grasp
@@ -10928,6 +10993,7 @@ informs
 auxilliary
 extraordinarily
 shallow
+shallower
 destined
 detour
 scattering
@@ -10953,8 +11019,10 @@ unpleasant
 optimistic
 exponentiating
 uranium
+deuteride
 isotope
 ridiculed
+theoretician
 theoreticians
 alchemisten
 copenhagen
@@ -10964,6 +11032,7 @@ firmly
 neutrality
 imminent
 niece
+nephew
 regret
 preclude
 precluded
@@ -11286,3 +11355,64 @@ deliberately
 misconfigured
 stumbled
 manslaughter
+adfgvx
+shibboleth
+molybdenum
+railfence
+transducer
+scuttling
+lowered
+mapped
+flurry
+mast
+masts
+lowering
+decks
+nonsense
+succumb
+succumbs
+plague
+palatial
+sighting
+teller
+explode
+explodes
+staunched
+pounders
+justifies
+ruined
+diaries
+allusion
+soyuz
+pressurization
+manifesto
+steer
+bulky
+niobe
+iliad
+campaigner
+campaigners
+tamper
+tampers
+tampering
+tampered
+provoke
+declaring
+dug
+typeface
+stateside
+helium
+airship
+muddled
+deuterium
+rhineland
+heisenberg
+oppenheimer
+impure
+impurity
+boron
+pincer
+manoeuvre
+manoeuvred
+interrupt
+interruption

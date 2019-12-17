@@ -74,12 +74,6 @@ public class Rot13 extends Caesar {
         // Nothing to find - shift is always 13
     }
 
-    // we don't add any extra controls, and we don't need to allow change of cribs
-    @Override
-    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
-        return false;
-    }
-
     /**
      * Encode a text using ROT13 cipher by calling Caesar with shift=13
      * @param plainText the text to be encoded

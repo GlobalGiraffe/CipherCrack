@@ -20,10 +20,6 @@ public class Climb {
 
     private static final String TAG = "CrackClimb";
 
-    // used to detect most likely key once IOC hill climb has completed
-    // look for the key with least number of these letters
-    private static final String INFREQUENT_LETTERS = "ZQXJK";
-
     // inputs
     public static final String CLIMB_ALPHABET = "climb-alphabet";
     public static final String CLIMB_LANGUAGE = "climb-language";
@@ -113,7 +109,7 @@ public class Climb {
                                 .append(" improves measure to ")
                                 .append(String.format(Locale.getDefault(), "%7.6f", measure))
                                 .append(", text=")
-                                .append(plain.substring(0,Math.min(plain.length(),50)))
+                                .append(plain.substring(0,Math.min(Cipher.CRACK_PLAIN_LENGTH, plain.length())))
                                 .append(".\n");
                         bestKey = Arrays.copyOf(dynamicKey,dynamicKey.length);
                         bestDecode = plain;
@@ -154,21 +150,26 @@ public class Climb {
         props.setProperty(Climb.CLIMB_BEST_DECODE, bestDecode);
 
         // now find the one with plain containing the cribs, if not use the one already found
-        CrackResults.updateProgressDirectly(crackId, "Completed hill climb passes, best key: "+String.valueOf(bestKey)+", checking for cribs.");
+        CrackResults.updateProgressDirectly(crackId, "Completed hill climb passes, key with high fitness: "+String.valueOf(bestKey)+", checking for cribs.");
 
         // this key is probably a cyclic-shift of the real one, check all for the cribs
         Directives checkCribsDirs = new Directives();
         checkCribsDirs.setAlphabet(alphabet);
+        checkCribsDirs.setKeyword(String.valueOf(bestKey));
         char[] candidateKey = new char[bestKey.length];
         // we also find the shift with least count of ZQXJK, in case cribs not found
-        String leastInfrequentLetterKey = "";
-        String leastInfrequentLetterDecode = "";
+        String leastInfrequentLetterKey = String.valueOf(bestKey);
+        String leastInfrequentLetterDecode = cipher.decode(cipherText, checkCribsDirs);
         int leastInfrequentLetterCount = Integer.MAX_VALUE;
+        String infrequentLettersForLanguage = language.getInfrequentLetters();
+        boolean foundAnyWithCribs = false;
+        activity.append("Looking for cribs and most likely match with equal-shift keys:\n");
         for (int shift=0; shift < alphabet.length(); shift++) {
             // create a key with from the base with this shift
             for (int keyPos=0; keyPos < bestKey.length; keyPos++) {
                 candidateKey[keyPos] = Caesar.encodeChar(bestKey[keyPos], shift, alphabet);
             }
+            activity.append(String.valueOf(candidateKey)).append("\n");
 
             // apply the decode and look for cribs
             checkCribsDirs.setKeyword(String.valueOf(candidateKey));
@@ -180,8 +181,7 @@ public class Climb {
                         .append(".\n");
                 props.setProperty(Climb.CLIMB_BEST_KEYWORD, String.valueOf(candidateKey));
                 props.setProperty(Climb.CLIMB_BEST_DECODE, plain);
-                props.setProperty(Climb.CLIMB_ACTIVITY, activity.toString());
-                return true;
+                foundAnyWithCribs = true;
             }
             // try also in reverse - only works if text length is multiple of key length
             String plainReverse = cipher.decode(reverseCipherText, checkCribsDirs);
@@ -192,15 +192,13 @@ public class Climb {
                         .append(".\n");
                 props.setProperty(Climb.CLIMB_BEST_KEYWORD, String.valueOf(candidateKey));
                 props.setProperty(Climb.CLIMB_BEST_DECODE, plainReverse);
-                props.setProperty(Climb.CLIMB_ACTIVITY, activity.toString());
-                return true;
+                foundAnyWithCribs = true;
             }
 
             // see if this plain text has the LEAST number of infrequent chars, which could help if cribs are wrong
             int infrequentLetterCount = 0;
             for (int i = 0; i < plain.length(); i++) {
-                char ch = plain.charAt(i);
-                if (INFREQUENT_LETTERS.indexOf(ch) >= 0) {
+                if (infrequentLettersForLanguage.indexOf(plain.charAt(i)) >= 0) {
                     infrequentLetterCount++;
                 }
             }
@@ -210,11 +208,19 @@ public class Climb {
                 leastInfrequentLetterDecode = plain;
             }
         }
+        // return to caller if we found the cribs in a shifted keyword
+        if (foundAnyWithCribs) {
+            props.setProperty(Climb.CLIMB_ACTIVITY, activity.toString());
+            return true;
+        }
 
+        // still no cribs found, report the keyword that produced the least number of 'infrequent' letters
         activity.append("Shifted letters equally but could not find all cribs; keyword ")
                 .append(leastInfrequentLetterKey)
-                .append(" has the fewest ZQXJK letters, deciphering to ")
-                .append(leastInfrequentLetterDecode.substring(0,Math.min(60, leastInfrequentLetterDecode.length()-1)))
+                .append(" has the fewest infrequent letters (")
+                .append(infrequentLettersForLanguage)
+                .append("), deciphering to ")
+                .append(leastInfrequentLetterDecode.substring(0,Math.min(Cipher.CRACK_PLAIN_LENGTH, leastInfrequentLetterDecode.length()-1)))
                 .append(".\n");
         props.setProperty(Climb.CLIMB_BEST_KEYWORD, leastInfrequentLetterKey);
         props.setProperty(Climb.CLIMB_BEST_DECODE, leastInfrequentLetterDecode);
@@ -299,7 +305,7 @@ public class Climb {
                         return false;
                     }
 
-                    msg = "Annealing temperature=" + temp + ", cycle=" + cycle + " of " + cycles + ", best measure=" + bestMeasure + ", best key=" + bestKey;
+                    msg = "Annealing temperature=" + temp + ", cycle=" + cycle + " of " + cycles + ", measure=" + bestMeasure + ", key=" + bestKey;
                     CrackResults.updateProgressDirectly(crackId, msg);
                     Log.i(TAG, msg);
                 }
@@ -318,7 +324,7 @@ public class Climb {
                             .append(" improves measure to ")
                             .append(String.format(Locale.getDefault(), "%7.6f", measure))
                             .append(", text=")
-                            .append(plain.substring(0, Math.min(plain.length(), 50)))
+                            .append(plain.substring(0, Math.min(Cipher.CRACK_PLAIN_LENGTH, plain.length())))
                             .append(".\n");
                     bestKey = trialKey;
                     dynamicKey = trialKey;

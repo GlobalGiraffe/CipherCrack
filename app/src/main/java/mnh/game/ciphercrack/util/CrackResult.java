@@ -78,6 +78,18 @@ public class CrackResult implements Parcelable {
     }
 
     // this is called when creating a brand new crack at the start of the CrackService call
+    public CrackResult(CrackMethod crackMethod, Cipher cipher, Directives dirs, String cipherText, String explain, CrackState state) {
+        this.id = getNextId();
+        this.crackMethod = crackMethod;
+        this.cipher = cipher;
+        this.directives = dirs;
+        this.cipherText = cipherText;
+        this.explain = explain;
+        this.crackState = state;
+        this.isSuccess = false;
+    }
+
+    // this is called when a running crack detects it's being cancelled
     public CrackResult(CrackMethod crackMethod, Cipher cipher, String cipherText, String explain, CrackState state) {
         this.id = getNextId();
         this.crackMethod = crackMethod;

@@ -28,6 +28,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:scaleY="0.75"
             android:layout_gravity="center"
             android:id="@+id/extra_playfair_keyword_delete"
             android:background="@android:drawable/ic_delete"/>
@@ -55,6 +56,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:scaleY="0.75"
             android:layout_gravity="center"
             android:id="@+id/extra_playfair_rowscols_delete"
             android:background="@android:drawable/ic_delete"/>
@@ -77,6 +79,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:scaleY="0.75"
             android:layout_gravity="center"
             android:id="@+id/extra_playfair_replace_delete"
             android:background="@android:drawable/ic_delete"/>

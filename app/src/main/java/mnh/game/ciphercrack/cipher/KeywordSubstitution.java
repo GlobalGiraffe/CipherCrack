@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.HashSet;
@@ -51,6 +52,30 @@ public class KeywordSubstitution extends Cipher {
         public void onClick(View v) {
             EditText k = v.getRootView().findViewById(R.id.extra_keyword);
             k.setText("");
+        }
+    };
+
+    private static final View.OnClickListener CRACK_KEYWORD_ON_CLICK_DELETE = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            EditText k = v.getRootView().findViewById(R.id.extra_substitution_crack_initial_keyword);
+            k.setText("");
+        }
+    };
+
+    // reassess which fields to see when crack methods chosen
+    private static final View.OnClickListener CRACK_METHOD_ASSESSOR = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            LinearLayout layout = v.getRootView().findViewById(R.id.extra_substitution_crack_keyword_layout);
+            switch (v.getId()) {
+                case R.id.crack_button_dictionary:
+                    layout.setVisibility(View.GONE);
+                    break;
+                case R.id.crack_button_word_count:
+                    layout.setVisibility(View.VISIBLE);
+                    break;
+            }
         }
     };
 
@@ -102,11 +127,11 @@ public class KeywordSubstitution extends Cipher {
         if (reason != null)
             return reason;
         String keywordValue = dirs.getKeyword();
+        String alphabet = dirs.getAlphabet();
         CrackMethod crackMethod = dirs.getCrackMethod();
         if (crackMethod == null || crackMethod == CrackMethod.NONE) {
             if (keywordValue == null || keywordValue.length() < 2)
                 return "Keyword is empty or too short";
-            String alphabet = dirs.getAlphabet();
             if (keywordValue.length() != alphabet.length())
                 return "Keyword (" + keywordValue.length() + ") and alphabet (" + alphabet.length() + ") must have the same length";
 
@@ -121,6 +146,7 @@ public class KeywordSubstitution extends Cipher {
                         return "Character " + keyChar + " is present multiple times in the keyword";
                 }
             }
+            keyword = keywordValue;
         } else { // crack via dictionary or word-count => need language and cribs
             // this the the only crack possible
             String cribs = dirs.getCribs();
@@ -134,8 +160,24 @@ public class KeywordSubstitution extends Cipher {
                 return "Language must be provided";
             if (lang.getDictionary() == null)
                 return "No "+lang.getName()+" dictionary is defined";
+            if (crackMethod == CrackMethod.WORD_COUNT) {
+                if (keywordValue != null && keywordValue.length() > 0) {
+                    if (keywordValue.length() != alphabet.length())
+                        return "Initial keyword length (" + keywordValue.length() + ") and alphabet (" + alphabet.length() + ") must have the same length";
+                    // letters in the initial keyword should only occur once and should be in the alphabet
+                    for (int i = 0; i < keywordValue.length(); i++) {
+                        char keyChar = keywordValue.charAt(i);
+                        int posInAlphabet = alphabet.indexOf(keyChar);
+                        if (posInAlphabet < 0)
+                            return "Character " + keyChar + " at offset " + i + " in the initial keyword is not in the alphabet";
+                        if (i < keywordValue.length() - 1) {
+                            if (keywordValue.indexOf(keyChar, i + 1) >= 0)
+                                return "Character " + keyChar + " is present multiple times in the initial keyword";
+                        }
+                    }
+                }
+            }
         }
-        keyword = keywordValue;
         return null;
     }
 
@@ -166,16 +208,9 @@ public class KeywordSubstitution extends Cipher {
         };
         EditText keywordEditText = layout.findViewById(R.id.extra_keyword);
         keywordEditText.addTextChangedListener(TEXT_CHANGED_LISTENER);
-        // ensure input is in capitals, not too long, and only letters in alphabet
-        InputFilter[] editFilters = keywordEditText.getFilters();
-        InputFilter[] newFilters = new InputFilter[editFilters.length + 3];
-        System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
-        // ensures capitals
-        newFilters[editFilters.length] = new InputFilter.AllCaps();
-        // limits text length to size of alphabet
-        newFilters[editFilters.length+1] = new InputFilter.LengthFilter(alphabet.length());
-        // ensures we type only what's in the alphabet
-        newFilters[editFilters.length+2] = new InputFilter() {
+
+        // custom filter to ensure keyword is alphabetic, can't be static as alphabet is local
+        InputFilter keywordIsAlpha = new InputFilter() {
             public CharSequence filter(CharSequence source, int start, int end,
                                        Spanned dest, int dstart, int dend) {
                 // only allow chars in the alphabet to be added
@@ -188,7 +223,7 @@ public class KeywordSubstitution extends Cipher {
                 return null;
             }
         };
-        keywordEditText.setFilters(newFilters);
+        Cipher.addInputFilters(layout, R.id.extra_keyword, true, alphabet.length(), keywordIsAlpha, NO_DUPE_FILTER);
 
         // ensure we 'delete' the keyword text when the delete button is pressed
         Button keywordDelete = layout.findViewById(R.id.extra_substitution_keyword_delete);
@@ -219,9 +254,26 @@ public class KeywordSubstitution extends Cipher {
 
     // add 2 buttons, one for dictionary crack, one for word count
     @Override
-    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String cipherText,
+                                    Language language, String alphabet, String paddingChars) {
         // this extracts the layout from the XML resource
         super.addExtraControls(context, layout, R.layout.extra_substitution_crack);
+
+        // pre-populate initial crack keyword with good match for language
+        EditText initialKeyword = layout.findViewById(R.id.extra_substitution_crack_initial_keyword);
+        initialKeyword.setText(formFrequencySuggestedKeyword(cipherText, alphabet, language, paddingChars));
+
+        // ensure we 'delete' the field when the delete button is pressed
+        Button delete = layout.findViewById(R.id.extra_substitution_crack_keyword_delete);
+        delete.setOnClickListener(CRACK_KEYWORD_ON_CLICK_DELETE);
+
+        // assess when radio buttons pressed to show what fields needed for each type of crack
+        RadioGroup group = layout.findViewById(R.id.extra_substitution_crack_radio_group);
+        for (int child = 0; child < group.getChildCount(); child++) {
+            RadioButton button = (RadioButton)group.getChildAt(child);
+            button.setOnClickListener(CRACK_METHOD_ASSESSOR);
+        }
+        CRACK_METHOD_ASSESSOR.onClick(layout.findViewById(group.getCheckedRadioButtonId()));
         return true;
     }
 
@@ -235,7 +287,15 @@ public class KeywordSubstitution extends Cipher {
     public CrackMethod fetchCrackControls(LinearLayout layout, Directives dirs) {
         // locate the kind of crack we've been asked to do
         RadioButton dictButton = layout.findViewById(R.id.crack_button_dictionary);
-        return (dictButton.isChecked()) ? CrackMethod.DICTIONARY : CrackMethod.WORD_COUNT;
+        CrackMethod crackMethod = (dictButton.isChecked()) ? CrackMethod.DICTIONARY : CrackMethod.WORD_COUNT;
+
+        // we could have an initial keyword, e.g. if iterating and trying again
+        if (crackMethod == CrackMethod.WORD_COUNT) {
+            EditText initialKeyword = layout.findViewById(R.id.extra_substitution_crack_initial_keyword);
+            dirs.setKeyword(initialKeyword.getText().toString());
+        }
+
+        return crackMethod;
     }
 
     /**
@@ -248,8 +308,9 @@ public class KeywordSubstitution extends Cipher {
      */
     private String doKeyedEncodeDecode(String text, String alphabet, String keyword) {
         String keywordUpper = keyword.toUpperCase();
-        StringBuilder result = new StringBuilder(text.length());
-        for (int i=0; i < text.length(); i++) {
+        int textLength = text.length();
+        StringBuilder result = new StringBuilder(textLength);
+        for (int i=0; i < textLength; i++) {
             char plainChar = text.charAt(i);
             char plainCharUpper = Character.toUpperCase(plainChar);
             int plainOrdinal = alphabet.indexOf(plainCharUpper); // find this char's pos in alphabet
@@ -347,7 +408,13 @@ public class KeywordSubstitution extends Cipher {
         crackProps.setProperty(Climb.CLIMB_LANGUAGE, language.getName());
         crackProps.setProperty(Climb.CLIMB_CRIBS, cribString);
 
-        String startKeyword = formFrequencySuggestedKeyword(cipherText, alphabet, language, paddingChars);
+        // user may have supplied the start keyword, if not default to best match for the language
+        String startKeyword = dirs.getKeyword();
+        if (startKeyword == null || startKeyword.length() != alphabet.length()) {
+            startKeyword = formFrequencySuggestedKeyword(cipherText, alphabet, language, paddingChars);
+        } else {
+            dirs.setKeyword(null);
+        }
         crackProps.setProperty(Climb.CLIMB_START_KEYWORD, startKeyword);
 
         // do a short one (5000 iterations overall) to try to get close (ish)
@@ -423,10 +490,6 @@ public class KeywordSubstitution extends Cipher {
 
         // work out our crib set just once
         Set<String> cribs = Cipher.getCribSet(cribString);
-        StringBuilder explain = new StringBuilder(1000);
-        String validKeyword = "";
-        String validDecode = "";
-
         Directives crackDirs = new Directives();
         crackDirs.setAlphabet(alphabet);
 
@@ -434,7 +497,15 @@ public class KeywordSubstitution extends Cipher {
         // and results in a plain text with all the cribs in it
         Dictionary dict = language.getDictionary();
         Set<String> triedKeywords = new HashSet<>(2000);
+        StringBuilder successResult = new StringBuilder()
+                .append("Success: Dictionary scan: Searched using ")
+                .append(dict.size())
+                .append(" dictionary words as keywords, looking for cribs [")
+                .append(cribString)
+                .append("] in decoded text.\n");
+        String foundKeyword = "", foundPlainText = "";
         int wordsRead = 0, foundCount = 0;
+
         for (String word : dict) {
             if (wordsRead++ % 200 == 199) {
                 if (CrackResults.isCancelled(crackId))
@@ -452,36 +523,46 @@ public class KeywordSubstitution extends Cipher {
                     if (extend != KeywordExtend.EXTEND_NONE) {
                         String keyword = applyKeywordExtend(extend, word, alphabet);
 
-                        // don't try to decode the cipherText with this keyword if already tried
+                        // only try to decode the cipherText with this keyword if not already tried
                         if (!triedKeywords.contains(keyword)) {
                             triedKeywords.add(keyword);
                             crackDirs.setKeyword(keyword);
-                            String decoded = decode(cipherText, crackDirs);
-                            if (Cipher.containsAllCribs(decoded, cribs)) {
-                                foundCount++;
-                                explain.append("Using ")
+                            String plainText = decode(cipherText, crackDirs);
+                            if (Cipher.containsAllCribs(plainText, cribs)) {
+                                successResult.append("Using ")
                                         .append(word)
                                         .append(" gave keyword ")
                                         .append(keyword)
                                         .append(" which decoded to text starting ")
-                                        .append(decoded.substring(0, 60))
+                                        .append(plainText.substring(0, Math.min(Cipher.CRACK_PLAIN_LENGTH, plainText.length())))
                                         .append(".\n");
-                                validKeyword = keyword;
-                                validDecode = decoded;
+                                if (dirs.stopAtFirst()) {
+                                    return new CrackResult(crackMethod, this, dirs, cipherText, plainText, successResult.toString());
+                                } else {
+                                    foundCount++;
+                                    foundKeyword = keyword;
+                                    foundPlainText = plainText;
+                                }
                             }
-                            // now do same again with reverse text - could be backwards
-                            decoded = decode(reverseCipherText, crackDirs);
-                            if (Cipher.containsAllCribs(decoded, cribs)) {
-                                foundCount++;
-                                explain.append("Using ")
-                                        .append(word)
-                                        .append(" gave keyword ")
-                                        .append(keyword)
-                                        .append(" which decoded to REVERSE text starting ")
-                                        .append(decoded.substring(0, 60))
-                                        .append(".\n");
-                                validKeyword = keyword;
-                                validDecode = decoded;
+                            if (dirs.considerReverse()) {
+                                // now do same again with reverse text - could be backwards
+                                plainText = decode(reverseCipherText, crackDirs);
+                                if (Cipher.containsAllCribs(plainText, cribs)) {
+                                    successResult.append("With REVERSE text, using ")
+                                            .append(word)
+                                            .append(" gave keyword ")
+                                            .append(keyword)
+                                            .append(" which decoded to text starting ")
+                                            .append(plainText.substring(0, Math.min(Cipher.CRACK_PLAIN_LENGTH, plainText.length())))
+                                            .append(".\n");
+                                    if (dirs.stopAtFirst()) {
+                                        return new CrackResult(crackMethod, this, dirs, cipherText, plainText, successResult.toString());
+                                    } else {
+                                        foundCount++;
+                                        foundKeyword = keyword;
+                                        foundPlainText = plainText;
+                                    }
+                                }
                             }
                         }
                     }
@@ -490,19 +571,13 @@ public class KeywordSubstitution extends Cipher {
         }
 
         // let's see if we found anything
-        if (explain.length() > 0) {
-            keyword = validKeyword;
-            dirs.setKeyword(validKeyword);
-            String explainString = "Success: Searched using "
-                    + dict.size()
-                    + " dictionary words as keys and found all cribs ["
-                    + cribString
-                    + "].\n"
-                    + explain.toString();
-            return new CrackResult(crackMethod, this, dirs, cipherText, validDecode, explainString);
+        if (foundPlainText.length() > 0) {
+            keyword = foundKeyword;
+            dirs.setKeyword(foundKeyword);
+            return new CrackResult(crackMethod, this, dirs, cipherText, foundPlainText, successResult.toString());
         }
         keyword = "";
-        String explainString = "Fail: Searched using "
+        String explainString = "Fail: Dictionary scan: Searched using "
                 + dict.size()
                 + " dictionary words as keys but did not find cribs ["
                 + cribString + "].\n";

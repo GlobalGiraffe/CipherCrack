@@ -29,7 +29,9 @@ import mnh.game.ciphercrack.cipher.Cipher;
 import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.util.CrackResult;
 import mnh.game.ciphercrack.util.CrackState;
+import mnh.game.ciphercrack.util.Directives;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -117,8 +119,14 @@ public class ComputeResultListActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            // user wants to remove all completed items
             case R.id.action_result_list_clear_all:
-                CrackResults.crackResults.clear();
+                Iterator<CrackResult> iterator = CrackResults.crackResults.listIterator();
+                while (iterator.hasNext()) {
+                    CrackResult crackResult = iterator.next();
+                    if (crackResult.getCrackState() == CrackState.COMPLETE)
+                        iterator.remove();
+                }
                 mAdapter.notifyDataSetChanged();
                 return true;
         }
@@ -151,10 +159,10 @@ public class ComputeResultListActivity extends AppCompatActivity {
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CrackResult item = (CrackResult) view.getTag();
+                CrackResult crackResult = (CrackResult) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putString(ComputeResultDetailFragment.ARG_ITEM_ID, String.valueOf(item.getId()));
+                    arguments.putString(ComputeResultDetailFragment.ARG_ITEM_ID, String.valueOf(crackResult.getId()));
                     ComputeResultDetailFragment fragment = new ComputeResultDetailFragment(CrackResults.crackResults);
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
@@ -162,7 +170,7 @@ public class ComputeResultListActivity extends AppCompatActivity {
                             .commit();
                 } else {
                     // show a result on the Result Activity
-                    Intent i = ResultActivity.getResultIntent(mParentActivity, item.getCipherText(), item.getPlainText(), item.getExplain(), item.getCipher(), item.getDirectives());
+                    Intent i = ResultActivity.getResultIntent(mParentActivity, crackResult.getCipherText(), crackResult.getPlainText(), crackResult.getExplain(), crackResult.getCipher(), crackResult.getDirectives());
                     mParentActivity.startActivityForResult(i, ResultActivity.RESULTS_REQUEST_CODE);
                 }
             }
@@ -193,8 +201,12 @@ public class ComputeResultListActivity extends AppCompatActivity {
 
                                 // Create TextView to show the main description
                                 final TextView viewWithText = new TextView(mParentActivity);
+                                Directives dirs = crackResult.getDirectives();
                                 String details = crackResult.getCipher().getInstanceDescription() + "\n"
                                         + "Method: " + crackResult.getCrackMethod().toString() + "\n"
+                                        + "StopAtFirst: " + (dirs == null ? "Unknown" : String.valueOf(dirs.stopAtFirst())) + "\n"
+                                        + "ConsiderReverse: " + (dirs == null ? "Unknown" : String.valueOf(dirs.considerReverse())) + "\n"
+                                        + "Cribs: " + (dirs == null ? "Unknown" : dirs.getCribs()) + "\n"
                                         + "Progress: " + crackResult.getProgress() + "\n"
                                         + "Status: " + crackResult.getCrackState().toString() + "\n"
                                         + "Successful: " + (crackResult.getCrackState() == CrackState.COMPLETE ? crackResult.isSuccess() : "Unknown") + "\n"
@@ -245,7 +257,9 @@ public class ComputeResultListActivity extends AppCompatActivity {
         public void onBindViewHolder(final ViewHolder holder, int position) {
             CrackResult result = mValues.get(position);
             Cipher cipher = result.getCipher();
-            String firstLine = (result.isSuccess() ? cipher.getInstanceDescription() : cipher.getCipherName())+": "+result.getCrackMethod().toString();
+            String firstLine = result.getCrackMethod().toString() +
+                    ": " +
+                    (result.isSuccess() ? cipher.getInstanceDescription() : cipher.getCipherName());
             holder.mIdView.setText(firstLine);
             CrackState state = result.getCrackState();
             String secondLine = "Unknown";

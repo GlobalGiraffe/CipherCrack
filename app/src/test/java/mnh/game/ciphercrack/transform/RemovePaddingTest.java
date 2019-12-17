@@ -16,10 +16,21 @@ public class RemovePaddingTest {
     private static final Transform transform = new RemovePadding();
 
     @Test
-    public void testRemovePadding() {
+    public void testRemovePaddingSimple() {
         String result = transform.apply(null, "AB cD E FH g");
-        assertEquals("Remove Padding", "ABcDEFHg", result);
-        result = transform.apply(null, "");
+        assertEquals("Remove Padding simple", "ABcDEFHg", result);
+    }
+
+    @Test
+    public void testRemovePaddingCC2003() {
+        // the default padding is <space>, <tab> and \n
+        String result = transform.apply(null, "Agatha Highfield's Journal\nSouthampton, September 1911\n\n MHWTR B LATEE LXM LTBE");
+        assertEquals("Remove Padding CC2003", "AgathaHighfield'sJournalSouthampton,September1911MHWTRBLATEELXMLTBE", result);
+    }
+
+    @Test
+    public void testRemovePaddingEmpty() {
+        String result = transform.apply(null, "");
         assertEquals("Remove Padding empty", "", result);
         result = transform.apply(null, null);
         assertNull("Remove Padding null", result);

@@ -38,17 +38,12 @@ public class ResultActivity extends AppCompatActivity {
         String text = getIntent().getStringExtra(EXTRA_TEXT);
         String result = getIntent().getStringExtra(EXTRA_RESULT);
         String explain  = getIntent().getStringExtra(EXTRA_EXPLAIN);
-        String cipherName = getIntent().getStringExtra(EXTRA_CIPHER);
-        Directives dirs = getIntent().getParcelableExtra(EXTRA_DIRECTIVES);
+        cipher = getIntent().getParcelableExtra(EXTRA_CIPHER);
+        // we use dto need these, not any more
+        //Directives dirs = getIntent().getParcelableExtra(EXTRA_DIRECTIVES);
 
         Toolbar toolbar = findViewById(R.id.result_toolbar);
-
-        // create a cipher object so we can get a description [with parameters to the cipher]
-        cipher = Cipher.instanceOf(cipherName, this);
-        if (cipher != null && dirs != null) {
-            cipher.canParametersBeSet(dirs);
-            toolbar.setTitle(cipher.getInstanceDescription());
-        }
+        toolbar.setTitle(cipher.getInstanceDescription());
         setSupportActionBar(toolbar);
 
         // put the text on the screen
@@ -150,7 +145,7 @@ public class ResultActivity extends AppCompatActivity {
         i.putExtra(ResultActivity.EXTRA_TEXT, text);
         i.putExtra(ResultActivity.EXTRA_RESULT, resultText);
         i.putExtra(ResultActivity.EXTRA_EXPLAIN, explainText);
-        i.putExtra(ResultActivity.EXTRA_CIPHER, cipher.getCipherName());
+        i.putExtra(ResultActivity.EXTRA_CIPHER, cipher);
         i.putExtra(ResultActivity.EXTRA_DIRECTIVES, dirs);
         return i;
     }

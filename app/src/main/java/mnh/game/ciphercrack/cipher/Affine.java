@@ -6,7 +6,6 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,6 +14,7 @@ import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
 import mnh.game.ciphercrack.R;
+import mnh.game.ciphercrack.language.Language;
 import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
@@ -119,7 +119,8 @@ public class Affine extends Cipher {
 
     // we don't add any extra controls, but we allow change of cribs
     @Override
-    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String cipherText,
+                                    Language language, String alphabet, String paddingChars) {
         return true;
     }
 
@@ -268,43 +269,73 @@ public class Affine extends Cipher {
         CrackMethod crackMethod = dirs.getCrackMethod();
         String reverseCipherText = new StringBuilder(cipherText).reverse().toString();
 
+        StringBuilder successResult = new StringBuilder()
+                .append("Success: Brute Force: tried each possible value of a and b from 0 to ")
+                .append(dirs.getAlphabet().length() - 1)
+                .append(" looking for the cribs [")
+                .append(dirs.getCribs())
+                .append("] in the decoded text.\n");
+        String foundPlainText = "";
+        int foundA = -1, foundB = -1;
         //Log.i("CRACK", "Trying to crack text "+cipherText.substring(0,20)+", cribs="+cribString);
-        for (int a=0; a < alphabet.length(); a++) {
+        for (int aValue=0; aValue < alphabet.length(); aValue++) {
             // only check if 'a' and length of alphabet are co-primes, else could have 2 plain -> 1 cipher letter
-            if (areCoPrimes(a, alphabet.length())) {
+            if (areCoPrimes(aValue, alphabet.length())) {
                 // publish progress as a percentage
                 if (CrackResults.isCancelled(crackId))
                     return new CrackResult(dirs.getCrackMethod(), this, cipherText, "Crack cancelled", CrackState.CANCELLED);
-                CrackResults.updateProgressDirectly(crackId, a+" of "+alphabet.length()+": "+100*a/alphabet.length()+"% complete");
-                dirs.setValueA(a);
+                CrackResults.updateProgressDirectly(crackId, aValue+" of "+alphabet.length()+": "+100*aValue/alphabet.length()+"% complete");
+                dirs.setValueA(aValue);
 
                 // check each value of b up to length of alphabet, doing decode and looking for cribs
-                for (int b=0; b < alphabet.length(); b++) {
-                    dirs.setValueB(b);
+                for (int bValue=0; bValue < alphabet.length(); bValue++) {
+                    dirs.setValueB(bValue);
+
+                    // try in normal direction first
                     String plainText = decode(cipherText, dirs);
                     if (Cipher.containsAllCribs(plainText, cribSet)) {
-                        String explain = "Success: Brute Force: tried each possible value of a and b from 0 to "
-                                + (alphabet.length() - 1)
-                                + " looking for the cribs [" + cribString
-                                + "] in the decoded text and found them all with a=" + a + " and b="
-                                + b + ".\n";
-                        this.a = a;
-                        this.b = b;
-                        return new CrackResult(crackMethod, this, dirs, cipherText, plainText, explain);
+                        successResult.append("Found them all with a=").append(aValue)
+                                .append(" and b=").append(bValue).append(".\n");
+                        if (dirs.stopAtFirst()) {
+                            a = aValue;
+                            b = bValue;
+                            dirs.setValueA(aValue);
+                            dirs.setValueB(bValue);
+                            return new CrackResult(crackMethod, this, dirs, cipherText, plainText, successResult.toString());
+                        } else {
+                            foundPlainText = plainText;
+                            foundA = aValue;
+                            foundB = bValue;
+                        }
                     }
-                    plainText = decode(reverseCipherText, dirs);
-                    if (Cipher.containsAllCribs(plainText, cribSet)) {
-                        String explain = "Success: Brute Force REVERSE: tried each possible value of a and b from 0 to "
-                                + (alphabet.length() - 1)
-                                + " looking for the cribs [" + cribString
-                                + "] in the decoded REVERSE text and found them all with a=" + a + " and b="
-                                + b + ".\n";
-                        this.a = a;
-                        this.b = b;
-                        return new CrackResult(crackMethod, this, dirs, cipherText, plainText, explain);
+                    // text may have been reversed during encoding, try reverse decode
+                    if (dirs.considerReverse()) {
+                        plainText = decode(reverseCipherText, dirs);
+                        if (Cipher.containsAllCribs(plainText, cribSet)) {
+                            successResult.append("Found them all in REVERSE text with a=").append(aValue)
+                                    .append(" and b=").append(bValue).append(".\n");
+                            if (dirs.stopAtFirst()) {
+                                a = aValue;
+                                b = bValue;
+                                dirs.setValueA(aValue);
+                                dirs.setValueB(bValue);
+                                return new CrackResult(crackMethod, this, dirs, cipherText, plainText, successResult.toString());
+                            } else {
+                                foundPlainText = plainText;
+                                foundA = aValue;
+                                foundB = bValue;
+                            }
+                        }
                     }
                 }
             }
+        }
+        if (foundPlainText.length() > 0) {
+            a = foundA;
+            b = foundB;
+            dirs.setValueA(foundA);
+            dirs.setValueB(foundB);
+            return new CrackResult(crackMethod, this, dirs, cipherText, foundPlainText, successResult.toString());
         }
         a = b = -1;
         String explain = "Fail: Brute Force: tried each possible value of a and b from 0 to "

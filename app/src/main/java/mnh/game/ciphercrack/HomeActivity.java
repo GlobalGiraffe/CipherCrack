@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -69,6 +70,15 @@ import mnh.game.ciphercrack.util.Settings;
 public class HomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     // For consistent logging
     private static final String TAG = "CrackHome";
+
+    // delete the keyword if 'X' is pressed
+    private static final View.OnClickListener CRACK_ON_CLICK_DELETE = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            EditText cribs = v.getRootView().findViewById(R.id.popup_crack_cribs);
+            cribs.setText("");
+        }
+    };
 
     // when going to new Activities, on return this is used to get the results back
     private static final int CAMERA_REQUEST_CODE = 1001;
@@ -631,6 +641,62 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.action_home_cipher_challenge_2007_8B:
                 setInputText(R.string.cipher_challenge_2007_8B);
                 return true;
+
+            case R.id.action_home_cipher_challenge_2008_0A:
+                setInputText(R.string.cipher_challenge_2008_0A);
+                return true;
+            case R.id.action_home_cipher_challenge_2008_0B:
+                setInputText(R.string.cipher_challenge_2008_0B);
+                return true;
+            case R.id.action_home_cipher_challenge_2008_1A:
+                setInputText(R.string.cipher_challenge_2008_1A);
+                return true;
+            case R.id.action_home_cipher_challenge_2008_1B:
+                setInputText(R.string.cipher_challenge_2008_1B);
+                return true;
+            case R.id.action_home_cipher_challenge_2008_2A:
+                setInputText(R.string.cipher_challenge_2008_2A);
+                return true;
+            case R.id.action_home_cipher_challenge_2008_2B:
+                setInputText(R.string.cipher_challenge_2008_2B);
+                return true;
+            case R.id.action_home_cipher_challenge_2008_3A:
+                setInputText(R.string.cipher_challenge_2008_3A);
+                return true;
+            case R.id.action_home_cipher_challenge_2008_3B:
+                setInputText(R.string.cipher_challenge_2008_3B);
+                return true;
+            case R.id.action_home_cipher_challenge_2008_4A:
+                setInputText(R.string.cipher_challenge_2008_4A);
+                return true;
+            case R.id.action_home_cipher_challenge_2008_4B:
+                setInputText(R.string.cipher_challenge_2008_4B);
+                return true;
+            case R.id.action_home_cipher_challenge_2008_5A:
+                setInputText(R.string.cipher_challenge_2008_5A);
+                return true;
+            case R.id.action_home_cipher_challenge_2008_5B:
+                setInputText(R.string.cipher_challenge_2008_5B);
+                return true;
+            case R.id.action_home_cipher_challenge_2008_6A:
+                setInputText(R.string.cipher_challenge_2008_6A);
+                return true;
+            case R.id.action_home_cipher_challenge_2008_6B:
+                setInputText(R.string.cipher_challenge_2008_6B);
+                return true;
+            case R.id.action_home_cipher_challenge_2008_7A:
+                setInputText(R.string.cipher_challenge_2008_7A);
+                return true;
+            case R.id.action_home_cipher_challenge_2008_7B:
+                setInputText(R.string.cipher_challenge_2008_7B);
+                return true;
+            case R.id.action_home_cipher_challenge_2008_8A:
+                setInputText(R.string.cipher_challenge_2008_8A);
+                return true;
+            case R.id.action_home_cipher_challenge_2008_8B:
+                setInputText(R.string.cipher_challenge_2008_8B);
+                return true;
+
             case R.id.action_home_cipher_challenge_2009_0A:
                 setInputText(R.string.cipher_challenge_2009_0A);
                 return true;
@@ -685,6 +751,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.action_home_cipher_challenge_2009_8B:
                 setInputText(R.string.cipher_challenge_2009_8B);
                 return true;
+
             case R.id.action_home_cipher_challenge_2010_1A:
                 setInputText(R.string.cipher_challenge_2010_1A);
                 return true;
@@ -1328,6 +1395,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
 
     /**
      * We're about to crack, so read items from the crack screen specific for this cipher
+     * plus the generic items (cribs / stop-at-first)
      * @return the default directives and the specific crack directives for this cipher from the screen
      */
     private Directives setCrackDirectives(LinearLayout layoutExtra) {
@@ -1342,6 +1410,14 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
             EditText cribsField = layoutExtra.getRootView().findViewById(R.id.popup_crack_cribs);
             if (cribsField != null) {
                 dirs.setCribs(cribsField.getText().toString());
+            }
+            CheckBox stopAtFirstBox = layoutExtra.getRootView().findViewById(R.id.popup_crack_stop_at_first);
+            if (stopAtFirstBox != null) {
+                dirs.setStopAtFirst(stopAtFirstBox.isChecked());
+            }
+            CheckBox considerReverseBox = layoutExtra.getRootView().findViewById(R.id.popup_crack_consider_reverse);
+            if (considerReverseBox != null) {
+                dirs.setConsiderReverse(considerReverseBox.isChecked());
             }
         }
         dirs.setCrackMethod(crackMethod);
@@ -1433,12 +1509,19 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
             EditText cribsText = popupLayout.findViewById(R.id.popup_crack_cribs);
             cribsText.setText(cribs);
 
+            // ensure we 'delete' the cribs text when the delete button is pressed
+            Button cribsDelete = popupLayout.findViewById(R.id.popup_crack_cribs_delete);
+            cribsDelete.setOnClickListener(CRACK_ON_CLICK_DELETE);
+
             // add extra controls if needed
             PopupWindow popup = new PopupWindow(this);
             String alphabet = Settings.instance().getString(this, R.string.pref_alphabet_plain);
+            String paddingChars = Settings.instance().getString(this, R.string.pref_padding_chars);
+            Language language = Language.instanceOf(Settings.instance().getString(this, R.string.pref_language));
             LinearLayout extraLayout = popupLayout.findViewById(R.id.popup_crack_extra_layout);
-            boolean controlsNeeded = cipher.addCrackControls(this, extraLayout, alphabet);
+            boolean controlsNeeded = cipher.addCrackControls(this, extraLayout, getInputText(), language, alphabet, paddingChars);
             if (controlsNeeded) {
+                // some fields may need to be populated specially
                 popup.setContentView(popupLayout);
                 popup.setWidth(820);
                 popup.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);

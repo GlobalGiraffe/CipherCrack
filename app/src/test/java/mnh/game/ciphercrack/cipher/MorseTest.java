@@ -136,7 +136,7 @@ public class MorseTest {
         assertEquals("Crack morse fail cipher text", cipherText, result.getCipherText());
         assertNull("Crack morse fail digits", result.getDirectives());
         assertNotNull("Crack morse fail explain", result.getExplain());
-        assertTrue("Crack morse fail start", result.getExplain().startsWith("Fail:"));
+        assertTrue("Crack morse fail start", result.getExplain().startsWith("No crack"));
         // depends on prior run: assertEquals("Crack morse fail cipher name", "Morse cipher ([], size=n/a)", result.getCipher().getInstanceDescription());
         assertEquals("Crack morse crack method", CrackMethod.BRUTE_FORCE, result.getCrackMethod());
     }

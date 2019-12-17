@@ -28,7 +28,7 @@
             android:textColor="@color/white"/>
     </RadioGroup>
     <LinearLayout
-        android:id="@+id/extra_polybius_crack_layout_col_heading"
+        android:id="@+id/extra_polybius_crack_col_heading_layout"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -43,9 +43,10 @@
             android:id="@+id/extra_polybius_crack_col_heading"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="13"
+            android:layout_weight="10"
             android:text="@string/default_col_heading"
             android:hint="@string/col_heading"
+            android:textIsSelectable="true"
             android:importantForAutofill="no"
             android:maxWidth="70dp"
             android:singleLine="true"
@@ -57,13 +58,14 @@
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1"
+            android:scaleY="0.75"
             android:layout_gravity="center"
             android:id="@+id/extra_polybius_crack_col_heading_delete"
             android:background="@android:drawable/ic_delete"/>
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/extra_polybius_crack_layout_row_heading"
+        android:id="@+id/extra_polybius_crack_row_heading_layout"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -78,10 +80,11 @@
             android:id="@+id/extra_polybius_crack_row_heading"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="13"
+            android:layout_weight="10"
             android:text="@string/default_row_heading"
             android:hint="@string/row_heading"
             android:importantForAutofill="no"
+            android:textIsSelectable="true"
             android:maxWidth="70dp"
             android:singleLine="true"
             android:inputType="textNoSuggestions"
@@ -92,7 +95,8 @@
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1"
+            android:scaleY="0.75"
             android:layout_gravity="center"
             android:id="@+id/extra_polybius_crack_row_heading_delete"
             android:background="@android:drawable/ic_delete"/>

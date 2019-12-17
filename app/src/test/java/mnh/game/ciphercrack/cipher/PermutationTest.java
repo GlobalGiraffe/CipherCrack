@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import mnh.game.ciphercrack.language.Language;
+import mnh.game.ciphercrack.transform.SplitByWords;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
 import mnh.game.ciphercrack.util.Directives;
@@ -230,6 +231,7 @@ public class PermutationTest {
         p.setPermutation(null);
         p.setCribs("ishmael,ocean");
         p.setCrackMethod(CrackMethod.BRUTE_FORCE);
+        p.setConsiderReverse(true);
         reason = cipher.canParametersBeSet(p);
         assertNull("Crack Success: crack param okay", reason);
 

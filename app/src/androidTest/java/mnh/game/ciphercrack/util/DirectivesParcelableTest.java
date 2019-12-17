@@ -36,13 +36,15 @@ public class DirectivesParcelableTest {
         dir1.setValueA(10);
         dir1.setValueB(-10);
         dir1.setRails(14);
-        dir1.setKeywordLength(15);
+        dir1.setKeywordLength(9);
         dir1.setKeyword("ALBATROS");
         dir1.setDigits("XY");
         dir1.setSeparator("^");
         dir1.setNumberSize(5);
         dir1.setPermutation(new int[] {1,3,4,2,0});
         dir1.setReadAcross(true);
+        dir1.setStopAtFirst(true);
+        dir1.setConsiderReverse(true);
         dir1.setCrackMethod(CrackMethod.WORD_COUNT);
 
         // duplicate the directives
@@ -65,8 +67,14 @@ public class DirectivesParcelableTest {
         assertEquals("ParcelDir Separator",dir1.getSeparator(), dir2.getSeparator());
         assertEquals("ParcelDir NumberSize",dir1.getNumberSize(), dir2.getNumberSize());
         assertEquals("ParcelDir Permutation len",dir1.getPermutation().length, dir2.getPermutation().length);
+        assertEquals("ParcelDir Permutation 0",dir1.getPermutation()[0], dir2.getPermutation()[0]);
+        assertEquals("ParcelDir Permutation 1",dir1.getPermutation()[1], dir2.getPermutation()[1]);
         assertEquals("ParcelDir Permutation 2",dir1.getPermutation()[2], dir2.getPermutation()[2]);
+        assertEquals("ParcelDir Permutation 3",dir1.getPermutation()[3], dir2.getPermutation()[3]);
+        assertEquals("ParcelDir Permutation 4",dir1.getPermutation()[4], dir2.getPermutation()[4]);
         assertEquals("ParcelDir ReadAcross",dir1.isReadAcross(), dir2.isReadAcross());
+        assertEquals("ParcelDir StopAtFirst",dir1.stopAtFirst(), dir2.stopAtFirst());
+        assertEquals("ParcelDir ConsiderReverse",dir1.considerReverse(), dir2.considerReverse());
         assertEquals("ParcelDir CrackMethod",dir1.getCrackMethod(), dir2.getCrackMethod());
     }
 }

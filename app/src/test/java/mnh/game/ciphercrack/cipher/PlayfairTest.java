@@ -1,5 +1,6 @@
 package mnh.game.ciphercrack.cipher;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -77,7 +78,7 @@ public class PlayfairTest {
         assertEquals("Decoding CC Example", plainText.toLowerCase().replaceAll("[ x:,.\n]|-",""), decoded.replaceAll("x",""));
     }
 
-    // takes around 8 seconds
+    // takes around 9 seconds
     @Test
     public void testCrackCipherChallenge2() {
         String cipherText = "GRLZE HNRAO TNNPM PVKUG UFLIG YBRPN OSTUH KMGLT TUBRS YUGGN OAFXD ALVEI EQGRN UGRLO LNGAL UMHGR LHLIM AZGBA AYEIM PGRLD KELRT QNPRN ZHGAT ULGHM EUPLU QRATP LPKIT YGRHB GYUNM PPMER TYIOU GANAL MPBVT ADAEI GDUZA RKTPO AOLTU FKZRL UGEPP LADTF ADKEB LUGRA VDPLH KMGRL RAEPR DKEUI XLPMF ADGKH IOTQO AEPUH MHAPK GGTRU TAHZF YBNEP GRUGN ACXOU TUMRG YGRNI IEAMP LHLIN VBAOP MMYOK TGYGG TREAY GTYDG AAMAY GYBRS YUGGN ADKEB LUGRA GRELU GATBP TYKOH GUHTA HZFYB NRPTY MAUMN LPNNL KOOKT GYGGT UGOAY GGTZC GTNPV DXMKO DEEXA KQFIZ RARLK OTAHZ FYBNL PBVDA SNGTP NMGRM ARKGA TRATH BNEPA ORLUN BRKEN PIZRA UNUGR LRDER EHRAM VKOLY FBEIN GHMAD ARVDA LUGRA RDSVT ADATU UOBAA GLYGT OIARE DPNIO UFPVG AQYLY GTNGA OEIEQ GRHBG YUNBL NKEXE ICDAG RENAY AUGEP TAHZF YBNLI NBGUB RYATU MRGTU GATBP TYKOH CDBMC HUNSG RNKMG HZTUA DPNIO EPUGA NAOIE IPAMY EUNUA KRQHR DIELR SPEPR EKMGT LTQXG RUGRA UGGEY DARTO BIERU HTOVK FLAMT NUNUA KRQHR DFWGD QUBIE RHMEH RANAP LSYUG EPTUE BANTP OMOIY KEPDE GTSEK MLTDA LPMPA DARTA HOBVT LYAOK OGRAB LNKEX NPTLL NTQMU PMFAG YBRSY UGLGL IMAVN TYGTL REQUO MREQG RNIIE AMPLT OPNRM TGMHU GLNBR LKLPY GARLW LDAPK GMPYG FBOKS PDYRE EROIT HGUUH ATHUR QGDUG ATBPT YKOHC PUUGE PTAHZ FYBNL PVBPN GTGDZ KARUG KOUGR GBVTV ARTPE SVDTU BRSYU GATBP TYKOC YLPAR UPEOR LUNHL EIGDE IAKTM KZKOU ZAUMU TLXLP MIOKV MAEAG YZHTY IUDAM PUNHK UHAKI EYGUG RDGQP ANPNA UMHMZ HDAYG VSRAU TKOAR QFPOT NUGGN AREPZ KDOXM UHUGL GEPGR AEEIL KXENA PUGTE IUTVK FLDFI OPNOT GYKHI NIAGT KBLGU HUGDY ARQGG RECOA AFPUO BMREK UOIUG YBRUT GRVKF LAFLG UZKEU GRGUZ TLKON ITYIL EUARB RPFLY GTUGU HUZHB EXTLD AFBRL EIEQG RILYG AODEP LKEZK DOUMB LEUUG RARGB AAGLY GTBDP ERMHT RLEIA QLPTL EQMZU ZLZAR TUUHE PKITY RDNSG ROUPT ANUTR EGBLP ARUPE ORLUN NPULM RRDPL TUEBK OBTMU SGUHU EMZIU PMTYA DMTNP UGRLM PHKYA EZMHN IARMH PLADQ XUHQK IOGDD ERLGA BOKEV BTGFX KOUGG NIORK AMRAU FINAG AOTNP LBRSV TVHKK GRSPM IOUNE INUGR AUDAU NHMZH GTSPO ANAUF RAHME HRANA PLARU ESREG WSPOP MYGEI RKZHL YTAEU QXUZE LGABR ALUAL TTLEQ KRGYD GSYUG LGADQ RMBYD AKEKN UDEAR DLWNO IYQBR SYUGM PVDTU GRZKD OMHUG GNGRS YUNBL NKEXV KUGZN ZHTAL OMPPM IOKVU ZELAM NDUNU ALTGT UNTGM HUGLT DYUHM QUNZN PRKEE INUGR EUNUG RHSOH RALPL IDAMI MSEGT ULYLN EILKE NADPN UPLRH MEZUZ LUPQU IEUKO UZDZU HOCAN RFNPE RLZ";
@@ -164,8 +165,9 @@ public class PlayfairTest {
         assertEquals("CrackFail crack method", CrackMethod.DICTIONARY, result.getCrackMethod());
     }
 
-    // takes up to 2 minutes, sometimes works, sometimes not
+    // takes up to 2 minutes 10 secs, sometimes works, sometimes not
     @Test
+    @Ignore("Takes a long time to run and sometimes fails")
     public void testCrackWordCountSuccess() {
         String plainText = "Thirty years ago, Marseilles lay burning in the sun, one day. A blazing sun upon a fierce August day was no greater rarity in southern France then, than at any other time, before or since. Everything in Marseilles, and about Marseilles, had stared at the fervid sky, and been stared at in return, until a staring habit had become universal there. Strangers were stared out of countenance by staring white houses, staring white walls, staring white streets, staring tracts of arid road, staring hills from which verdure was burnt away. The only things to be seen not fixedly staring and glaring were the vines drooping under their load of grapes. These did occasionally wink a little, as the hot air barely moved their faint leaves.";
         // BRAMLEY APPLES -- not in the dictionary
@@ -326,7 +328,7 @@ public class PlayfairTest {
         p.setNumberSize(66); // not right for keyword - should have 36 chars
         p.setKeyword("ABCDEFGHIJKLMNOPQRSTUVWXY"); // missing Z
         reason = playfair.canParametersBeSet(p);
-        assertEquals("BadParam: empty keyword", "Keyword is empty or too short", reason);
+        assertEquals("BadParam: empty keyword", "Keyword length is 25, should be 36", reason);
         p.setNumberSize(44); // not right for keyword - should have 16 chars
         p.setKeyword("ABCDEFGHIJKLMNOPQRSTUVWXY"); // missing Z
         reason = playfair.canParametersBeSet(p);
@@ -335,13 +337,13 @@ public class PlayfairTest {
         p.setKeyword(null);
 
         reason = playfair.canParametersBeSet(p); // keyword is null
-        assertEquals("BadParam: empty keyword", "Keyword is empty or too short", reason);
+        assertEquals("BadParam: empty keyword", "Keyword is missing", reason);
         p.setKeyword("");
         reason = playfair.canParametersBeSet(p);
-        assertEquals("BadParam: empty keyword", "Keyword is empty or too short", reason);
+        assertEquals("BadParam: empty keyword", "Keyword length is 0, should be 25", reason);
         p.setKeyword("ABCDEFGHIJ");
         reason = playfair.canParametersBeSet(p);
-        assertEquals("BadParam: short keyword", "Keyword is empty or too short", reason);
+        assertEquals("BadParam: short keyword", "Keyword length is 10, should be 25", reason);
         p.setKeyword("ABC#EFGHIJKLMNOPQRSTUVWXY"); // why is # there!
         reason = playfair.canParametersBeSet(p);
         assertEquals("BadParam: short keyword", "Symbol # at offset 3 in the keyword is not in the alphabet", reason);
@@ -378,9 +380,6 @@ public class PlayfairTest {
         p.setLanguage(null);
         reason = playfair.canParametersBeSet(p);
         assertEquals("BadParam: missing language", "Missing language", reason);
-        p.setLanguage(Language.instanceOf("German"));
-        reason = playfair.canParametersBeSet(p);
-        assertEquals("BadParam: missing language", "No German dictionary is defined", reason);
         p.setLanguage(Language.instanceOf("English"));
 
         p.setNumberSize(0);
@@ -422,6 +421,49 @@ public class PlayfairTest {
         p.setCribs("total,fear,killer");
         p.setLanguage(Language.instanceOf("English"));
         p.setCrackMethod(CrackMethod.DICTIONARY);
+        reason = playfair.canParametersBeSet(p);
+        assertNull("CrackDictSuccess: crack param okay", reason);
+
+        CrackResult result = playfair.crack(cipherText, p, 0);
+        System.out.println("Decoded "+result.getPlainText());
+        String explain = result.getExplain();
+        System.out.println("Explain "+explain);
+        String decodeKeyword = result.getDirectives().getKeyword();
+        System.out.println("Keyword "+decodeKeyword);
+        assertTrue("CrackDict success", result.isSuccess());
+        assertEquals("CrackDict Cipher", cipherText, result.getCipherText());
+        assertEquals("CrackDict Text", expectedDecode, result.getPlainText());
+        assertEquals("CrackDict Keyword", keyword, decodeKeyword);
+        assertNotNull("CrackDict Explain", explain);
+        assertEquals("CrackDict cipher name", "Playfair cipher (ENRGYABCDFHIKLMOPQSTUVWXZ,size=55)", result.getCipher().getInstanceDescription());
+        assertEquals("CrackDict crack method", CrackMethod.DICTIONARY, result.getCrackMethod());
+    }
+
+    @Test
+    public void testCrackDictSuccessReverse() {
+        // attempt dictionary crack of Vigenere cipher and succeeds with good cribs
+        String keyword = "ENRGYABCDFHIKLMOPQSTUVWXZ";  // ENERGY, 5x5
+        int rowsCols = 55;
+        String plainText = "I must not fear. Fear is the mind-killer. Fear is the little-death that brings total obliteration.";
+        String expectedDecode = "imustnotfearfearisthemindkillerfearisthelixtledeaththatbringstotalobliteration";
+        Directives p = new Directives();
+        p.setKeyword(keyword);
+        p.setNumberSize(rowsCols);
+        String reason = playfair.canParametersBeSet(p);
+        assertNull("CrackDictSuccess: encode param okay", reason);
+        String cipherText = playfair.encode(new StringBuilder(plainText).reverse().toString(), p);
+        assertNotNull("CrackDictSuccess: Encoding", cipherText);
+
+        String decodedText = playfair.decode(cipherText, p);
+        assertNotNull("CrackDictSuccess: Decoding", decodedText);
+
+        // now attempt the crack of the text via Dictionary
+        p.setKeyword(null);
+        p.setNumberSize(rowsCols);
+        p.setCribs("total,fear,killer");
+        p.setLanguage(Language.instanceOf("English"));
+        p.setCrackMethod(CrackMethod.DICTIONARY);
+        p.setConsiderReverse(true);
         reason = playfair.canParametersBeSet(p);
         assertNull("CrackDictSuccess: crack param okay", reason);
 

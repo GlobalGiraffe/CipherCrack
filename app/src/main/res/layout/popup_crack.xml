@@ -1,41 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     android:id="@+id/popup_crack_main_layout"
-    android:layout_height="400dp"
-    android:layout_width="200dp"
+    android:layout_width="900px"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:theme="@style/CrackTheme"
     tools:context="mnh.game.ciphercrack.HomeActivity"
+    android:padding="3dp"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
     <LinearLayout
         android:id="@+id/popup_crack_cribs_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:orientation="horizontal">
+        <!--
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="6dp"
             android:text="@string/cribs"/>
+        -->
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/popup_crack_cribs"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:hint="@string/cribs"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:padding="3dp"
             android:importantForAutofill="no"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="15"
             android:textColor="@color/entry_text_text"
             android:background="@drawable/entry_text_border"
+            android:textIsSelectable="true"
             android:inputType="textNoSuggestions"/>
+        <Button
+            android:id="@+id/popup_crack_cribs_delete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:scaleY="0.75"
+            android:background="@android:drawable/ic_delete" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/popup_crack_check_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <CheckBox
+            android:id="@+id/popup_crack_stop_at_first"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:checked="true"
+            android:text="@string/stop_at_first" />
+
+        <CheckBox
+            android:id="@+id/popup_crack_consider_reverse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:checked="true"
+            android:text="@string/consider_reverse" />
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/popup_crack_extra_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/popup_crack_button_layout"
         android:layout_width="match_parent"

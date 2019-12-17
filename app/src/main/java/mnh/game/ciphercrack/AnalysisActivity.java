@@ -37,12 +37,14 @@ public class AnalysisActivity extends AppCompatActivity implements AnalysisProvi
     private double ioc;
     private double[] iocCycles;
     private boolean isAllNumeric;
+    private String[] textLines;
 
     // the frequency objects are referred to when re-ordering columns
     private LetterFrequencyFragment letterFrequency;
     private BigramFrequencyFragment bigramFrequency;
     private BigramFrequencyFragment alignedBigramFrequency; // used for Polybius-square ciphers
     private TrigramFrequencyFragment trigramFrequency;
+    private TrigramFrequencyFragment alignedTrigramFrequency; // useful for when we have 3-char substitution
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class AnalysisActivity extends AppCompatActivity implements AnalysisProvi
         freqAlphaUpper = StaticAnalysis.collectFrequency(text, false, true, alphabet, paddingChars);
         ioc = StaticAnalysis.calculateIOC(freqAlphaUpper, countAlphabetic, alphabet);
         iocCycles = StaticAnalysis.getCyclicIOC(text, this, alphabet, paddingChars);
+        textLines = text.split("\n");
 
         // set up the TAB view
         ViewPager viewPager = findViewById(R.id.static_analysis_pager);
@@ -91,8 +94,12 @@ public class AnalysisActivity extends AppCompatActivity implements AnalysisProvi
             alignedBigramFrequency = new BigramFrequencyFragment(this, text, true, R.layout.fragment_aligned_bigram_frequency, R.id.freq_aligned_bigram_layout);
             adapter.addFragment(alignedBigramFrequency, getString(R.string.aligned_bigrams));
         }
-        trigramFrequency = new TrigramFrequencyFragment(this, text);
+        trigramFrequency = new TrigramFrequencyFragment(this, text, false, R.layout.fragment_trigram_frequency, R.id.freq_trigram_layout);
         adapter.addFragment(trigramFrequency, getString(R.string.trigrams));
+        if (countAlphabetic % 3 == 0) {
+            alignedTrigramFrequency = new TrigramFrequencyFragment(this, text, true, R.layout.fragment_aligned_trigram_frequency, R.id.freq_aligned_trigram_layout);
+            adapter.addFragment(alignedTrigramFrequency, getString(R.string.aligned_trigrams));
+        }
 
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(1); // general analysis
@@ -119,11 +126,15 @@ public class AnalysisActivity extends AppCompatActivity implements AnalysisProvi
     @Override
     public List<FrequencyEntry> getTrigramFrequency() { return trigramFrequency.getFrequenciesOfThisGram(); }
     @Override
+    public List<FrequencyEntry> getAlignedTrigramFrequency() { return alignedTrigramFrequency == null ? null : alignedTrigramFrequency.getFrequenciesOfThisGram(); }
+    @Override
     public List<FrequencyEntry> getLetterFrequency() { return letterFrequency.getFrequenciesOfThisGram(); }
     @Override
     public double getIOC() { return ioc; }
     @Override
     public double[] getIOCCycles() { return iocCycles; }
+    @Override
+    public String[] getTextLines() { return textLines; }
     @Override
     public boolean isAllNumeric() { return isAllNumeric; }
 
@@ -136,6 +147,7 @@ public class AnalysisActivity extends AppCompatActivity implements AnalysisProvi
         ColumnOrder oldAlignedBigramOrder = alignedBigramFrequency != null ? alignedBigramFrequency.getColumnOrder() : ColumnOrder.COUNT_HIGH_TO_LOW;
         ColumnOrder oldLetterOrder = letterFrequency.getColumnOrder();
         ColumnOrder oldTrigramOrder = trigramFrequency.getColumnOrder();
+        ColumnOrder oldAlignedTrigramOrder = alignedTrigramFrequency != null ? alignedTrigramFrequency.getColumnOrder(): ColumnOrder.COUNT_HIGH_TO_LOW;
         switch (clickedView.getId()) {
             case R.id.freq_letter_count:
                 letterFrequency.populateGramFrequency(oldLetterOrder == ColumnOrder.COUNT_HIGH_TO_LOW
@@ -202,6 +214,23 @@ public class AnalysisActivity extends AppCompatActivity implements AnalysisProvi
                 break;
             case R.id.freq_trigram_percent:
                 trigramFrequency.populateGramFrequency(oldTrigramOrder == ColumnOrder.PERCENT_HIGH_TO_LOW
+                        ? ColumnOrder.PERCENT_LOW_TO_HIGH : ColumnOrder.PERCENT_HIGH_TO_LOW);
+                break;
+
+            case R.id.freq_aligned_trigram_count:
+                alignedTrigramFrequency.populateGramFrequency(oldAlignedTrigramOrder == ColumnOrder.COUNT_HIGH_TO_LOW
+                        ? ColumnOrder.COUNT_LOW_TO_HIGH : ColumnOrder.COUNT_HIGH_TO_LOW);
+                break;
+            case R.id.freq_aligned_trigram_gram:
+                alignedTrigramFrequency.populateGramFrequency(oldAlignedTrigramOrder == ColumnOrder.GRAM_HIGH_TO_LOW
+                        ? ColumnOrder.GRAM_LOW_TO_HIGH : ColumnOrder.GRAM_HIGH_TO_LOW);
+                break;
+            case R.id.freq_aligned_trigram_normal:
+                alignedTrigramFrequency.populateGramFrequency(oldAlignedTrigramOrder == ColumnOrder.NORMAL_HIGH_TO_LOW
+                        ? ColumnOrder.NORMAL_LOW_TO_HIGH : ColumnOrder.NORMAL_HIGH_TO_LOW);
+                break;
+            case R.id.freq_aligned_trigram_percent:
+                alignedTrigramFrequency.populateGramFrequency(oldAlignedTrigramOrder == ColumnOrder.PERCENT_HIGH_TO_LOW
                         ? ColumnOrder.PERCENT_LOW_TO_HIGH : ColumnOrder.PERCENT_HIGH_TO_LOW);
                 break;
         }

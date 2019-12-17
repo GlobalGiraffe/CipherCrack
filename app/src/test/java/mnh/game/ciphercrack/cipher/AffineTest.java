@@ -106,6 +106,32 @@ public class AffineTest {
     }
 
     @Test
+    public void testCrackReverse() {
+        String plain = "Now can we see that ALL are fine and dandy.";
+        Directives p = new Directives();
+        p.setCribs("fine");
+        p.setValueA(5);
+        p.setValueB(8);
+        String encoded = affine.encode(new StringBuilder(plain).reverse().toString(), p);
+        p.setCribs("are,fine");
+        p.setValueA(-1);
+        p.setValueB(-1);
+        p.setCrackMethod(CrackMethod.BRUTE_FORCE);
+        p.setConsiderReverse(true);
+        p.setStopAtFirst(true);
+        String reason = affine.canParametersBeSet(p);
+        assertNull("Affine parameter", reason);
+        CrackResult result = affine.crack(encoded, p, 0);
+        assertTrue("Crack affine reverse success", result.isSuccess());
+        assertEquals("Crack affine reverse text", plain, result.getPlainText());
+        assertEquals("Crack affine reverse A", 5, result.getDirectives().getValueA());
+        assertEquals("Crack affine reverse B", 8, result.getDirectives().getValueB());
+        assertNotNull("Crack affine reverse explain", result.getExplain());
+        assertEquals("Crack affine reverse cipher name", "Affine cipher (a=5, b=8)", result.getCipher().getInstanceDescription());
+        assertEquals("Crack affine reverse crack method", CrackMethod.BRUTE_FORCE, result.getCrackMethod());
+    }
+
+    @Test
     public void testCrackZeroB() {
         String plain = "When all are done then we find it correct.";
         Directives p = new Directives();
@@ -115,7 +141,7 @@ public class AffineTest {
         assertNull("Null reason", reason);
         CrackResult result = affine.crack(plain, p, 0);
         assertTrue("Crack affine success", result.isSuccess());
-        assertEquals("Crack affines text", plain, result.getPlainText());
+        assertEquals("Crack affine text", plain, result.getPlainText());
         assertEquals("Crack affine A", 1, result.getDirectives().getValueA());
         assertEquals("Crack affine B", 0, result.getDirectives().getValueB());
         assertNotNull("Crack affine explain", result.getExplain());

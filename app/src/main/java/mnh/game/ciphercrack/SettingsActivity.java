@@ -83,10 +83,18 @@ public class SettingsActivity extends PreferenceActivity {
             }
             if (key.equals(getString(R.string.pref_padding_chars))) {
                 String padding = sp.getString(key, "<none>");
-                if (padding != null && padding.equals(" ")) {
-                    p.setSummary("Default padding with space");
-                } else {
-                    p.setSummary("Custom Padding: " + padding);
+                if (padding != null) {
+                    int posOfCR = padding.indexOf("\\n");
+                    if (posOfCR > 0) { // if the text contains \n, convert to a real newline
+                        SharedPreferences.Editor ed = sp.edit();
+                        ed.putString(getString(R.string.pref_padding_chars), padding.substring(0, posOfCR)+"\n"+padding.substring(posOfCR+2));
+                        ed.apply();
+                    }
+                    if (padding.equals(" ")) {
+                        p.setSummary("Default padding with space");
+                    } else {
+                        p.setSummary("Custom Padding: " + padding);
+                    }
                 }
             }
             if (key.equals(getString(R.string.pref_language)))

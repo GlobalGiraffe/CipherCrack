@@ -45,8 +45,9 @@
             android:id="@+id/extra_playfair_crack_rows_cols"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="13"
+            android:layout_weight="10"
             android:hint="@string/count_rows_cols_hint"
+            android:textIsSelectable="true"
             android:importantForAutofill="no"
             android:maxWidth="70dp"
             android:singleLine="true"
@@ -58,7 +59,8 @@
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1"
+            android:scaleY="0.75"
             android:layout_gravity="center"
             android:id="@+id/extra_playfair_crack_rows_cols_delete"
             android:background="@android:drawable/ic_delete"/>

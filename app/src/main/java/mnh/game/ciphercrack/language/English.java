@@ -92,6 +92,9 @@ public class English extends Language {
     public English() { super("English"); }
 
     @Override
+    public String getInfrequentLetters() { return "ZQXJVK"; }
+
+    @Override
     public double getExpectedIOC() { return 0.066895; } // https://elec5616.com/static/lectures/2016/03_ciphers.pdf
 
     @Override

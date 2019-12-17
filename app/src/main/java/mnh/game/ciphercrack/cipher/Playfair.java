@@ -170,8 +170,10 @@ public class Playfair extends Cipher {
         if (crackMethod == null || crackMethod == CrackMethod.NONE) {
             if (rows < 3 || rows > 9 || cols < 3)
                 return "Invalid value "+rowsAndCols+" for rows and columns";
-            if (keywordValue == null || keywordValue.length() < rows*cols)
-                return "Keyword is empty or too short";
+            if (keywordValue == null)
+                return "Keyword is missing";
+            if (keywordValue.length() < rows*cols)
+                return "Keyword length is "+keywordValue.length()+", should be "+(rows*cols);
             if (keywordValue.length() > rows*cols)
                 return "Keyword is longer than expected size";
             // letters in the keyword should be in the alphabet
@@ -233,11 +235,10 @@ public class Playfair extends Cipher {
 
         // Create this:
         // Keyword:
-        // [----------------------] EditText
-        // [Size....]X [Replace..X]
-        // Keyword Extend from
-        // [o] Min Letter [o] Max letter [o] Final letter      RadioButtons
-        // [---EXTENDED KEYWORD---] TextView
+        // [------------------------------] EditText
+        // [SizeRowsCols....]X [Replace..X]
+        // Fill: [o] First [o] Min [o] Max [o] Last [o] None      RadioButtons
+        // [---EXTENDED KEYWORD-----------] TextView
 
         // when the radio button or keyword text changes, adjust the full-keyword
         final TextWatcher TEXT_CHANGED_LISTENER = new TextWatcher() {
@@ -253,12 +254,8 @@ public class Playfair extends Cipher {
         EditText keywordEditText = layout.findViewById(R.id.extra_keyword);
         keywordEditText.addTextChangedListener(TEXT_CHANGED_LISTENER);
 
-        // ensure input is in capitals
-        InputFilter[] editFilters = keywordEditText.getFilters();
-        InputFilter[] newFilters = new InputFilter[editFilters.length + 2];
-        System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
-        newFilters[editFilters.length] = new InputFilter.AllCaps();   // ensures capitals
-        newFilters[editFilters.length + 1] = new InputFilter() {
+        // define custom filter to ensure a field only has A-Z and 0-9
+        InputFilter ensureAlphNumeric = new InputFilter() {
             public CharSequence filter(CharSequence source, int start, int end,
                                        Spanned dest, int dstart, int dend) {
                 // only allow chars in the alphabet to be added, plus digits (e.g. 6x6 playfair)
@@ -271,7 +268,9 @@ public class Playfair extends Cipher {
                 return null;
             }
         };
-        keywordEditText.setFilters(newFilters);
+
+        // ensure input is in capitals and alpha-numeric only
+        Cipher.addInputFilters(layout, R.id.extra_keyword, true, 0, ensureAlphNumeric, NO_DUPE_FILTER);
 
         // ensure we 'delete' the keyword text when the delete button is pressed
         Button keywordDelete = layout.findViewById(R.id.extra_playfair_keyword_delete);
@@ -281,14 +280,11 @@ public class Playfair extends Cipher {
         Button rowsColsDelete = layout.findViewById(R.id.extra_playfair_rowscols_delete);
         rowsColsDelete.setOnClickListener(PLAYFAIR_ON_CLICK_DELETE);
 
-        // ensure input is in capitals
         EditText replaceText = layout.findViewById(R.id.extra_replace);
         replaceText.addTextChangedListener(TEXT_CHANGED_LISTENER);
-        editFilters = replaceText.getFilters();
-        newFilters = new InputFilter[editFilters.length + 1];
-        System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
-        newFilters[editFilters.length] = new InputFilter.AllCaps();   // ensures capitals
-        replaceText.setFilters(newFilters);
+
+        // ensure replace input is in capitals
+        Cipher.addInputFilters(layout, R.id.extra_replace, true, 0, NO_DUPE_FILTER);
 
         // ensure we 'delete' the hading text when the delete button is pressed
         Button replaceDelete = layout.findViewById(R.id.extra_playfair_replace_delete);
@@ -322,7 +318,8 @@ public class Playfair extends Cipher {
 
     // add 2 buttons, one for dictionary crack, one for word-count
     @Override
-    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String cipherText,
+                                    Language language, String alphabet, String paddingChars) {
         // this extracts the layout from the XML resource
         super.addExtraControls(context, layout, R.layout.extra_playfair_crack);
 
@@ -336,7 +333,7 @@ public class Playfair extends Cipher {
             RadioButton button = (RadioButton)group.getChildAt(child);
             button.setOnClickListener(CRACK_METHOD_ASSESSOR);
         }
-        CRACK_METHOD_ASSESSOR.onClick(layout.findViewById(R.id.crack_button_dictionary));
+        CRACK_METHOD_ASSESSOR.onClick(layout.findViewById(group.getCheckedRadioButtonId()));
         return true;
     }
 
@@ -573,7 +570,7 @@ public class Playfair extends Cipher {
      * @param dirs       the directives with alphabet and cribs
      * @return the results of the crack attempt
      */
-    public CrackResult crackDictionary(String cipherText, Directives dirs, int crackId) {
+    private CrackResult crackDictionary(String cipherText, Directives dirs, int crackId) {
         String alphabet = dirs.getAlphabet();
         String cribString = dirs.getCribs();
         CrackMethod crackMethod = dirs.getCrackMethod();
@@ -585,12 +582,17 @@ public class Playfair extends Cipher {
 
         // returns the first decode that has all the cribs
         CrackResults.updateProgressDirectly(crackId, "Starting "+getCipherName()+" dictionary crack");
-        StringBuilder explain = new StringBuilder();
         Set<String> cribs = Cipher.getCribSet(cribString);
         Dictionary dict = dirs.getLanguage().getDictionary();
         Set<String> triedKeywords = new HashSet<>(2000);
         int wordsRead = 0, matchesFound = 0;
-        String foundPlainText = null, foundKeyword = null;
+        StringBuilder successResult = new StringBuilder()
+                .append("Success: Dictionary scan: Searched using ")
+                .append(dict.size())
+                .append(" dictionary words as keywords, looking for cribs [")
+                .append(cribString)
+                .append("] in decoded text.\n");
+        String foundPlainText = "", foundKeyword = null;
         for (String word : dict) {
             if (wordsRead++ % 200 == 199) {
                 if (CrackResults.isCancelled(crackId))
@@ -613,57 +615,64 @@ public class Playfair extends Cipher {
                         dirs.setKeyword(fullKeywordForSquare);
                         String plainText = decode(cipherText, dirs);
                         if (Cipher.containsAllCribs(plainText, cribs)) {
-                            matchesFound++;
-                            keyword = fullKeywordForSquare;
-                            explain.append("Success: Searched using ")
-                                    .append(dict.size())
-                                    .append(" dictionary words as keys and found all cribs [")
-                                    .append(cribString)
-                                    .append("]\n")
-                                    .append("Keyword ")
+                            successResult.append("Keyword ")
                                     .append(fullKeywordForSquare)
-                                    .append(" gave decoded text=")
-                                    .append(plainText.substring(0, 60))
+                                    .append(" gave decoded text: ")
+                                    .append(plainText.substring(0, Math.min(Cipher.CRACK_PLAIN_LENGTH, plainText.length())))
                                     .append("\n");
-                            foundKeyword = fullKeywordForSquare;
-                            foundPlainText = plainText;
+                            if (dirs.stopAtFirst()) {
+                                keyword = fullKeywordForSquare;
+                                rowscols = dirs.getNumberSize();
+                                replace = dirs.getReplace();
+                                dirs.setKeyword(foundKeyword);
+                                return new CrackResult(crackMethod, this, dirs, cipherText, plainText, successResult.toString());
+                            } else {
+                                matchesFound++;
+                                foundKeyword = fullKeywordForSquare;
+                                foundPlainText = plainText;
+                            }
                         }
                         // now try reverse text
-                        plainText = decode(reverseCipherText, dirs);
-                        if (Cipher.containsAllCribs(plainText, cribs)) {
-                            matchesFound++;
-                            explain.append("Success: REVERSE: Searched using ")
-                                    .append(dict.size())
-                                    .append(" dictionary words as keys and found all cribs [")
-                                    .append(cribString)
-                                    .append("] with REVERSE text\n")
-                                    .append("Keyword ")
-                                    .append(fullKeywordForSquare)
-                                    .append(" gave decoded text=")
-                                    .append(plainText.substring(0, 60))
-                                    .append("\n");
-                            foundKeyword = fullKeywordForSquare;
-                            foundPlainText = plainText;
+                        if (dirs.considerReverse()) {
+                            plainText = decode(reverseCipherText, dirs);
+                            if (Cipher.containsAllCribs(plainText, cribs)) {
+                                successResult.append("Keyword ")
+                                        .append(fullKeywordForSquare)
+                                        .append(" gave decoded REVERSE text: ")
+                                        .append(plainText.substring(0, Math.min(Cipher.CRACK_PLAIN_LENGTH, plainText.length())))
+                                        .append("\n");
+                                if (dirs.stopAtFirst()) {
+                                    keyword = fullKeywordForSquare;
+                                    rowscols = dirs.getNumberSize();
+                                    replace = dirs.getReplace();
+                                    dirs.setKeyword(foundKeyword);
+                                    return new CrackResult(crackMethod, this, dirs, cipherText, plainText, successResult.toString());
+                                } else {
+                                    matchesFound++;
+                                    foundKeyword = fullKeywordForSquare;
+                                    foundPlainText = plainText;
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-        if (foundPlainText != null) {
+        if (foundPlainText.length() > 0) {
             keyword = foundKeyword;
             rowscols = dirs.getNumberSize();
             replace = dirs.getReplace();
             dirs.setKeyword(foundKeyword);
-            return new CrackResult(crackMethod, this, dirs, cipherText, foundPlainText, explain.toString());
+            return new CrackResult(crackMethod, this, dirs, cipherText, foundPlainText, successResult.toString());
         } else {
             dirs.setKeyword(null);
             keyword = null;
-            explain.append("Fail: Searched using ")
-                    .append(dict.size())
-                    .append(" dictionary words as keys but did not find all cribs [")
-                    .append(cribString)
-                    .append("]\n");
-            return new CrackResult(crackMethod, this, cipherText, explain.toString());
+            String failResult = "Fail: Dictionary scan: Searched using "
+                    + dict.size()
+                    + " dictionary words as keys but did not find all cribs ["
+                    + cribString
+                    + "].\n";
+            return new CrackResult(crackMethod, this, cipherText, failResult);
         }
     }
 

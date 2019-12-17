@@ -184,8 +184,6 @@ public class BinaryTest {
         assertEquals("Decoding short Alphabet", "ABCXYZ", decoded);
     }
 
-    // TODO test for Binary Crack success when we have it working
-
     @Test
     public void testCrackFail() {
         String cipherText = "10102120121110\n";

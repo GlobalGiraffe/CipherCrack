@@ -57,7 +57,7 @@ public class KeywordSubstitutionTest {
     }
 
     @Test
-    //@Ignore("Word Count Crack takes 80+ seconds and does not always succeed")
+    //@Ignore("Word Count Crack takes 123+ seconds and does not always succeed")
     public void testSubstitutionCrackWordCount() {
         // encode and then crack a large piece of text
         //                abcdefghijklmnopqrstuvwxyz
@@ -109,7 +109,7 @@ public class KeywordSubstitutionTest {
     }
 
     @Test
-    //@Ignore("Word Count Crack2 takes 200+ seconds (but have seen 59 seconds) and does not always succeed")
+    @Ignore("Word Count Crack2 takes 200+ seconds (but have seen 59 seconds) and does not always succeed")
     public void testSubstitutionCrackWordCount2() {
         // encode and then crack a large piece of text
         String keyword = "ALFREDOSTUVWXYZBCGHIJKMNPQ";
@@ -196,6 +196,46 @@ public class KeywordSubstitutionTest {
         assertEquals("DictionaryCrack Keyword", keyword, result.getDirectives().getKeyword());
         assertEquals("DictionaryCrack cipher name", "Substitution cipher ("+keyword+")", result.getCipher().getInstanceDescription());
         assertEquals("DictionaryCrack CrackMethod", CrackMethod.DICTIONARY, result.getCrackMethod());
+    }
+
+    @Test
+    public void testSubstitutionCrackDictReverse() {
+        // encode and then crack a large piece of text
+        String keyword = "SALVTIONWXYZBCDEFGHJKMPQRU";
+
+        // National Cipher Challenge 4B 2013
+        String plainText = "iwasnearlycaughtlastnighthecametocheckonmeandijusthadtimetoturnthecanvasagainstthewallintheshadowsiamnotsurewhathesawbutikeptmyhandsbehindmybacktohidetheredpigmentihadbeenworkingandhesaidnothingheseemstohavesoftenedbutiknowicannottrustanyonehereshemustnotbediscoveredhereortheywilltakeawaymylasthopeofrescuingherandreturninghertotheghettomyplanstoescapeareoflessimportancebutmytraveldocumentsarenowcompletethepapersandinkswerehardtoacquirebutiexcusedmuchofitbyexplainingthatineededtosketchtosharpenmyskillswhichhaddeterioratedinthecampiamsavingsuchfoodasmightlastmostlyhardbreadandhardcheeseagainstthedayswhenihopetorunfromthisplacenowiwillneedtofindawaytostealmoneytopayformyjourneymyplacehighintheatticgivesmeaviewofthecitywhichhasallowedmetomakeamaptoguidemeonthemoonlessnightwheniwillfinallyrunandikeepthemapwithherandwiththisdiaryundertheboardsiwillliveandiwillbefreeandsowillshe";
+
+        Directives p = new Directives();
+        p.setKeyword(keyword);
+        String encoded = keySub.encode(new StringBuilder(plainText).reverse().toString(), p);
+        assertNotNull("DictEncoding reverse text null", encoded);
+
+        // do this to load the English dictionary
+        String reason = keySub.canParametersBeSet(p);
+        assertNull("CanParametersBeSet", reason);
+        Dictionary dict = defaultLanguage.getDictionary();
+        assertNotNull("DictLoad reverse dictionary", dict);
+
+        // now crack it using Dictionary words as possible keywords
+        Directives cp = new Directives();
+        cp.setCribs("caught,allowed,diary");
+        cp.setCrackMethod(CrackMethod.DICTIONARY);
+        cp.setConsiderReverse(true);
+        reason = keySub.canParametersBeSet(cp);
+        assertNull("Null reason reverse", reason);
+        CrackResult result = keySub.crack(encoded, cp, 0);
+        //System.out.println("Decoded "+decoded);
+        String explain = result.getExplain();
+        //System.out.println("Explain "+explain);
+        assertNotNull("DictionaryCrack reverse Explain", explain);
+        assertTrue("DictionaryCrack reverse Explain Success", explain.startsWith("Success"));
+        assertTrue("DictionaryCrack reverse Explain Status", result.isSuccess());
+        assertEquals("DictionaryCrack reverse Text", plainText, result.getPlainText().toLowerCase());
+        assertEquals("DictionaryCrack reverse CipherText", encoded, result.getCipherText());
+        assertEquals("DictionaryCrack reverse Keyword", keyword, result.getDirectives().getKeyword());
+        assertEquals("DictionaryCrack reverse cipher name", "Substitution cipher ("+keyword+")", result.getCipher().getInstanceDescription());
+        assertEquals("DictionaryCrack reverse CrackMethod", CrackMethod.DICTIONARY, result.getCrackMethod());
     }
 
     @Test

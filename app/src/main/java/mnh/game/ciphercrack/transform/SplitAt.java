@@ -10,9 +10,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,26 +24,50 @@ import mnh.game.ciphercrack.R;
  */
 public class SplitAt extends Transform {
 
+    // delete the field if 'X' is pressed
+    private static final View.OnClickListener SPLITAT_ON_CLICK_DELETE = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.split_at_add_chars_delete:
+                    EditText ch = v.getRootView().findViewById(R.id.split_at_add_chars);
+                    ch.setText("");
+                    break;
+                case R.id.split_at_char_position_delete:
+                    EditText cp = v.getRootView().findViewById(R.id.split_at_char_position);
+                    cp.setText("");
+                    break;
+                case R.id.split_at_regular_expression_delete:
+                    EditText re = v.getRootView().findViewById(R.id.split_at_regular_expression);
+                    re.setText("");
+                    break;
+            }
+        }
+    };
+
+    // regular expression for text at which the split should take place
     private String splitPointRegExpr;
+
+    // if true, the regular expression is still there in the output
     private boolean keepRegExpr = false;
+
+    // if not using regular expression, split at certain columns
     private int splitEveryCountChars = 0;
 
+    // what chars should be added into the split point
     private String additionalChars = "";
-    private boolean addBefore = true;
 
-    // setters used for unit testing without a dialog
-    void setRegExpr(String regExpr, boolean keep) {
+    // do we add extra chars before the regular expression, or after
+    private boolean extraGoesAfter = true;
+
+    // setter used for unit testing without a dialog
+    void setSplitAt(int count, String regExpr, boolean keep, String additionalChars, boolean extraGoesAfter) {
+        this.splitEveryCountChars = count;
+        this.additionalChars = additionalChars;
+        this.extraGoesAfter = extraGoesAfter;
         this.splitPointRegExpr = regExpr;
         this.keepRegExpr = keep;
     }
-    void setAdditionalChars(String additionalChars, boolean before) {
-        this.additionalChars = additionalChars;
-        this.addBefore = before;
-    }
-    void setSplitCount(int count) {
-        this.splitEveryCountChars = count;
-    }
-
 
     @Override
     public boolean needsDialog() { return true; }
@@ -62,6 +83,15 @@ public class SplitAt extends Transform {
         popup.setWidth(820);
         popup.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
         popup.setFocusable(true);
+
+        // ensure we 'delete' the various texts when the delete button is pressed
+        Button deleteButton = popupLayout.findViewById(R.id.split_at_add_chars_delete);
+        deleteButton.setOnClickListener(SPLITAT_ON_CLICK_DELETE);
+        deleteButton = popupLayout.findViewById(R.id.split_at_char_position_delete);
+        deleteButton.setOnClickListener(SPLITAT_ON_CLICK_DELETE);
+        deleteButton = popupLayout.findViewById(R.id.split_at_regular_expression_delete);
+        deleteButton.setOnClickListener(SPLITAT_ON_CLICK_DELETE);
+
         Button cancelButton = popupLayout.findViewById(R.id.transform_button_cancel);
         Button crackButton = popupLayout.findViewById(R.id.transform_button_apply);
         crackButton.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +121,7 @@ public class SplitAt extends Transform {
         additionalChars = addCharField.getText().toString();
         splitPointRegExpr = regExprField.getText().toString();
         keepRegExpr = keepBox.isChecked();
-        addBefore = !afterBox.isChecked();
+        extraGoesAfter = afterBox.isChecked();
         try {
             int num = Integer.parseInt(numericSplitField.getText().toString());
             splitEveryCountChars = num;
@@ -104,8 +134,8 @@ public class SplitAt extends Transform {
     public String apply(Context context, String text) {
         if (text == null)
             return null;
-        List<String> intermediateRows;
-        String charsToAdd = additionalChars;
+        String charsToAdd = (additionalChars == null || additionalChars.length() == 0) ? "\n" : additionalChars;
+        StringBuilder results = new StringBuilder();
 
         // do the split, but sanity check the parameters before use
         if (splitPointRegExpr == null || splitPointRegExpr.length() == 0) {
@@ -114,48 +144,48 @@ public class SplitAt extends Transform {
                 return null;
             if (splitEveryCountChars > text.length())
                 return text;
-            intermediateRows = new LinkedList<>();
             for (int pos = 0; pos < text.length(); pos += splitEveryCountChars) {
                 int endPos = pos + splitEveryCountChars;
                 String splitText = text.substring(pos, endPos >= text.length() ? text.length() : endPos);
-                intermediateRows.add(splitText);
-            }
-            if (charsToAdd == null || charsToAdd.length() == 0) {
-                charsToAdd = "\n";
+                if (pos != 0)
+                    results.append(charsToAdd);
+                results.append(splitText);
             }
         } else {
             // split at a regular expression
-            if (!keepRegExpr) {
-                intermediateRows = Arrays.asList(text.split(splitPointRegExpr));
-            } else {
-                // we want to keep the reg expr, splitting just before, or just after it
-                Pattern pattern = Pattern.compile(splitPointRegExpr);   // the pattern to search for
-                Matcher matcher = pattern.matcher(text);
-                intermediateRows = new LinkedList<>();
-                int startPoint = 0;
-                while (matcher.find()) {
+            // we want to keep (or not) the reg expr, splitting just before, or just after it
+            Pattern pattern = Pattern.compile(splitPointRegExpr);   // the pattern to search for
+            Matcher matcher = pattern.matcher(text);
+            int startPoint = 0;
+            StringBuilder section = new StringBuilder();
+            while (matcher.find()) {
+                section.setLength(0);
+                if (keepRegExpr) { // we want the reg expr in the output
                     // if splitting before, don't include the RE match
-                    if (addBefore) {
-                        intermediateRows.add(text.substring(startPoint, matcher.start()));
-                        startPoint = matcher.start();
-                    } else { // do include the RE match since we're splitting AFTER
-                        intermediateRows.add(text.substring(startPoint, matcher.end()));
-                        startPoint = matcher.end();
+                    if (extraGoesAfter) {
+                        // text before-RE + RE + Add
+                        // do include the RE match since we're splitting before and keeping
+                        section.append(text.substring(startPoint, matcher.end()))
+                                .append(charsToAdd);
+                    } else {
+                        // text before-RE + Add + RE
+                        section.append(text.substring(startPoint, matcher.start()))
+                                .append(charsToAdd)
+                                .append(text.substring(matcher.start(),matcher.end()));
                     }
+                } else {
+                    // before-RE + Add
+                    section.append(text.substring(startPoint, matcher.start()))
+                            .append(charsToAdd);
                 }
-                if (startPoint < text.length()) {
-                    intermediateRows.add(text.substring(startPoint, text.length()));
-                }
+                startPoint = matcher.end();
+                results.append(section.toString());
+            }
+            if (startPoint < text.length()) {
+                results.append(text.substring(startPoint));
             }
         }
 
-        // now join back up
-        StringBuilder sb = new StringBuilder();
-        for (String row : intermediateRows) {
-            if (sb.length() != 0)
-                sb.append(charsToAdd);
-            sb.append(row);
-        }
-        return sb.toString();
+        return results.toString();
     }
 }

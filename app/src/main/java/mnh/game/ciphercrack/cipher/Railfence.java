@@ -10,6 +10,7 @@ import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
 import mnh.game.ciphercrack.R;
+import mnh.game.ciphercrack.language.Language;
 import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
@@ -122,7 +123,8 @@ public class Railfence extends Cipher {
 
     // we don't add any extra controls, but we allow change of cribs
     @Override
-    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String cipherText,
+                                    Language language, String alphabet, String paddingChars) {
         return true;
     }
 
@@ -249,7 +251,7 @@ public class Railfence extends Cipher {
             dirs.setRails(currentRail);
             String plainText = decode(cipherText, dirs);
             if (Cipher.containsAllCribs(plainText, cribSet)) {
-                String explain = "Success: Brute force approach: tried possible rails from 2 to "
+                String explain = "Success: Brute force scan: tried possible rails from 2 to "
                         + maxRails
                         + " looking for the cribs ["
                         + cribString
@@ -260,22 +262,24 @@ public class Railfence extends Cipher {
                 return new CrackResult(dirs.getCrackMethod(), this, dirs, cipherText, plainText, explain);
             }
             // now try reverse text
-            plainText = decode(reverseCipherText, dirs);
-            if (Cipher.containsAllCribs(plainText, cribSet)) {
-                String explain = "Success: Brute Force REVERSE: tried possible rails from 2 to "
-                        + maxRails
-                        + " looking for the cribs ["
-                        + cribString
-                        + "] in the decoded REVERSE text and found them with "
-                        + currentRail
-                        + " rails.\n";
-                rails = currentRail;
-                return new CrackResult(dirs.getCrackMethod(), this, dirs, cipherText, plainText, explain);
+            if (dirs.considerReverse()) {
+                plainText = decode(reverseCipherText, dirs);
+                if (Cipher.containsAllCribs(plainText, cribSet)) {
+                    String explain = "Success: Brute force scan: tried possible rails from 2 to "
+                            + maxRails
+                            + " looking for the cribs ["
+                            + cribString
+                            + "] in the decoded REVERSE text and found them with "
+                            + currentRail
+                            + " rails.\n";
+                    rails = currentRail;
+                    return new CrackResult(dirs.getCrackMethod(), this, dirs, cipherText, plainText, explain);
+                }
             }
         }
         dirs.setRails(-1);
         rails = -1;
-        String explain = "Fail: Brute force approach: tried possible rails from 2 to "
+        String explain = "Fail: Brute force scan: tried possible rails from 2 to "
                 + maxRails
                 + " looking for the cribs ["
                 + cribString

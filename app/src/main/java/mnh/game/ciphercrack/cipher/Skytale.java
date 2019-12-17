@@ -11,6 +11,7 @@ import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
 import mnh.game.ciphercrack.R;
+import mnh.game.ciphercrack.language.Language;
 import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.transform.RemoveNonAlphabetic;
 import mnh.game.ciphercrack.transform.Transform;
@@ -122,7 +123,8 @@ public class Skytale extends Cipher {
 
     // we don't add any extra controls, but we allow change of cribs
     @Override
-    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String cipherText,
+                                    Language language, String alphabet, String paddingChars) {
         return true;
     }
 
@@ -203,7 +205,7 @@ public class Skytale extends Cipher {
             String plainText = decode(cipherText, dirs);
             if (Cipher.containsAllCribs(plainText, cribSet)) {
                 cycleLength = currentCycleLength;
-                String explain = "Success: Brute Force: tried possible cycle lengths from 2 to "
+                String explain = "Success: Brute force scan: tried possible cycle lengths from 2 to "
                         + maxCycleLength
                         + " looking for the cribs ["
                         + cribString
@@ -212,22 +214,24 @@ public class Skytale extends Cipher {
                         + " cycle length.\n";
                 return new CrackResult(dirs.getCrackMethod(), this, dirs, cipherText, plainText, explain);
             }
-            plainText = decode(reverseCipherText, dirs);
-            if (Cipher.containsAllCribs(plainText, cribSet)) {
-                cycleLength = currentCycleLength;
-                String explain = "Success: Brute Force REVERSE: tried possible cycle lengths from 2 to "
-                        + maxCycleLength
-                        + " looking for the cribs ["
-                        + cribString
-                        + "] in the decoded REVERSE text and found them with "
-                        + currentCycleLength
-                        + " cycle length.\n";
-                return new CrackResult(dirs.getCrackMethod(), this, dirs, cipherText, plainText, explain);
+            if (dirs.considerReverse()) {
+                plainText = decode(reverseCipherText, dirs);
+                if (Cipher.containsAllCribs(plainText, cribSet)) {
+                    cycleLength = currentCycleLength;
+                    String explain = "Success: Brute force scan: tried possible cycle lengths from 2 to "
+                            + maxCycleLength
+                            + " looking for the cribs ["
+                            + cribString
+                            + "] in the decoded REVERSE text and found them with "
+                            + currentCycleLength
+                            + " cycle length.\n";
+                    return new CrackResult(dirs.getCrackMethod(), this, dirs, cipherText, plainText, explain);
+                }
             }
         }
         cycleLength = -1;
         dirs.setCycleLength(cycleLength);
-        String explain = "Fail: Brute force approach: tried possible cycle lengths from 2 to "
+        String explain = "Fail: Brute force scan: tried possible cycle lengths from 2 to "
                 + maxCycleLength
                 + " looking for the cribs ["
                 + cribString

@@ -76,6 +76,7 @@ public class RailfenceTest {
         String decoded = cipher.decode(encoded, p);
         assertEquals("Decoding Wiki mixed case", "WearediscoveredFleeatonce", decoded);
     }
+
     @Test
     public void testCrack() {
         String plainText = "Now can we see that ALL are fine and dandy.";
@@ -100,6 +101,34 @@ public class RailfenceTest {
         assertNotNull("Crack Railfence explain", result.getExplain());
         assertEquals("Crack Railfence cipher name", "Railfence cipher (rails=4)", result.getCipher().getInstanceDescription());
         assertEquals("WordCountCrack crack method", CrackMethod.BRUTE_FORCE, result.getCrackMethod());
+    }
+
+    @Test
+    public void testReverseCrack() {
+        String plainText = "Now can we see that ALL are fine and dandy.";
+        Directives p = new Directives();
+        p.setCribs("fine");
+        p.setRails(5);
+        String reason = cipher.canParametersBeSet(p);
+        assertNull("Crack reverse dirs okay1", reason);
+
+        String cipherText = cipher.encode(plainText, p);
+        p.setRails(-1);
+        p.setCribs("are,fine");
+        p.setCrackMethod(CrackMethod.BRUTE_FORCE);
+        p.setConsiderReverse(true);
+        reason = cipher.canParametersBeSet(p);
+        assertNull("Crack reverse dirs okay2", reason);
+
+        String reverseCipherText = new StringBuilder(cipherText).reverse().toString();
+        CrackResult result = cipher.crack(reverseCipherText, p, 0);
+        assertTrue("Crack Railfence reverse status", result.isSuccess());
+        assertEquals("Crack Railfence reverse text", plainText, result.getPlainText());
+        assertEquals("Crack Railfence reverse cipherText", reverseCipherText, result.getCipherText());
+        assertEquals("Crack Railfence reverse rails", 5, result.getDirectives().getRails());
+        assertNotNull("Crack Railfence reverse explain", result.getExplain());
+        assertEquals("Crack Railfence reverse cipher name", "Railfence cipher (rails=5)", result.getCipher().getInstanceDescription());
+        assertEquals("WordCountCrack reverse crack method", CrackMethod.BRUTE_FORCE, result.getCrackMethod());
     }
 
     @Test

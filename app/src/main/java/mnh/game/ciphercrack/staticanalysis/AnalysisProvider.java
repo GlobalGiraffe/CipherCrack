@@ -16,7 +16,9 @@ public interface AnalysisProvider {
     List<FrequencyEntry> getBigramFrequency();
     List<FrequencyEntry> getAlignedBigramFrequency();
     List<FrequencyEntry> getLetterFrequency();
+    List<FrequencyEntry> getAlignedTrigramFrequency();
     double getIOC();
     double[] getIOCCycles();
+    String[] getTextLines();
     boolean isAllNumeric();
 }

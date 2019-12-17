@@ -10,6 +10,7 @@ import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
 import mnh.game.ciphercrack.R;
+import mnh.game.ciphercrack.language.Language;
 import mnh.game.ciphercrack.services.CrackResults;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
@@ -120,7 +121,8 @@ public class Caesar extends Cipher {
 
     // we don't add any extra controls, but we allow change of cribs
     @Override
-    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String cipherText,
+                                    Language language, String alphabet, String paddingChars) {
         return true;
     }
 
@@ -211,6 +213,14 @@ public class Caesar extends Cipher {
         CrackMethod crackMethod = dirs.getCrackMethod();
         String reverseCipherText = new StringBuilder(cipherText).reverse().toString();
 
+        StringBuilder resultSuccess = new StringBuilder()
+                .append("Success Brute Force: tried each possible Caesar shift from 0 to ")
+                .append((alphabet.length()-1))
+                .append(" looking for cribs [")
+                .append(cribString)
+                .append("] in the decoded text.\n");
+        String foundPlainText = "";
+        int foundShift = -1;
         for (int shift=0; shift < alphabet.length(); shift++) {
             if (CrackResults.isCancelled(crackId))
                 return new CrackResult(dirs.getCrackMethod(), this, cipherText, "Crack cancelled", CrackState.CANCELLED);
@@ -219,27 +229,46 @@ public class Caesar extends Cipher {
             String plainText = decode(cipherText, dirs);
             if (Cipher.containsAllCribs(plainText, cribSet)) {
                 this.shift = shift;
-                String explain = "Success: Brute Force: tried each possible Caesar shift from 0 to "
-                        + (alphabet.length()-1)
-                        + " looking for the cribs ["
-                        + cribString
-                        + "] in the decoded text and found them all with shift "
+                String explain = "Found all cribs with shift "
                         + shift
-                        + ".\n";
-                return new CrackResult(crackMethod, this, dirs, cipherText, plainText, explain);
+                        + ", starts: "
+                        + plainText.substring(0, Math.min(Cipher.CRACK_PLAIN_LENGTH, plainText.length()))
+                        + "\n";
+                resultSuccess.append(explain);
+                if (dirs.stopAtFirst()) {
+                    dirs.setShift(shift);
+                    return new CrackResult(crackMethod, this, dirs, cipherText, plainText, resultSuccess.toString());
+                } else {
+                    foundShift = shift;
+                    foundPlainText = plainText;
+                }
             }
-            plainText = decode(reverseCipherText, dirs);
-            if (Cipher.containsAllCribs(plainText, cribSet)) {
-                this.shift = shift;
-                String explain = "Success: Brute Force REVERSE: tried each possible Caesar shift from 0 to "
-                        + (alphabet.length()-1)
-                        + " looking for the cribs ["
-                        + cribString
-                        + "] in the decoded REVERSE text and found them all with shift "
-                        + shift
-                        + ".\n";
-                return new CrackResult(crackMethod, this, dirs, cipherText, plainText, explain);
+
+            // look in decoded reverse text for cribs
+            if (dirs.considerReverse()) {
+                plainText = decode(reverseCipherText, dirs);
+                if (Cipher.containsAllCribs(plainText, cribSet)) {
+                    this.shift = shift;
+                    String explain = "Found all cribs in REVERSE text with shift "
+                            + shift
+                            + ", starts: "
+                            + plainText.substring(0, Math.min(Cipher.CRACK_PLAIN_LENGTH, plainText.length()))
+                            + "\n";
+                    resultSuccess.append(explain);
+                    if (dirs.stopAtFirst()) {
+                        dirs.setShift(shift);
+                        return new CrackResult(crackMethod, this, dirs, cipherText, plainText, explain);
+                    } else {
+                        foundShift = shift;
+                        foundPlainText = plainText;
+                    }
+                }
             }
+        }
+        if (foundPlainText.length() > 0) {
+            dirs.setShift(foundShift);
+            shift = foundShift;
+            return new CrackResult(crackMethod, this, dirs, cipherText, foundPlainText, resultSuccess.toString());
         }
         dirs.setShift(-1);
         this.shift = -1;

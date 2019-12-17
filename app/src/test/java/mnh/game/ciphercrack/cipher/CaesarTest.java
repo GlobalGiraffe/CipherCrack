@@ -158,6 +158,32 @@ public class CaesarTest {
     }
 
     @Test
+    public void testCrackReverseSuccess() {
+        String plainText = "When one is home and someone else is away, there is only one person there.\n";
+        Directives p = new Directives();
+        p.setShift(17);
+        String reason = caesar.canParametersBeSet(p);
+        assertNull("CrackReverse caesar encode reason", reason);
+        String cipherText = caesar.encode(new StringBuilder(plainText).reverse().toString(), p);
+        p.setShift(-1);
+        p.setCribs("someone");
+        p.setConsiderReverse(true);
+        p.setCrackMethod(CrackMethod.BRUTE_FORCE);
+        reason = caesar.canParametersBeSet(p);
+        assertNull("CrackReverse caesar reason", reason);
+
+        CrackResult result = caesar.crack(cipherText, p, 0);
+        assertTrue("CrackReverse caesar state", result.isSuccess());
+        assertEquals("CrackReverse caesar text", plainText, result.getPlainText());
+        assertEquals("CrackReverse caesar cipher text", cipherText, result.getCipherText());
+        assertEquals("CrackReverse caesar shift", 17, result.getDirectives().getShift());
+        assertNotNull("CrackReverse caesar explain", result.getExplain());
+        assertTrue("CrackReverse caesar explain REVERSE", result.getExplain().contains("REVERSE"));
+        assertEquals("CrackReverse caesar cipher name", "Caesar cipher (shift=17)", result.getCipher().getInstanceDescription());
+        assertEquals("CrackReverse caesar crack method", CrackMethod.BRUTE_FORCE, result.getCrackMethod());
+    }
+
+    @Test
     public void testCrackFail() {
         String cipherText = "Urndc. Pnwnaju cqn Qxw. Bra J. Fnuunbunh, T.K., cx Lxvvrbbjah Pnwnaju Vdaajh.\n" +
                 "Vh Mnja Bra,\n";

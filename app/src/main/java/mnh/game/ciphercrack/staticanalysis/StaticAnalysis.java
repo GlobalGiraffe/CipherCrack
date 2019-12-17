@@ -56,17 +56,17 @@ public class StaticAnalysis {
                 // check the letter is in the alphabet, if not, we don't count frequency (punctuation)
                 char letter = textToUse.charAt(i);
 
-                // ignore padding chars -- to gather including padding we pass in empty string
-                if (!paddingChars.contains(String.valueOf(letter))) {
+                // ignore padding -- in order to include padding we can provide empty paddingChars
+                if (paddingChars.indexOf(letter) < 0) {
 
                     // we decide here whether to include non-alpha and alphabetic based on what was asked for
                     if (includeNonAlpha || alphabet.indexOf(Character.toUpperCase(letter)) >= 0) {
                         // keep track of how many times the letter occurs
                         Integer count = frequency.get(letter);
                         if (count == null) {
-                            frequency.put(letter, 1);
+                            frequency.put(letter, Integer.valueOf(1));
                         } else {
-                            frequency.put(letter, count + 1);
+                            frequency.put(letter, Integer.valueOf(count + 1));
                         }
                     }
                 }
@@ -236,7 +236,7 @@ public class StaticAnalysis {
             for (int pos=0; pos < cycleSize; pos++) {
                 cycleStrings[pos].setLength(0);
             }
-            // form the string with this cycle size by scanning whole input text
+            // form the strings with this cycle size by scanning whole input text
             for (int pos=0; pos < textJustAlpha.length(); pos++) {
                 cycleStrings[pos%cycleSize].append(textJustAlpha.charAt(pos));
             }
@@ -252,14 +252,14 @@ public class StaticAnalysis {
     /**
      * Determine if the only non-whitespace chars in the text are numbers
      * @param text the text to be analysed
-     * @return true if the only non-whitespace are digits 0-9
+     * @return true if the only non-whitespace or COMMA chars are digits 0-9
 s     */
     public static boolean isAllNumeric(String text) {
         if (text == null)
             return false;
         for (int i=0; i < text.length(); i++) {
             char ch = text.charAt(i);
-            if (!Character.isWhitespace(ch) && !Character.isDigit(ch)) {
+            if (!Character.isWhitespace(ch) && ch != ',' && !Character.isDigit(ch)) {
                 return false;
             }
         }
@@ -298,23 +298,35 @@ s     */
 
         try {
             Map<Character, Integer> freq = analysis.getFreqAlphaUpper();
-            if (freq.size() == 0) { // no alpha chars at all! could be binary
-                freq = analysis.getFreqNonPadding();
-                Set<Character> chars = freq.keySet();
-                Character[] symbols = chars.toArray(new Character[freq.size()]);
+            int distinctSymbols = freq.size();
+            if (distinctSymbols == 0) { // no alpha chars at all! could be binary
+                Map<Character, Integer> freqNonPad = analysis.getFreqNonPadding();
+                int distinctNonPadSymbols = freqNonPad.size();
+                Set<Character> chars = freqNonPad.keySet();
+                Character[] symbols = chars.toArray(new Character[distinctNonPadSymbols]);
                 sb.append("The text has no alphabetic letters but has ")
-                        .append(freq.size())
-                        .append(" non-alphabetic symbols:");
+                        .append(freqNonPad.size())
+                        .append(" non-alphabetic symbols [");
                 for (Character ch : symbols) {
                     sb.append(" ").append(ch);
                 }
+                sb.append("]");
                 if (symbols.length == 2) {
                     sb.append(", which would indicate Binary, Morse Code or Baconian ciphers.\n");
-                } else {
-                    sb.append(", which would NOT indicate Binary, Morse Code or Baconian ciphers.\n");
                 }
-            } else {
-                int distinctSymbols = freq.size();
+                if (symbols.length == 3) {
+                    sb.append(", which could indicate Binary or Morse Code with a separator symbol.\n");
+                }
+                if (symbols.length == 5) {
+                    sb.append(", which could indicate a 5x5 Polybius Square.\n");
+                }
+                if (symbols.length == 6) {
+                    sb.append(", which could indicate a 6x6 Polybius square.\n");
+                }
+                if (symbols.length > 6 && analysis.isAllNumeric()) {
+                    sb.append(", which could indicate a book cipher or numeric substitution.\n");
+                }
+            } else { // at least one ALPHA character
                 Set<Character> chars = freq.keySet();
                 if (distinctSymbols == 2) {
                     Character[] symbols = chars.toArray(new Character[2]);
@@ -329,7 +341,7 @@ s     */
                         if (analysis.isAllNumeric()) {
                             sb.append("There are ")
                                     .append(distinctSymbols)
-                                    .append(" distinct symbols and all numeric, which could indicate a book cipher.\n");
+                                    .append(" distinct symbols and all numeric, which could indicate a book cipher or numeric substitution.\n");
                         }
                         if (distinctSymbols == 5) {
                             if (chars.contains('A') && chars.contains('D') && chars.contains('F')
@@ -392,6 +404,23 @@ s     */
                             sb.append("There are 36 distinct symbols, ")
                                     .append("which strongly suggests a 6x6 square cipher such as Playfair.\n");
                         }
+
+                        String[] textLines = analysis.getTextLines();
+                        if (textLines.length > 4) {
+                            boolean allLinesSameLength = true;
+                            for (String line : textLines) {
+                                if (line.length() != textLines[0].length())
+                                    allLinesSameLength = false;
+                            }
+                            if (allLinesSameLength) {
+                                sb.append("The text has ")
+                                        .append(textLines.length)
+                                        .append(" lines, all containing ")
+                                        .append(textLines[0].length())
+                                        .append(" letters, suggest swap rows for columns and re-analyse.\n");
+                            }
+                        }
+
                         // determine if transposition / mono-alphabetic substitution cipher vs. poly-alphabetic
                         double ioc = analysis.getIOC();
                         sb.append("The text has Index of Coincidence (IOC) ")
@@ -409,18 +438,33 @@ s     */
 
                             // count Z, K, Q, X and J - if low, would suggest Transposition
                             // count E, T, A, O and N - if high, would suggest Transposition
-                            Integer countQ = freq.get('Q');
-                            Integer countZ = freq.get('Z');
-                            Integer countJ = freq.get('J');
-                            Integer countK = freq.get('K');
-                            Integer countX = freq.get('X');
-                            int lowFreqCounts =
-                                    (countJ != null ? countJ : 0)
-                                            + (countQ != null ? countQ : 0)
-                                            + (countK != null ? countK : 0)
-                                            + (countX != null ? countX : 0)
-                                            + (countZ != null ? countZ : 0);
-                            double lowFreqPercent = lowFreqCounts / (double) analysis.getCountAlphabetic();
+                            String infrequentLetters = language.getInfrequentLetters();
+                            int lowFreqCount = 0;
+                            for (int pos = 0; pos < infrequentLetters.length(); pos++) {
+                                char letter = infrequentLetters.charAt(pos);
+                                Integer letterFreq = freq.get(letter);
+                                lowFreqCount += (letterFreq == null ? 0 : letterFreq);
+                            }
+                            double lowFreqPercent = lowFreqCount / (double) analysis.getCountAlphabetic();
+
+                            // find top and second most frequent letters in cipher text
+                            Map.Entry<Character, Integer> top = null, second = null;
+                            for (Map.Entry<Character, Integer> entry : freq.entrySet()) {
+                                if (top == null) {
+                                    top = second = entry;
+                                } else {
+                                    if (entry.getValue() > top.getValue()) {
+                                        second = top;
+                                        top = entry;
+                                    } else {
+                                        if (entry.getValue() > second.getValue()) {
+                                            second = entry;
+                                        }
+                                    }
+                                }
+                            }
+                            char topChar = top.getKey();
+                            char secondChar = second.getKey();
 
                             // get frequency of vowels and of high-frequency letters
                             Integer countA = freq.get('A');
@@ -430,6 +474,7 @@ s     */
                             Integer countO = freq.get('O');
                             Integer countT = freq.get('T');
                             Integer countU = freq.get('U');
+                            // for English
                             int highFreqCounts =
                                     (countE != null ? countE : 0)
                                             + (countT != null ? countT : 0)
@@ -437,12 +482,14 @@ s     */
                                             + (countO != null ? countO : 0)
                                             + (countN != null ? countN : 0);
                             double highFreqPercent = highFreqCounts / (double) analysis.getCountAlphabetic();
-                            sb.append("The percentage of ZQKXJ in the text is ")
+                            sb.append("The percentage of infrequent letters (")
+                                    .append(infrequentLetters)
+                                    .append(") in the text is ")
                                     .append(String.format(Locale.getDefault(), "%4.2f%%", lowFreqPercent * 100.0))
                                     .append(" and the percentage of ETAON in the text is ")
                                     .append(String.format(Locale.getDefault(), "%4.2f%%", highFreqPercent * 100.0));
                             int likelyTransposition = 0;
-                            if (lowFreqPercent < 0.025 && highFreqPercent > 0.4) {  // 5% for low, 40% for high
+                            if (lowFreqPercent < 0.045 && highFreqPercent > 0.4) {  // 4.5% for low, 40% for high
                                 sb.append(" which indicates a Transposition cipher, such as Railfence, Permutation, Route or Skytale.\n");
                                 likelyTransposition++;
                             } else {
@@ -458,48 +505,17 @@ s     */
                                             + (countU != null ? countU : 0);
                             int vowelPercent = (int) (100.0f * vowelCounts / (float) analysis.getCountAlphabetic());
                             sb.append("Vowels occupy ").append(vowelPercent).append("% of the text");
-                            if (vowelPercent > 35 && vowelPercent < 50) {
+                            if (vowelPercent > 35 && vowelPercent < 51) {
                                 sb.append(", which is high enough to make a Transposition cipher likely.\n");
                                 likelyTransposition++;
                             } else {
-                                if (vowelPercent >= 50) {
+                                if (vowelPercent >= 51) {
                                     sb.append(", which is uncommonly high!\n");
                                     likelyTransposition--;
                                 } else {
                                     sb.append(", which is lower than expected by a Transposition cipher.\n");
                                     likelyTransposition--;
                                 }
-                            }
-
-                            // see if the most frequent letter matches the language's frequent letter
-                            // first find most frequent char in the text
-                            char frequentChar = 'A';
-                            int frequentCount = 0;
-                            for (Map.Entry<Character, Integer> entry : freq.entrySet()) {
-                                if (entry.getValue() > frequentCount) {
-                                    frequentChar = entry.getKey();
-                                    frequentCount = entry.getValue();
-                                }
-                            }
-
-                            // now find the most frequent char in the language, and compare with above
-                            List<Character> orderedLetters = language.lettersOrderedByFrequency();
-                            if (frequentChar == orderedLetters.get(0)) {
-                                sb.append("The most frequent letter is ")
-                                        .append(frequentChar)
-                                        .append(", matching the most frequent letter in ")
-                                        .append(language.getName())
-                                        .append(", which suggests a Transposition cipher.\n");
-                                likelyTransposition++;
-                            } else {
-                                sb.append("The most frequent letter is ")
-                                        .append(frequentChar)
-                                        .append(", but in ")
-                                        .append(language.getName())
-                                        .append(" the most frequent letter is ")
-                                        .append(orderedLetters.get(0))
-                                        .append(", which suggests a substitution cipher.\n");
-                                likelyTransposition--;
                             }
 
                             // Transposition has few repeating trigrams (most common < 0.8% of trigrams)
@@ -530,6 +546,39 @@ s     */
                                         .append(secondCommonTrigram.getGram())
                                         .append(String.format(Locale.getDefault(), "=%4.2f%%", secondCommonTrigram.getPercent()))
                                         .append(") which reinforces the case for a substitution cipher.\n");
+                            }
+
+                            // now find the most frequent char in the language, and compare with above
+                            List<Character> orderedLetters = language.lettersOrderedByFrequency();
+                            if (topChar == orderedLetters.get(0)) {
+                                sb.append("The most frequent letter is ")
+                                        .append(topChar)
+                                        .append(", matching the most frequent letter in ")
+                                        .append(language.getName())
+                                        .append(", which supports a Transposition cipher.\n");
+                                if (secondChar == orderedLetters.get(1)) {
+                                    sb.append("The second most frequent letter is")
+                                            .append(secondChar)
+                                            .append(" which also matches the second most frequent letter in ")
+                                            .append(language.getName())
+                                            .append(".\n");
+                                } else {
+                                    sb.append("The second most frequent letter is ")
+                                            .append(secondChar)
+                                            .append(", which does not match the second most frequent letter in ")
+                                            .append(language.getName())
+                                            .append(", and indicates the plain text is in a different language.\n");
+                                }
+                                likelyTransposition++;
+                            } else {
+                                sb.append("The most frequent letter is ")
+                                        .append(topChar)
+                                        .append(", but in ")
+                                        .append(language.getName())
+                                        .append(" the most frequent letter is ")
+                                        .append(orderedLetters.get(0))
+                                        .append(", which suggests a substitution cipher.\n");
+                                likelyTransposition--;
                             }
 
                             // TODO - check monogram frequency vs expected frequency
@@ -574,20 +623,6 @@ s     */
                                             .append(") this could point to a combined substitution and transposition cipher.\n");
                                 }
 
-                                // find top and second most frequent letters in cipher text
-                                Map.Entry<Character, Integer> top = null, second = null;
-                                for (Map.Entry<Character, Integer> entry : freq.entrySet()) {
-                                    if (top == null || entry.getValue() > top.getValue()) {
-                                        second = top;
-                                        top = entry;
-                                    } else {
-                                        if (second == null) {
-                                            second = entry;
-                                        }
-                                    }
-                                }
-                                char topChar = top.getKey();
-                                char secondChar = second.getKey();
                                 int cipherDiff = (secondChar - topChar) + ((secondChar > topChar) ? 0 : Settings.DEFAULT_ALPHABET.length());
 
                                 // now get difference between most frequent 2 letters in the language
@@ -637,11 +672,11 @@ s     */
                             sb.append("This difference indicates a poly-alphabetic cipher.\n");
 
                             // large text and not all chars present could steer away from Vigenere/Porta
-                            if (analysis.getCountAlphabetic() > LARGE_TEXT_LENGTH && freq.size() < Settings.DEFAULT_ALPHABET.length())
+                            if (analysis.getCountAlphabetic() > LARGE_TEXT_LENGTH && distinctSymbols < Settings.DEFAULT_ALPHABET.length())
                                 sb.append("The text is large (")
                                         .append(analysis.getCountAlphabetic())
                                         .append(" letters) but has just ")
-                                        .append(freq.size())
+                                        .append(distinctSymbols)
                                         .append(" distinct letters, which makes Vigenere, Beaufort and Porta unlikely.\n");
 
                             // look for cyclic IOC that is close to the language norm

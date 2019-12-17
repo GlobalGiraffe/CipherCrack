@@ -76,13 +76,10 @@ public class Polybius extends Cipher {
     private static final View.OnClickListener CRACK_METHOD_ASSESSOR = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            LinearLayout lColHeading = v.getRootView().findViewById(R.id.extra_polybius_crack_layout_col_heading);
-            LinearLayout lRowHeading = v.getRootView().findViewById(R.id.extra_polybius_crack_layout_row_heading);
+            LinearLayout lColHeading = v.getRootView().findViewById(R.id.extra_polybius_crack_col_heading_layout);
+            LinearLayout lRowHeading = v.getRootView().findViewById(R.id.extra_polybius_crack_row_heading_layout);
             switch (v.getId()) {
                 case R.id.crack_button_dictionary:
-                    lColHeading.setVisibility(View.VISIBLE);
-                    lRowHeading.setVisibility(View.VISIBLE);
-                    break;
                 case R.id.crack_button_brute_force:
                     lColHeading.setVisibility(View.VISIBLE);
                     lRowHeading.setVisibility(View.VISIBLE);
@@ -109,6 +106,7 @@ public class Polybius extends Cipher {
         dest.writeString(rowHeading);
         dest.writeString(replace);
     }
+
     @Override
     public void unpack(Parcel in) {
         super.unpack(in);
@@ -146,25 +144,25 @@ public class Polybius extends Cipher {
      */
     @Override
     public String getInstanceDescription() {
-        return getCipherName() + " cipher ("+(keyword==null?"n/a":(keyword + ",cols=" + colHeading + ",rows="+rowHeading)) + ")";
+        return getCipherName() + " cipher (" + (keyword == null ? "n/a" : (keyword + ",cols=" + colHeading + ",rows=" + rowHeading)) + ")";
     }
 
     /**
      * Determine whether a column or row heading looks reasonable
      *
-     * @param type either 'Col' or 'Row'
+     * @param type           either 'Col' or 'Row'
      * @param headingLetters the letters to be checked, e.g. ABCDE or 12345
      * @return return the reason for being invalid, or null if the properties ARE valid
      */
     private String canHeadingBeSet(String type, String headingLetters) {
         if (headingLetters == null || headingLetters.length() < 3)
-            return type+" heading is missing or too short";
+            return type + " heading is missing or too short";
         if (headingLetters.length() > 8)
-            return type+" heading is too long";
+            return type + " heading is too long";
         // letters in the code letters should not repeat
         for (int i = 0; i < headingLetters.length() - 1; i++) {
             if (headingLetters.indexOf(headingLetters.charAt(i), i + 1) > 0)
-                return "Symbol " + headingLetters.charAt(i) + " is repeated in the "+type+" heading";
+                return "Symbol " + headingLetters.charAt(i) + " is repeated in the " + type + " heading";
         }
         return null;
     }
@@ -239,14 +237,14 @@ public class Polybius extends Cipher {
 
         // check the replace field:
         if (replaceLetters.length() % 2 != 0)
-            return "Invalid replacement length "+replaceLetters.length();
-        for (int pos=0; pos < replaceLetters.length(); pos+=2) {
+            return "Invalid replacement length " + replaceLetters.length();
+        for (int pos = 0; pos < replaceLetters.length(); pos += 2) {
             char ch1 = replaceLetters.charAt(pos);
             if (keywordValue.indexOf(ch1) >= 0)
-                return "Replace symbol "+ch1+" must not be in the keyword";
-            char ch2 = replaceLetters.charAt(pos+1);
+                return "Replace symbol " + ch1 + " must not be in the keyword";
+            char ch2 = replaceLetters.charAt(pos + 1);
             if (keywordValue.indexOf(ch2) < 0)
-                return "Replace with symbol "+ch2+" must be in the keyword";
+                return "Replace with symbol " + ch2 + " must be in the keyword";
         }
 
         colHeading = colHeadingLetters;
@@ -260,13 +258,8 @@ public class Polybius extends Cipher {
         // this extracts the layout from the XML resource
         super.addExtraControls(context, layout, R.layout.extra_polybius);
 
-        // ensure input is in capitals
-        EditText keyword = layout.findViewById(R.id.extra_polybius_keyword);
-        InputFilter[] editFilters = keyword.getFilters();
-        InputFilter[] newFilters = new InputFilter[editFilters.length + 2];
-        System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
-        newFilters[editFilters.length] = new InputFilter.AllCaps();   // ensures capitals
-        newFilters[editFilters.length + 1] = new InputFilter() {
+        // custom filter to ensure a field is alphabetic
+        InputFilter ensureAlphabetic = new InputFilter() {
             public CharSequence filter(CharSequence source, int start, int end,
                                        Spanned dest, int dstart, int dend) {
                 // only allow chars in the alphabet to be added
@@ -279,25 +272,17 @@ public class Polybius extends Cipher {
                 return null;
             }
         };
-        keyword.setFilters(newFilters);
+
+        // ensure input is in capitals
+        Cipher.addInputFilters(layout, R.id.extra_polybius_keyword, true, 50, ensureAlphabetic, NO_DUPE_FILTER);
 
         // ensure we 'delete' the keyword text when the delete button is pressed
         Button keywordDelete = layout.findViewById(R.id.extra_polybius_keyword_delete);
         keywordDelete.setOnClickListener(POLYBIUS_ON_CLICK_DELETE);
 
         // ensure input is in capitals
-        EditText colHeadingText = layout.findViewById(R.id.extra_polybius_col_heading);
-        editFilters = colHeadingText.getFilters();
-        newFilters = new InputFilter[editFilters.length + 1];
-        System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
-        newFilters[editFilters.length] = new InputFilter.AllCaps();   // ensures capitals
-        colHeadingText.setFilters(newFilters);
-        EditText rowHeadingText = layout.findViewById(R.id.extra_polybius_row_heading);
-        editFilters = rowHeadingText.getFilters();
-        newFilters = new InputFilter[editFilters.length + 1];
-        System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
-        newFilters[editFilters.length] = new InputFilter.AllCaps();   // ensures capitals
-        colHeadingText.setFilters(newFilters);
+        Cipher.addInputFilters(layout, R.id.extra_polybius_col_heading, true, 10, NO_DUPE_FILTER);
+        Cipher.addInputFilters(layout, R.id.extra_polybius_row_heading, true, 10, NO_DUPE_FILTER);
 
         // ensure we 'delete' the heading text when the delete button is pressed
         Button colHeadingDelete = layout.findViewById(R.id.extra_polybius_col_heading_delete);
@@ -308,12 +293,7 @@ public class Polybius extends Cipher {
         rowHeadingDelete.setOnClickListener(POLYBIUS_ON_CLICK_DELETE);
 
         // ensure extra replace input is in capitals
-        EditText replaceText = layout.findViewById(R.id.extra_replace);
-        editFilters = replaceText.getFilters();
-        newFilters = new InputFilter[editFilters.length + 1];
-        System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
-        newFilters[editFilters.length] = new InputFilter.AllCaps();   // ensures capitals
-        replaceText.setFilters(newFilters);
+        Cipher.addInputFilters(layout, R.id.extra_replace, true, 10, NO_DUPE_FILTER);
 
         // ensure we 'delete' the replace text when the delete button is pressed
         Button replaceDelete = layout.findViewById(R.id.extra_polybius_replace_delete);
@@ -338,9 +318,14 @@ public class Polybius extends Cipher {
 
     // add 2 buttons, one for dictionary crack, one for brute-force
     @Override
-    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String cipherText,
+                                    Language language, String alphabet, String paddingChars) {
         // this extracts the layout from the XML resource
         super.addExtraControls(context, layout, R.layout.extra_polybius_crack);
+
+        // ensure col/row heading input is in capitals
+        Cipher.addInputFilters(layout, R.id.extra_polybius_crack_col_heading, true, 10, NO_DUPE_FILTER);
+        Cipher.addInputFilters(layout, R.id.extra_polybius_crack_row_heading, true, 10, NO_DUPE_FILTER);
 
         // ensure we 'delete' the field when the delete button is pressed
         Button sizeDelete = layout.findViewById(R.id.extra_polybius_crack_col_heading_delete);
@@ -351,10 +336,10 @@ public class Polybius extends Cipher {
         // assess when radio buttons pressed to show what fields needed for each type of crack
         RadioGroup group = layout.findViewById(R.id.extra_polybius_crack_radio_group);
         for (int child = 0; child < group.getChildCount(); child++) {
-            RadioButton button = (RadioButton)group.getChildAt(child);
+            RadioButton button = (RadioButton) group.getChildAt(child);
             button.setOnClickListener(CRACK_METHOD_ASSESSOR);
         }
-        CRACK_METHOD_ASSESSOR.onClick(layout.findViewById(R.id.crack_button_dictionary));
+        CRACK_METHOD_ASSESSOR.onClick(layout.findViewById(group.getCheckedRadioButtonId()));
         return true;
     }
 
@@ -433,33 +418,48 @@ public class Polybius extends Cipher {
         String colHeadingUpper = dirs.getColHeading().toUpperCase();
         String rowHeadingUpper = dirs.getRowHeading().toUpperCase();
         int colHeadingLength = colHeadingUpper.length();
-        //cipherText = cipherText.replaceAll("\\s",""); // does not work with padding
+
+        // decode does not work with padding
+        // but tests assume it does... so make following code skip non-heading chars
+        // cipherText = cipherText.replaceAll("\\s","");
 
         StringBuilder result = new StringBuilder(cipherText.length());
         for (int i = 0; i < cipherText.length(); ) {
 
             // find first character from the cipher text
-            char cipherChar1 = cipherText.charAt(i);
+            char cipherChar1 = cipherText.charAt(i++);
             char cipherCharUpper1 = Character.toUpperCase(cipherChar1);
             int offset1 = rowHeadingUpper.indexOf(cipherCharUpper1);
             // char is not in the heading (e.g. space), or we're at the end - just add this to result
-            if (offset1 < 0 || i == cipherText.length() - 1) {
+            while (offset1 < 0 && i < cipherText.length()) {
                 result.append(cipherChar1);
-                i++;
-            } else {
+                if (i < cipherText.length()) {
+                    cipherChar1 = cipherText.charAt(i++);
+                    cipherCharUpper1 = Character.toUpperCase(cipherChar1);
+                    offset1 = rowHeadingUpper.indexOf(cipherCharUpper1);
+                }
+            }
+            int offset2 = -1;
+            if (i < cipherText.length()) {
                 // get second character from the cipher text
-                char cipherChar2 = cipherText.charAt(++i);
+                char cipherChar2 = cipherText.charAt(i++);
                 char cipherCharUpper2 = Character.toUpperCase(cipherChar2);
-                int offset2 = colHeadingUpper.indexOf(cipherCharUpper2);
+                offset2 = colHeadingUpper.indexOf(cipherCharUpper2);
                 // get second char - if this is not in a heading, weird - just add both to output
-                if (offset2 < 0) {
-                    result.append(cipherChar1).append(cipherChar2);
-                    i++;
-                } else {
+                while (offset2 < 0 && i < cipherText.length()) {
+                    result.append(cipherChar2);
+                    if (i < cipherText.length()) {
+                        cipherChar2 = cipherText.charAt(i++);
+                        cipherCharUpper2 = Character.toUpperCase(cipherChar2);
+                        offset2 = colHeadingUpper.indexOf(cipherCharUpper2);
+                    }
+                }
+                if (offset1 >= 0 && offset2 >= 0) {
                     // decode this pair into the plain letter in the grid at this row/col
                     result.append(keywordLower.charAt(colHeadingLength * offset1 + offset2));
-                    i++;
                 }
+            } else {
+                result.append(cipherChar1);
             }
         }
         return result.toString();
@@ -495,25 +495,31 @@ public class Polybius extends Cipher {
         String cribString = dirs.getCribs();
         CrackMethod crackMethod = dirs.getCrackMethod();
         String reverseCipherText = new StringBuilder(cipherText).reverse().toString();
+        StringBuilder reverser = new StringBuilder(cipherText.length());
 
         // this will be used to generate the keywords
-        alphabet = alphabet.replaceAll("J","");
+        alphabet = alphabet.replaceAll("J", "");
         dirs.setReplace("JI");
 
         // returns the first decode that has all the cribs
-        CrackResults.updateProgressDirectly(crackId, "Starting "+getCipherName()+" dictionary crack");
-        StringBuilder explain = new StringBuilder();
+        CrackResults.updateProgressDirectly(crackId, "Starting " + getCipherName() + " dictionary crack");
         Set<String> cribs = Cipher.getCribSet(cribString);
         Dictionary dict = dirs.getLanguage().getDictionary();
         Set<String> triedKeywords = new HashSet<>(2000);
         int wordsRead = 0, matchesFound = 0;
-        String foundPlainText = null, foundKeyword = null;
+        String foundPlainText = "", foundKeyword = null;
+        StringBuilder successResult = new StringBuilder()
+                .append("Success: Dictionary scan: Searched using ")
+                .append(dict.size())
+                .append(" dictionary words as keywords looking for cribs [")
+                .append(cribString)
+                .append("] in the decoded text.\n");
         for (String word : dict) {
             if (wordsRead++ % 200 == 199) {
                 if (CrackResults.isCancelled(crackId))
                     return new CrackResult(dirs.getCrackMethod(), this, cipherText, "Crack cancelled", CrackState.CANCELLED);
-                Log.i("CipherCrack", "Cracking " + getCipherName() + " Dict: " + wordsRead + " words tried, found="+matchesFound);
-                CrackResults.updateProgressDirectly(crackId, wordsRead+" words of "+dict.size()+": "+100*wordsRead/dict.size()+"% complete, found="+matchesFound);
+                Log.i("CipherCrack", "Cracking " + getCipherName() + " Dict: " + wordsRead + " words tried, found=" + matchesFound);
+                CrackResults.updateProgressDirectly(crackId, wordsRead + " words of " + dict.size() + ": " + 100 * wordsRead / dict.size() + "% complete, found=" + matchesFound);
             }
             word = word.toUpperCase();
 
@@ -530,58 +536,67 @@ public class Polybius extends Cipher {
                         dirs.setKeyword(fullKeywordForSquare);
                         String plainText = decode(cipherText, dirs);
                         if (Cipher.containsAllCribs(plainText, cribs)) {
-                            matchesFound++;
-                            explain.append("Success: Searched using ")
-                                    .append(dict.size())
-                                    .append(" dictionary words as keys and found all cribs [")
-                                    .append(cribString)
-                                    .append("]\n")
-                                    .append("Keyword ")
+                            successResult.append("Keyword ")
                                     .append(fullKeywordForSquare)
-                                    .append(" gave decoded text=")
-                                    .append(plainText.substring(0, 60))
+                                    .append(" gave decoded text: ")
+                                    .append(plainText.substring(0, Math.min(Cipher.CRACK_PLAIN_LENGTH, plainText.length())))
                                     .append("\n");
-                            foundPlainText = plainText;
-                            foundKeyword = fullKeywordForSquare;
+                            if (dirs.stopAtFirst()) {
+                                keyword = fullKeywordForSquare;
+                                colHeading = dirs.getColHeading();
+                                rowHeading = dirs.getRowHeading();
+                                replace = dirs.getReplace();
+                                dirs.setKeyword(foundKeyword);
+                                return new CrackResult(crackMethod, this, dirs, cipherText, plainText, successResult.toString());
+                            } else {
+                                matchesFound++;
+                                foundPlainText = plainText;
+                                foundKeyword = fullKeywordForSquare;
+                            }
                         }
                         // now try reverse text
-                        plainText = decode(reverseCipherText, dirs);
-                        if (Cipher.containsAllCribs(plainText, cribs)) {
-                            matchesFound++;
-                            explain.append("Success: REVERSE: Searched using ")
-                                    .append(dict.size())
-                                    .append(" dictionary words as keys and found all cribs [")
-                                    .append(cribString)
-                                    .append("] with REVERSE text\n")
-                                    .append("Keyword ")
-                                    .append(fullKeywordForSquare)
-                                    .append(" gave decoded text=")
-                                    .append(plainText.substring(0, 60))
-                                    .append("\n");
-                            foundPlainText = plainText;
-                            foundKeyword = fullKeywordForSquare;
+                        if (dirs.considerReverse()) {
+                            reverser.setLength(0);
+                            String reversePlainText = reverser.append(plainText).reverse().toString();
+                            if (Cipher.containsAllCribs(reversePlainText, cribs)) {
+                                successResult.append("Keyword ")
+                                        .append(fullKeywordForSquare)
+                                        .append(" gave REVERSE decoded text: ")
+                                        .append(reversePlainText.substring(0, Math.min(Cipher.CRACK_PLAIN_LENGTH, reversePlainText.length())))
+                                        .append("\n");
+                                if (dirs.stopAtFirst()) {
+                                    keyword = fullKeywordForSquare;
+                                    colHeading = dirs.getColHeading();
+                                    rowHeading = dirs.getRowHeading();
+                                    replace = dirs.getReplace();
+                                    dirs.setKeyword(foundKeyword);
+                                    return new CrackResult(crackMethod, this, dirs, cipherText, reversePlainText, successResult.toString());
+                                } else {
+                                    matchesFound++;
+                                    foundPlainText = reversePlainText;
+                                    foundKeyword = fullKeywordForSquare;
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-        if (foundPlainText != null) {
+        if (foundPlainText.length() > 0) {
             keyword = foundKeyword;
             colHeading = dirs.getColHeading();
             rowHeading = dirs.getRowHeading();
             replace = dirs.getReplace();
             dirs.setKeyword(foundKeyword);
-            return new CrackResult(crackMethod, this, dirs, cipherText, foundPlainText, explain.toString());
-        } else {
-            dirs.setKeyword(null);
-            keyword = colHeading = rowHeading = null;
-            explain.append("Fail: Searched using ")
-                    .append(dict.size())
-                    .append(" dictionary words as keys but did not find all cribs [")
-                    .append(cribString)
-                    .append("]\n");
-            return new CrackResult(crackMethod, this, cipherText, explain.toString());
+            return new CrackResult(crackMethod, this, dirs, cipherText, foundPlainText, successResult.toString());
         }
+        dirs.setKeyword(null);
+        keyword = colHeading = rowHeading = null;
+        String failResult = "Fail: Dictionary scan: Searched using "
+                + dict.size()
+                + " dictionary words as keywords looking for all cribs ["
+                + cribString
+                + "] but did not fund them.\n";
+        return new CrackResult(crackMethod, this, cipherText, failResult);
     }
-
 }

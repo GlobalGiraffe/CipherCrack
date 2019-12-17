@@ -41,7 +41,7 @@
     <string name="details">Details</string>
     <string name="regular_expression">Regular expression</string>
     <string name="keep">Keep</string>
-    <string name="char_position">Char pos</string>
+    <string name="char_position">Position at which to split</string>
     <string name="add_chars">Additional chars</string>
     <string name="after">After</string>
     <string name="bigraph_frequency">Bigraph Freq</string>
@@ -52,6 +52,7 @@
 
     <!-- names for labels for radio buttons for Keyword Extend types -->
     <string name="keyword">Keyword</string>
+    <string name="initial_keyword">Initial Keyword</string>
     <string name="col_heading">Col Heading</string>
     <string name="row_heading">Row Heading</string>
     <string name="replace">Replace</string>
@@ -69,6 +70,8 @@
     <string name="keyword_or_columns">keyword or column permutations:</string>
     <string name="extend_explain">Fill:</string>
     <string name="use_read_across">Use Read Across</string>
+    <string name="stop_at_first">Stop At First</string>
+    <string name="consider_reverse">Consider Reverse</string>
     <string name="extend_first">First</string>
     <string name="extend_min">Min</string>
     <string name="extend_max">Max</string>
@@ -119,6 +122,7 @@
     <string name="bigrams">Bigrams</string>
     <string name="aligned_bigrams">Aligned Bigrams</string>
     <string name="trigrams">Trigrams</string>
+    <string name="aligned_trigrams">Aligned Trigrams</string>
     <string name="letter">Letter</string>
     <string name="bigram">Bigram</string>
     <string name="trigram">Trigram</string>
@@ -1861,7 +1865,7 @@ HSAEW WIKOR NROGF ILENT LNEIG CTTEA HMIET ETDAN HABEY IHDLE ITUMO BHTUT IJSSI UG
 DEKMA CATON CNITS TWTHA OHDRL ELUCO DABBE NGNKI OUQNA IASCK LHFEI EGNCA ELOTH DEBOF NEDSI AETIN
 RITES NOOGL KAGIN TSNBE MASES GLTEI OLSOK IEHKE HEBAS EIHNT NGNKI ATUBO TIEHE GOFHT LYADW TXXOO
 </string>
-    <string name="cipher_challenge_2007_5B">riintT,yIh ti knIa hv  e ywa aotbtai  ht atrpe .ea hvW eos astmu athteH o keio soirknw gleon.aI  aI mfw o ngarobth tiu ser aewp obbalr ye adadyna y.Iw fea hshh r edhitim,en -ewmhigt s i llbt elgriha tfe w iac ktaenh mu otio  eth fageT. hmyewloud h vne oap ysmatarea ndn  oeoasnrt  astyoi vvolen,db utt  oeat tgh me w iend  aweyatco o vnn cehimittha  oy vhaeus mhetiognhne e de.o Yush vte oac nnvico eoeok Hhtto yuah vde eaicheerdpa hdide  neassgm enh teid a ftor fyo bom khhic wedcbries shqe utnaucm rtca.f I kehbiele ev uyo sahet i,vt ait thi  cseuseryn eclyrt edapdnttha  oy ear uht lonyeo ei wtn hhke et,ytnhe  oy oshuudlbse a ef oFrm.t e rewh ee edsnmo ywa efonteur lasgin iih  asamt rtea,hm roe not alt ahet.f O rocr seiu tu tsypuoact o sndaerbielrkis, b ts a uoy ysa,ud i ngnotoi ngih soat nno tnio.pB nXXXXeXX</string>
+    <string name="cipher_challenge_2007_5B">"riintT,yIh ti knIa hv  e ywa aotbtai  ht atrpe .ea hvW eos astmu athteH o keio soirknw gleon.aI  aI mfw o ngarobth tiu ser aewp obbalr ye adadyna y.Iw fea hshh r edhitim,en -ewmhigt s i llbt elgriha tfe w iac ktaenh mu otio  eth fageT. hmyewloud h vne oap ysmatarea ndn  oeoasnrt  astyoi vvolen,db utt  oeat tgh me w iend  aweyatco o vnn cehimittha  oy vhaeus mhetiognhne e de.o Yush vte oac nnvico eoeok Hhtto yuah vde eaicheerdpa hdide  neassgm enh teid a ftor fyo bom khhic wedcbries shqe utnaucm rtca.f I kehbiele ev uyo sahet i,vt ait thi  cseuseryn eclyrt edapdnttha  oy ear uht lonyeo ei wtn hhke et,ytnhe  oy oshuudlbse a ef oFrm.t e rewh ee edsnmo ywa efonteur lasgin iih  asamt rtea,hm roe not alt ahet.f O rocr seiu tu tsypuoact o sndaerbielrkis, b ts a uoy ysa,ud i ngnotoi ngih soat nno tnio.pB nXXXXeXX"</string>
     <string name="cipher_challenge_2007_6A">RYFPE NYTEP TOHHN HFYTF NEQLE FAEIT FDTAY EQRYQ QYMEI TFSPY TNMTC QHCQL
 YRHHA TBMYT NXAFH VFQHL HHAYT FNIBT EDQLT QEQIH FQTEF PQLYY FIMXJ QYNDY
 PPTOY ECEQY BBLED QLTQQ LYIEJ LYMEP THFYQ EDYJT NTFNQ LTQEC HSFNQ LYHQJ
@@ -1981,6 +1985,433 @@ A203C1A30C10B141C110A61C1A7C110A72C10A99C1A99C1000A120C1A54C1A51C101A46C
 1C10B23C1000A44C10A162C10A99C101A158C10A9C1A7C1000A97C1000A63C1A67C1A1C1
 0A55C100A63C100A16C11A51C10A40C1A54C1A72C1000A26C1000A27C1000A166C1A5</string>
 
+
+    <string name="cc_2008">Cipher Challenge 2008</string>
+    <string name="cc_2008_0A">CC 2008 0A</string>
+    <string name="cc_2008_0B">CC 2008 0B</string>
+    <string name="cc_2008_1A">CC 2008 1A</string>
+    <string name="cc_2008_1B">CC 2008 1B</string>
+    <string name="cc_2008_2A">CC 2008 2A</string>
+    <string name="cc_2008_2B">CC 2008 2B</string>
+    <string name="cc_2008_3A">CC 2008 3A</string>
+    <string name="cc_2008_3B">CC 2008 3B</string>
+    <string name="cc_2008_4A">CC 2008 4A</string>
+    <string name="cc_2008_4B">CC 2008 4B</string>
+    <string name="cc_2008_5A">CC 2008 5A</string>
+    <string name="cc_2008_5B">CC 2008 5B</string>
+    <string name="cc_2008_6A">CC 2008 6A</string>
+    <string name="cc_2008_6B">CC 2008 6B</string>
+    <string name="cc_2008_7A">CC 2008 7A</string>
+    <string name="cc_2008_7B">CC 2008 7B</string>
+    <string name="cc_2008_8A">CC 2008 8A</string>
+    <string name="cc_2008_8B">CC 2008 8B</string>
+
+    <string name="cipher_challenge_2008_0A">May 12th 1809
+
+My Dearest Mary,
+
+How delighted I am to write of our successes at Oporto. At last we won the chance to pay off some of the debt
+we owed our old friend Marshall Soult for the humiliation of our retreat at Corunna. Our brave troops, under the
+command of General Wellesley, infiltrated Villa Nova under his very nose, and with the help of local fishermen
+and bargemen they were able to cross the river and drive the French from the city.
+
+General Foy made a brave attempt to hold us at the bridge, but Wellesley’s artillery rained death upon the
+French gunners and we were able to pay off the debt we owed Soult for our humiliating defeat at Corunna in
+January. Hitherto the only consolation I could find in that hasty retreat was the weeks it gave us together upon
+my return, but now I feel that we learned much in the earlier battles that is paying off handsomely in our current
+campaign.
+
+Just as we were forced to leave horses and artillery on the beach at Corunna, Soult’s men have abandoned
+much of their wagon train and many of their guns as Soult and Loisson have retreated north. They departed
+today, and I will follow tomorrow with a small cavalry reconnaissance force. With luck we may find a way to
+break their rearguard and bring Soult up by his heels.
+
+I treasure the few weeks we had together and most ardently hope to find a way for you to join me here in
+Portugal, but the heat of battle demands my full attention. I will write again when I can.
+
+Your loving husband, George</string>
+    <string name="cipher_challenge_2008_0B">To Marshall Soult from the hand of General Foy
+
+Mon Frere Marshall, the attack on Oporto was, as we had hoped, severely hampered by the demolition of the
+bridge at Villa Nova, and the scuttling of the ferries, and British casualties were severe. Nonetheless, the
+treacherous local enemy sympathizers – watermen and bargemen – assisted them in crossing the river
+upstream, and climbing the steep cobbled street to the top of the hill they were able to take the seminary
+guarding a secure landing place.
+
+Recognizing the danger, I ordered three battalions to attack in order to secure this point, but Wellesley,
+anticipating this move, had established artillery emplacements upon a hill overlooking the river, and these guns
+wrought terrible injury upon our own brave soldiers as they attempted to train their guns upon the landing site.
+The reinforcements you sent enabled us to effect an orderly evacuation of guns and stores and we mounted
+three further assaults upon the seminary, but with losses mounting under the barrage we were forced to retreat,
+this time with loss of much of our wagon train.
+
+General Loisson attempted to secure a line to the east, but the English, under Beresford\'s command, have cut
+off this escape. I will follow this message as we seek to rejoin you and I await your further orders.
+
+Vive La France,
+
+General Foy.</string>
+    <string name="cipher_challenge_2008_1A">Ug Lmiz Akwdmtt,
+Nwttweqvo bpm uwab zmozmbbijtm makixm wn Omvmzit Awctb\'a izug bpzwcop bpm pqtta bw bpm vwzbp qb
+qa bpm ivvwcvkml qvbmvbqwv wn Tqmcbmvbivb Omvmzit Aqz Izbpcz Emttmatmg bw ziqam i kwzxa wn
+Uwcvbml Ocqlma, abinnml jg twkit aguxibpqhmza ivl tml jg wcz wev wnnqkmza. Q pidm bw lmaqzm bpib gwc
+eqtt jm xtmiaml bw iaacum bpm kwuuivl wn bpqa nwzkm, ivl bw kizzg qvbw mnnmkb ackp qvabzckbqwva ia gwc
+uig zmkmqdm. Gwc eqtt jm iaaqabml qv bpqa bias jg nwcz tqmcbmvbivba ivl nwcz kwzvmba ia kwuuqaaqwvml
+wnnqkmza, ivl xzwuwbml bw Iaaqabivb Ycizbmzuiabmz Omvmzit, i uwab zqkptg lmamzdml xzwuwbqwv. Qb qa
+itaw ug qvbmvbqwv bw uism ug abzwvomab zmkwuumvlibqwv bpib gwc apwctl jm xzwuwbml bw Uirwz, bpwcop
+ia gwc izm ieizm bpm xwemz wn ixxwqvbqvo bw kwuuqaaqwva qa vwb dmabml qv um.
+Gwc ivl gwcz abinn izm lqzmkbml bw smmx i Rwczvit, wz wbpmz umuwzivlcu, lmakzqxbqdm wn bpm
+uwdmumvba wn bpm mvmug bzwwxa, ivl wkkczzmvkma qv epqkp bpmg izm mvoioml; ia itaw, gwc apwctl bism
+ivl kwttmkb xtiva wn bpm zwila, zqdmza, jzqloma, ambbtmumvba, xwaqbqwva, wz nwzbqnqml xtikma, qv epqkp
+bpm bzwwxa uig jm.
+Q lw pidm wvm wbpmz uwzm lmtqkibm iaaqovumvb nwz gwc, epqkp uig mfkqbm gwcz qvbmzmab. Bpm
+Nzmvkp cam wn nqmtl kqxpmza qa nzcabzibqvo wcz ackkmaa qv qvbmzkmxbqvo bpmqz kwuucvqkibqwva. Q
+ewctl jm uwab ozibmnct qn gwc ewctl bczv gwcz xizbqkctiz ibbmvbqwv bw bpm ibbikpml umuwzivlcu epqkp Q
+pwxm uig oqdm ca awum qvlqkibqwv wn bpmqz qvbmvbqwva, apwctl qb gqmtl bw gwcz nwzmvaqk akzcbqvg.
+Gwcza mbk Uczzig.</string>
+    <string name="cipher_challenge_2008_1B">je wuduhqb beyiied vhec jxu xqdt ev cqhixqb iekbj
+jxu rqjjbu je iuskhu ekh hekju dehjx jxhekwx jxu cekdjqydi xqi ixemd sbuqhbo jxqj mu ckij dej kdtuhuijycqju jxu
+huieblu qdt ydyjyqjylu ev mubbuibuo qdt xyi evvysuhi. jxu huqhwkqht qsjyed qj iqbqbcedtu sqcu sbeiu je q
+fxohhys lysjeho mxud jxu ryhjyix, myjx fehjkwuiu ikffehj, qjjucfjut je iqrejqwu jxu rhytwu qj fedju delq. ulud mxud
+mu hujeea jxu rhytwu, jxu sebbqfiu ev ekh huqhwkqht but je cqdo beiiui, qdt mu muhu bksao jxqj ekh fkhikuhi
+cyiiut jxu dqhhem heqt jxqj mu jeea ekj ev jxu lqbbuo.
+yj yi sbuqh jxqj seccqdt ev jheefi yi ev iusedtqho ycfehjqdsu je seccqdt ev jxu heqti, rhytwui qdt ejxuh ijhqjuwys
+erzusjylui qdt jxyi fqbui yd iywdyvysqdsu je adembutwu ev ekh uducyui\' ydjudjyedi. je jxyi udt oek qhu seccqdtut
+je iuskhu q dujmeha ev besqb iocfqjxypuhi, qvhqdsuiqtei, mxe mybb qiiyij ki yd cqffydw jxu juhhqyd qdt yd
+wqjxuhydw ydjubbywudsu sedsuhdydw jxu celucudj qdt tyifeiyjyedi ev jxu rhyjyix jheefi.
+ekh vyhij weqb ckij ru je rejjbu kf jxu rhyjyix qhco myjxyd fehjkwqb, qdt je besqju jxuyh vehsui. mu xqlu
+ikfuhyehyjo ev dkcruhi qdt ckij jqau jxu ydyjyqjylu yd udwqwydw myjx jxuyh vehsui ruvehu jxuo sqd udjhudsx qdt
+cekdj q vkbb qiiqkbj. jxu qvhqdsuiqtei mybb fbqo qd ycfehjqdj hebu yd besqjydw jxuc, qdt oek ixekbt cqau jxuyh
+hushkyjcudj qdt jhqydydw oekh xywxuij fhyehyjo.
+lylu bq vhqdsu
+cqhixqb iekbj</string>
+    <string name="cipher_challenge_2008_2A">Urndc. Pnwnaju cqn Qxw. Bra J. Fnuunbunh, T.K., cx Lxvvrbbjah Pnwnaju Vdaajh.
+Vh Mnja Bra,
+R qjen anlnrenm hxda unccna lxwlnawrwp cqn nbcjkurbqvnwc xo cqn Pdrmnb, jwm Blxenuu rb cx kn
+lxwpajcdujcnm xw qrb vxbc nglnuunwc cajrwrwp anprvn. Xwln yaxerbrxwnm, cqn Pdrmnb jan cx sxrw xda vjrw
+oxaln jc Kjmjsxi.
+Rc rb lunja cx vn cqjc Bxduc\'b rwcnwcrxw fruu kn cx ldc xoo xda urwn xo ancanjc jwm rc rb cqnanoxan
+wnlnbbjah cqjc fn yanyjan j mnonwbren urwn cx cqn anja jc Cxaanb Enmajb. Cx cqrb nwm Lxuxwnu Ounclqna
+fruu kdrum j bnarnb xo mrclqnb, oxacb jwm xcqna nvyujlnvnwcb cx buxf jwh jccjlt dyxw cqjc urwn. Cqnbn fxatb
+vdbc kn mduh yaxerbrxwnm kh hxda vnjbdanb cx yaxldan vxwnh oxa kruub dyxw Nwpujwm.
+Cx knccna xda xmmb xo bdllnbb, Blxenuu\'b Pdrmnb jan cx xapjwrbn j ljvyjrpw xo pdnaruuj jlcrxw, qjaahrwp cqn
+Oanwlq oxalnb jc nenah cdaw, jwm qn rb rwbcadlcnm cx ngyjwm qrb wncfxat xo byrnb. Rw cqrb qn fruu fxat frcq
+cqn Yxacdpdnbn Karpjmnb lxvvjwmnm kh Knanboxam jwm Qjamrwpn.
+Cqn jccjlqnm lxvvdwrljcrxw fjb oxafjamnm cx vn oaxv cqn Byjwrbq pdnaruujb, fqx oxdwm rc rw cqn yxbbnbbrxw
+xo j vxbc dwoxacdwjcn vxwt, yanbdvjkuh jw joajwljbjmx. Cqn vnbbjpn anvjrwb luxbnm cx vn, jwm R fxdum kn
+pajcnodu ro hxd fxdum lxwenh rcb vnjwrwp jb j vjccna xo cqn qrpqnbc yarxarch. Cqrb vjh yaxynauh kn jwxcqna
+cjbt oxa Blxenuu, fqxbn fxat rw cqrb ornum rb wxc dwwxcrlnm jvxwp cqn pnwnaju bcjoo.
+Knurnen vn, ncl. Jacqda Fnuunbunh.</string>
+    <string name="cipher_challenge_2008_2B">hmuwn wjapi mgphv jmoht wtanx mvqsn urmiw ltsjw axesh tujwa hlpwa igjwm vhtwi ewwls nuomf wmvmg jajoc hmeaj xiaom ihxwi sjazp wowwh snues htuwn wjape wppwi pwcan xtsiv mjywi somih ihjmn upcgj uwcmg hmwnu auwes httso ahhtw wajps wihml lmjhg nshca nxhmz jsnuh mahso wpcwn xhtsi xjwax vgpzj shsit snygj ismns nhmlm jhgua phtwa vjany wiaxm ihwpp owhta hhtwz jshsi tajww nyaol wxahz axarm bhtwx wvwni wihmh twsjj wajaj wewaq anxcm gitmg pxoaq wappl miisz pwtai hwhmh mjjwi fwxja isnmj xwjhm yghmv vancj whjwa hvjmo htahl msnhh twsjx wvwah esppi gjwpc zwmnp caoah hwjmv hsowa imgji glwjs mjvmj ywign xwjht wymoo anxmv oajit apoai iwnaz wajxm enmnh twzjs hsitv jmoht wnmjh timgh tanxw aihes hthtw sjjwh jwahz pmyqw xhtwz jshsi tespp ywjha snpcv suthm nanxa hhwol hhmzj waqmg hsnhm ilasn shsim vghom ihsol mjhht ahewh aqwan xtmpx htwvm jhiah zaxar mbapo wsxaa nxysg xaxjm xjsum uwnwj apncw ivmjy wiesp pzwlp aywxa hcmgj xsilm iapan xhmuw htwjc mgesp ptafw ymooa nxmvo mjwht anhts jhcht mgian xownu sfwnh tahew ppwip wcyan ogihw jmnpc wsuth wwnht mgian xfsyh mjcog ihzwa iigjw xfsfw pavja nywqs nurmi wlt</string>
+    <string name="cipher_challenge_2008_3A">Wtpfe. Rpypclw Gtdnzfye Hpwwtyrezy, V.M., ez esp Plcw zq Wtgpcazzw, Dpncpelcj zq Delep.
+Xj Wzco,
+Esp pypxj\'d hszwp lcxj, lyo lww esp nlglwcj hstns nzfwo mp nzwwpnepo, rlespcpo le Ntfolo Czoctrz zy esp
+dpnzyo zq estd xzyes. Espj slo qzfrse, ld hp slo piapnepo, ez esp rlepd zq Ezccpd Gpocld, hspcp, fyopc esp
+nzxxlyo zq Xlcdslww Xlddpyl, zyp zq esp xzde elwpyepo zq esp Qcpyns zqqtnpcd, espj dfqqpcpo l splgj opqple.
+Hp qzwwzhpo espx zfe zq Azcefrlw, lyo qfcespc qtrsetyr sld mppy nzynpyeclepo lczfyo esp mzcopc qzced.
+Hp dfcczfyopo esp Qcpyns rlcctdzy le Lwxptol, lyo Xlddpyl\'d qzcnpd hpcp mwznvpo ld espj ectpo ez cpefcy ez
+ted opqpynp. Espj hpcp nspnvpo lrlty lyo qzcnpo ez cpetcp le Qfpyepd o\'Zyzcz, hstns hld opqpyopo ty l xzde
+rlwwlye xlyypc mj Wtpfe. Nzwzypw Htwwtlxd, ty nzxxlyo zq esp wtrse tyqlyecj mleelwtzy mpwzyrtyr ez Xluzc
+Rpypclw Atnezy\'d otgtdtzy.
+Xlddpyl dpye zcopcd qzc esp rlcctdzy ez ecj ez qtrse ted hlj zfe, lyo dpgpclw zq std xpddlrpd hpcp tyepcnpaepo
+mj Dnzgpww\'d Rftopd. Te hld ez zfc rcple xtdqzcefyp esle zyp zq esp xpddpyrpcd pglopo zfc dnzfed, lyo zy Xlj
+pwpgpyes esp Qcpyns mleelwtzyd mczvp zfe, wplgtyr l xtypo lyo cftypo qzce.
+Estd rcple xtdqzcefyp yzehtesdelyotyr, esp Qcpyns lcxtpd slgp mppy qzcnpo mlnv zy esptc sppwd. Espj cpwj
+tyncpldtyrwj zy dtxawp dfmdetefetzy ntaspcd ez nzynplw esptc tyepyetzyd, lyo esp cpxlcvlmwp hzcv zq
+Dnzgpww lyo std Rftopd ty esp tyepcnpaetzy lyo opncjaetzy zq espdp xpddlrpd ozpd xfns ez dfaawpxpye zfc
+tyepwwtrpynp hzcv.
+T slgp esp szyzfc ez mp, pen., Hpwwtyrezy.</string>
+    <string name="cipher_challenge_2008_3B">H3 V1N1K0Q J34QH WK3P HT1 T0NX 3W V1N1K0Q Q0H34K P04Z34KV
+0 K1M3KH 3N HT1 0YH23N 3N HT1 MQ02NJ 3W 1JHK1P0X4K0.
+34K 0KP21J V0HT1K1X 3N HT1 MQ02NJ 3W 1JHK1P0X4K0 MK1M0K2NV 0N 0HH0YR 3N HT1 ZK2H2JT W3KY1J
+Y3NY1NHK0H1X HT1K1 4NX1K HT1 Y3PP0NX 3W P0KJT0Q Z1K1JW3KX. T2J HK33MJ F1K1 2NG1JH1X 2N Z0X0S3B,
+MK1J4P0ZQC 2N MK1M0K0H23N W3K 0N 0JJ04QH 3N 0QP12X0, 0NX 2H F0J YQ10K HT0H T2J Q2N1J 3W J4MMQC F1K1
+1DH1NX1X.
+HT1 N1FQC 1NN3ZQ1X F1QQ1JQ1C, N3F G2JY34NH F1QQ2NVH3N, J1NH HF3 X2G2J23NJ 0NX J3P1 JP0QQ J42H1 3W
+JH0WW 3WW2Y1KJ H3 K12NW3KY1 Z1K1JW3KXJ VK34M, Z4H C34K 3FN T10GC 0HH0YR FK34VTH J1K234J X0P0V1 3N
+HT1P, 0NX, FT2Q1 2H F0J K1M4QJ1X, 2H 2J K1M3KH1X HT0H 0K34NX W34K 2N H1N 3W T2J K1XY30HJ F1K1 R2QQ1X 3K
+F34NX1X. 3N1 N3H0ZQ1 G2YH3KC - 0N 1NH2K1 2NW0NHKC ZK2V0X1 0QQ3F1X HT1PJ1QG1J H3 Z1 WQ0NR1X ZC 34K
+Y0G0QKC 0NX 3W HT12K W2WH11N T4NXK1X J3QX21KJ, 3G1K HF1QG1 T4NXK1X F1K1 R2QQ1X, F34NX1X 3K
+Y0MH4K1X ZC 34K ZK0G1 P1N 0NX T3KJ1J.
+Z1K1JW3KX T2PJ1QW F0J 1NV0V1X ZC 0 M3Q2JT Q0NY1K 0NX 3KX1K1X 0 V1N1K0Q K1HK10H, M1KT0MJ
+X1P3NJHK0H2NV HT1 Q0YR 3W K1J3QG1 3W Y1KH02N 3W HT1 1NVQ2JT 3WW2Y1KJ. K1VK1HH0ZQC, 0 ZK2V0X1 3W
+W4J2Q21KJ V0QQ3M1X W3KF0KX WK3P HT12K K1J1KG1 0NX 34K 3FN Q2N1J W0QH1K1X 2N HT1 0HH0YR. J3P1 YK1X2H
+HT1 1NVQ2JT 3WW2Y1K T0KX2NV1 F2HT HT2J K1G1KJ0Q 2N 34K W3KH4N1J, Z4H HT1K1 0K1 Q1JJ3NJ H3 Z1 Q10KN1X
+WK3P HT1 1NY34NH1K, N3H Q10JH HT0H F1 P4JH JH2WW1N 34K 3FN K1J3QG1 H3 MK1JJ HT1 0XG0NH0V1 FT1N 2H
+MK1J1NHJ 2HJ1QW.
+G2G1 Q0 WK0NY1
+P04Z34KV</string>
+    <string name="cipher_challenge_2008_4A">oftpm. ztutgho sfjnxpum vtoofuzmxu, l.k., mx nxrrfjjhgb ztutgho rpgghb.
+rb qthg jfg,
+mct gtntum agxrxmfxu xw jnxstoo mx mct ghul xw rhixg, vcfot kxpzcm ohgztob kb mct rxjm gtzgtmmhkot oxjj xw
+jx rhub xw cfj nxrghqtj fu mct wfwmb jtstumc, fj rxjm gfncob qtjtgstq. mct jlfoo huq fuqtatuqtunt xw cfj zpfqtj aohbj
+h sfmho gxot fu xpg rhuxtpsgtj, huq cfj qhfob axjm fj h rxjm gtrhglhkot tuzfut xw twwfnftunb, whnfofmhmfuz
+nxrrpufnhmfxu ktmvttu mct mvx vfuzj xw xpg hgrftj.
+rhixg jnxstoo fj mx kt haaxfumtq mx jpatgfumtuq hoo mct nxrrpufnhmfxuj xw mct hgrb. mct axjmrhjmtg jtgzthumj
+hm cd huq hm ofjkxu vfoo aohnt mctrjtostj puqtg cfj xgqtgj, hj ofltvfjt jtucxg xofsftgh, mct qfgtnmxg xw mct
+axgmpzptjt axjmj. mct rtjjtuztgj ofltvfjt vfoo nxumfupt mx gtntfst mctfg xgqtgj wgxr rhixg jnxstoo.
+ct vfoo hojx mhlt wpoo gtjaxujfkfofmb wxg jtnpgt nxrrpufnhmfxuj huq mct qtnfactgfuz xw tutrb fumtgntamj. mct
+tutrb hgt jmfoo noxjt mx pj. bxp vfoo chst cthgq mchm ixjtac chj dpfmmtq rhqgfq: xut nxujtdptunt xw mcfj vfoo kt
+mx fungthjt mct qfjaxjhkot wxgnt xw mct wgtunc, kb mct uprktg xw mgxxaj nxujmhumob ltam hm rhqgfq hj zphgqj
+mx cfj atgjxu. mcfj nfgnprjmhunt fj vxgmcb xw hmmtumfxu. mct zpfqtj huq xpg oxnho wgftuqj hgt mx wxnpj mctfg
+rxjm jatnfho hmmtumfxu xu mct zhmctgfuz xw fumtoofztunt xu mctjt utv wgtunc qfjaxjfmfxuj.
+ktoftst rt, tmn., vtoofuzmxu.</string>
+    <string name="cipher_challenge_2008_4B">Symbol Substitution Cipher</string>
+    <string name="cipher_challenge_2008_5A">hmejn byjnby orjsygg pj rjhhdoomnw byiynmg hqnnmw.
+hw aymn odn,
+pcy mnp jz tndpdib di rwkcyn do oj hqrc dhknjsya odiry rjinmaqo tnjpy mo pj nyiayn dp iyvp pj dhkjoodugy pj
+qinmsyg tcmp dp rjirymgo tdpcjqp uydib di kjooyoodji jz pcy fyw. pcy yirgjoya hyoomby nyodopya hw mimgwodo
+zjn ojhy pdhy, qipdg pcy zjnpqdpjqo rmkpqny, uw aji eqgdmi mia cdo unmsy bqyndggmo, jz ojhy jpcyn
+hyoombyo qodib pcy omhy rwkcyn, oysynmg ocjtdib kmoombyo yi rgmdn. pcdo bmsy hy oqzzdrdyip rjipyvp pj
+uybdi pcy mnaqjqo pmof jz unymfdib dp.
+oysynmg pcdibo uyrjhy rgymn. zdnop, pcmp byiynmg hmnhjip cmo kynoqmaya cdo rjhhmiayno mia cdo fdib jz
+pcy sdpmg dhkjnpmiry jz oyrqndpw di pcydn rjhhqidrmpdjio. pcy smndmip ji pcy amghmpdmi rwkcyn qoya di pcy
+mppmrcya rjhhqidlqy do m rgysyn nqoy - odhkgy yijqbc pj uy nygdmugw qoya ji pcy zdyga jz umppgy, uqp
+oqzzdrdyipgw dibyidjqo pj zjdg pcy mhmpyqn rwkcyn rgynf di cdo pmof. oyrjia, pcmp pcy gjib mtmdpya bnmia
+rcdzzny cmo opdgg ijp mnndsya mp pcy rjqnp jz fdib ejoykc, pcjqbc dpo mnndsmg tdgg oqnygw ijp uy aygmwya
+hqrc gjibyn. pcdna - mia pcdo do hjop dhkjnpmip - fdib ejoykc zyygo pcnympyiya uw pcy diaykyiayiry jz pcy
+hmnocmgo di okmdi. cdo ayhmia pcmp cy ocjqga nypmdi adnyrp mqpcjndpw jsyn pcyh odbimgo m znmrpdjqo
+yiyhw, mia pcdo hqop oqnygw kgymoy byiynmg tyggdibpji. ocjqga fdib ejoykc\'o tdoc uy bnmipya, pcy iqhuyn jz
+hyoombyo uyptyyi pcy zjnryo di pcy zdyga mia fdib ejoykc\'o cymalqmnpyno tdgg iyryoomndgw anmhmpdrmggw
+dirnymoy. pcdo hmw diayya bdsy qo pcy masmipmby ty oyyf di unymfdib pcydn rwkcyno, cjtysyn opnjib pcyw
+hmw uy.
+d nyhmdi ypr., hmejn orjsygg</string>
+    <string name="cipher_challenge_2008_5B">Symbol substitution cipher</string>
+    <string name="cipher_challenge_2008_6A">QRMTW JGTWJ GXDTA GPPYT YKGTH HLDGT HYKGI ZNGTH BGPPL SJYTS QEPTW IYKGG SDPTX GIQGX XRJGD TSHLW QXQZD KYKRY BGKRI RPWGR IEXZW QLXGI YKGHW GSDKR WQLGX THYKG UGSLS XZPRR WGLSX TQGIL XRWWR EYKGL WPGRI GWXKL UZSIG WVZGX YLTSG AGSOE SRUTP GTSKL QXGPH RSIZS IGWUW GXXZW GTHYL QGYTG HHGDY RALDY TWEYK GTWIG WXYKG WGLSY KWGRY GSYTI LXUGW XGYKG LWSTW YKGWS RWQLG XRXYK GEKZS YYKGJ ZGWLP PRXRS IYTIL AGWYY KGLWH TWDGX HWTQY KGHTW YXRYO RIRMT FRSID LZIRI WTIWL JTYKG XTUKL XYLDR YLTST HYKGL WHLGP IDEUK GWXKR XLSDW GRXGI RSIYK GZXGT HURII LSJYT ILXJZ LXGXL JSRYZ WGXRS IXRPZ YRYLT SXWGI ZDGXY KGGHH GDYLA GSGXX THYBT THTZW QTXYG HHGDY LAGBG RUTSX YKGHZ WYKGW LSYWT IZDYL TSTHR IILYL TSRPD KRWRD YGWXY TGSDT IGYKG QTWGH RQLPL RWPGY YGWXI LXJZL XGIYK GILXY WLOZY LTSTH YKGQT WGDTQ QTSPG YYGWX RSIHT WDGIZ XYTRQ TWGXT UKLXY LDRYG IRSRP EXLXT HYKGY GCYLW GQRLS DTSHL IGSYY KRYGA GSBLY KYKGL SYWTI ZDYLT STHYK GLWHT WYKDT QLSJJ WRSID KLHHW GYKGW GLXKT UGYKR YBGBL PPDTS YLSZG YTOWG RNYKG LWDEU KGWXO ZYYKL XBTWN LXLSD WGRXL SJPEK RWIRS IBLPP WGVZL WGJWG RYGWW GXTZW DGXYK RSLDZ WWGSY PEKRA GRYQE ILXUT XRPLW GQRLS GYDQR MTWXD TAGPP</string>
+    <string name="cipher_challenge_2008_6B">g%!sq &amp;jns% ggkdn sgh$r n!p%o %a$v&amp; jk$!e syvqp l$wxe &amp;j$$q t$vs% !bk%w j$%w% k&amp;&amp;sa $mrs% br%&amp;j p&amp;%j$ kwIkw tonpw nIprI w%y!t v%kwn I&amp;jp&amp; pw%$z $!n%o eb$pm %$rnI av%k&amp; kwj%p !qeds r&amp;kry $w&amp;sx k$yt&amp; j$w%y t%$vk s%vgs %v%d% $wyrI $!esy vds%q qprI% kxkwj kwI$w k%!$x j%px&amp; jngso osbkr hs%!I $!wwj syoIa %$kqq nIk%p %&amp;%$% oe$gg $%d&amp;$ Igkv% w&amp;qp! wj%po qpvqs r%&amp;kw &amp;sw$% rIwkc &amp;jsyw prIx! sstwx s!%nk rgs!d $%&amp;%j $wsy&amp; j$!ra !khp% I$wpr Ixsa% vk%rh &amp;jnop q$rx% pao$w %k$%h %nsg% zponr dk%p% &amp;spwb kgxdo sw$w$ dsrIx j%$rs !xj$v r%qs% w&amp;Ikz kwks% rs%g&amp; jnp!% qesgt sv&amp;yh %pokw &amp;spww %kwxk rxj$% pw%wp yoxsr x%j$h y$vko oppvq exj$v $prI&amp; sw&amp;pq tsy&amp;o sd%po !n%wk w&amp;pr% d$xjk vI&amp;j$ pvqkn %wsg&amp; jnt$r krw%y %opp! ntopd $IyrI $!esy vgy%o odsr&amp; vsobk &amp;jqpv wjpol sy!I% prj$! naept tskrx $Idjk ng%sg w&amp;pgg xsesy !dsyv &amp;%jnb koopI zkw$e sykrp ooqp% x&amp;%$v wq%ko kxp!e gsy!% &amp;jqpv $&amp;bk% oogyv rkwj&amp; j$dsy !xprI &amp;jnp! q%k$w yr%I$ !esyv d%sqq prIbk &amp;jph! prIdj k%gg% !npIp t&amp;nIg %vsqx j$sr% $po!n pIekr y%w$n ownbj n!$gk gx%j&amp; j$kqt $vkpo hyp!I bkoo! $xy!r kqq%$ %Ikp&amp; noexs %gvpr %d$&amp;s t!ntp v%$gs !&amp;j$k rzpwk srsgv ywwkp h$rn! podop !m%nI ym$sg g$o&amp;! nb%ko opwqk rkwx$ !sgb% p!pd&amp; pw%tp vkwok pkwsr %h$r$ !poan %!&amp;jk $v</string>
+    <string name="cipher_challenge_2008_7A">JKSAJ DGGRW CSRRI KSOTK JKBRB SRVPB DYSDJ TSOKL LKSQR DGOPR RBSSP ROTSL PCQSD
+KSURS CRODU RIGGD WQSOK NNROT KGGPU JPZKE PUPIS PSOKN RBSNK ORJOK CSQPR BSTKQ
+RBSSP QSJRH RQPCR BSNKQ UOPYU ROUJT BOTKN JDBSD WLTSR QJRRI RVPBQ RDORS SPIRB
+SGKOS JKCOT KORUJ TPJDO TCDLB SDWRU PADOI QNLHR FJDKE KSURO RRSJT GKVUP BKBWR
+AJDUO PBJDP SLPCN KQQKG OPRJR BSRSD LQRUU RURRC CTQFC PSSPR BSUJP QGGPW RBSIH
+DGCKS BCDBW HKONH OKNSP GLPRU DVKOL KSBCS DURBS ORVKU DPGRI KSQOR UUPGA JDGPC
+QAJDO RUOKY ISLHR SSPRB SURTC QROBS BADRY SBADR RBSNK QRSPK JDPSL PCQRU PQDGP
+LRBSU JPBCS DULRR URBSY IQPWS DQPUR QGTLR ORBLK OSQPS PCKSR QKGCR HPCFC PSSPG
+PDSDJ DRBSQ TOKNA JDFOK WRTJD SJKCK SRVDS JRCJD SJRDC DNNTQ BSDWU JPYPG RURGI
+PSDTQ PORSN PQQPL KSORA JRQQR HRBSU RWKGG PRWRA PQQRH QDBSU RSLRC ORSJD UPBRW
+SPBSS CPNRB SKSSG TKQSO RGPKS AJDBQ DWSKJ HOPGP RBSAJ DQDPO SGTKQ KSJKL DGGDB
+LHKON QORSS RGAJD OPRIQ TURBC PKOLL PUPBK BWSJR APRGI TKUPY IURUD VKOLR CJRAD
+GGRSJ DRBSY IURAP OTKCJ RRORW RWQDB SJDFC PSSPY OSJPN JDJPS JTKHK SQTUR GIPJR
+ORBSP RWRBS JDFPR OIJRU UTQPG DSJTQ GGPWR BSUOP IHKIK SURTJ DSJKC RWPJD OTCDL
+SPSOK NAJDY GSTKR BSYIU RQKLS PROBS RBSQQ ROUUP KSURC OKNRO RWRWS TCJRR IUPBJ
+KKSJK LRBSR CJKPJ PDUPT ARBSQ QKOCK SRGIP JTUJP ORBSP RWSJR HRGCJ DRBSY IUGRB
+ZKEPU PISPS OKNRB SJKSG TPQQP GPJDN RBSOK NJKDS POPLR OLOTK NKTKY HOKNJ DKSRS
+DOWDU OKGYH GKKLO RVDGN KGOPR RBSKS IFJKS AJDGG RWSJT KCQDV GPORJ RASTR DG</string>
+    <string name="cipher_challenge_2008_7B">79, 50, 66, 86, 70, 81, 78, 80, 88, 95, 78, 91, 65, 88, 50, 88, 79, 75, 74, 57, 54, 83, 66, 99, 52, 88, 86, 74, 50, 92,
+61, 74, 63, 63, 69, 88, 71, 85, 93, 74, 70, 69, 44, 95, 82, 85, 63, 44, 86, 54, 68, 51, 81, 74, 63, 85, 51, 88, 71, 85,
+52, 82, 96, 91, 82, 52, 44, 70, 66, 54, 63, 78, 91, 70, 98, 66, 71, 70, 66, 70, 61, 58, 82, 86, 86, 82, 87, 58, 65, 52,
+85, 66, 51, 69, 88, 79, 52, 81, 58, 79, 66, 91, 52, 74, 52, 75, 74, 77, 74, 83, 88, 99, 54, 65, 77, 62, 93, 51, 80, 54,
+91, 68, 82, 51, 66, 87, 66, 79, 79, 62, 95, 78, 93, 81, 88, 94, 92, 54, 65, 57, 88, 79, 88, 71, 68, 79, 62, 87, 78, 69,
+52, 52, 91, 88, 88, 89, 69, 44, 87, 58, 86, 98, 69, 66, 85, 57, 62, 44, 50, 51, 54, 91, 78, 78, 95, 58, 65, 65, 88, 96,
+96, 62, 70, 81, 62, 65, 51, 82, 80, 81, 93, 54, 87, 77, 88, 65, 76, 44, 89, 62, 76, 94, 50, 62, 65, 54, 79, 74, 63, 63,
+92, 70, 61, 44, 98, 96, 82, 85, 85, 75, 58, 96, 62, 52, 61, 62, 65, 54, 68, 52, 62, 85, 85, 58, 50, 98, 50, 54, 65, 80,
+78, 88, 71, 91, 80, 94, 65, 65, 44, 50, 69, 74, 91, 44, 52, 91, 54, 82, 87, 78, 77, 54, 65, 57, 50, 58, 54, 57, 98, 74,
+65, 57, 74, 65, 98, 54, 52, 93, 58, 86, 89, 70, 71, 89, 88, 87, 52, 81, 78, 79, 66, 91, 70, 96, 62, 85, 63, 56, 88, 92,
+70, 96, 78, 85, 63, 82, 65, 80, 93, 66, 87, 57, 78, 54, 50, 63, 98, 66, 94, 50, 44, 65, 80, 62, 65, 58, 78, 91, 92, 61,
+54, 95, 44, 68, 44, 62, 65, 79, 66, 68, 76, 78, 77, 52, 81, 44, 75, 91, 44, 54, 76, 61, 44, 92, 82, 65, 70, 61, 78, 96,
+74, 85, 63, 51, 96, 82, 52, 61, 86, 54, 51, 51, 82, 95, 58, 44, 54, 91, 70, 61, 96, 66, 68, 84, 51, 54, 65, 57, 56, 61,
+44, 95, 74, 94, 97, 77, 78, 79, 91, 62, 92, 44, 75, 68, 62, 69, 93, 85, 82, 65, 80, 96, 82, 70, 61, 52, 81, 58, 79, 82,
+65, 44, 51, 52, 92, 89, 54, 65, 82, 69, 61, 92, 70, 58, 58, 85, 93, 61, 58, 57, 82, 70, 56, 61, 44, 69, 61, 74, 95, 78,
+75, 78, 44, 65, 86, 62, 87, 44, 57, 54, 87, 57, 88, 71, 68, 70, 68, 88, 66, 89, 51, 81, 54, 91, 57, 58, 87, 78, 77, 75,
+98, 52, 81, 58, 62, 68, 78, 97, 89, 58, 50, 62, 58, 65, 56, 78, 62, 65, 52, 61, 44, 92, 58, 76, 88, 65, 57, 51, 62, 78,
+80, 78, 74, 91, 78, 84, 78, 89, 70, 74, 93, 54, 61, 82, 80, 81, 51, 52, 74, 52, 58, 66, 79, 91, 44, 54, 77, 62, 65, 44,
+51, 69, 52, 66, 68, 78, 89, 94, 63, 51, 78, 52, 81, 78, 54, 92, 51, 74, 94, 63, 52, 96, 81, 44, 87, 62, 52, 56, 88, 86,
+78, 69, 79, 66, 50, 56, 88, 86, 58, 62, 93, 86, 71, 51, 70, 70, 61, 44, 68, 54, 62, 87, 96, 61, 82, 56, 81, 61, 54, 86,
+89, 44, 91, 69, 93, 81, 44, 78, 79, 79, 88, 91, 93, 92, 66, 79, 88, 71, 68, 58, 65, 78, 86, 98, 52, 66, 56, 50, 66, 92,
+51, 52, 61, 44, 80, 71, 54, 57, 82, 74, 65, 74, 96, 82, 85, 85, 58, 95, 44, 87, 93, 94, 74, 63, 63, 98, 51, 93, 88, 89,
+54, 87, 57, 93, 81, 78, 87, 89, 62, 76, 71, 91, 62, 65, 54, 96, 82, 85, 63, 54, 63, 86, 88, 92, 52, 56, 44, 50, 93, 74,
+82, 65, 85, 98, 79, 74, 63, 63, 98, 66, 94, 68, 89, 50, 78, 95, 82, 66, 94, 69, 78, 87, 80, 74, 80, 44, 86, 58, 65, 52,
+96, 62, 70, 81, 75, 78, 91, 78, 69, 79, 66, 91, 57, 69, 74, 91, 86, 98, 74, 52, 52, 81, 58, 75, 74, 93, 70, 85, 78, 88,
+79, 54, 63, 75, 94, 58, 50, 74, 75, 66, 71, 80, 61, 52, 71, 51, 93, 61, 58, 93, 82, 86, 58, 96, 78, 65, 78, 58, 57, 58,
+57, 70, 88, 63, 58, 54, 95, 58, 70, 61, 44, 79, 88, 68, 70, 54, 87, 57, 57, 44, 69, 93, 50, 88, 98, 86, 66, 51, 52, 66,
+79, 52, 81, 58, 74, 63, 85, 62, 44, 77, 51, 82, 44, 80, 58, 96, 88, 68, 84, 69, 82, 75, 58, 92, 44, 78, 56, 61, 98, 66,
+94, 93, 66, 76, 66, 86, 44, 66, 65, 76, 58, 86, 66, 50, 58, 70, 88, 66, 71, 50, 54, 62, 57, 85, 44, 51, 52, 93, 61, 58,
+76, 62, 70, 98, 92, 61, 88, 71, 63, 77, 79, 74, 63, 63, 82, 87, 52, 88, 58, 65, 44, 86, 98, 61, 54, 65, 57, 69, 98, 66,
+71, 68, 86, 88, 92, 93, 81, 94, 86, 75, 63, 58, 51, 44, 91, 95, 74, 87, 70, 86, 74, 83, 66, 91, 80, 78, 87, 44, 68, 54,
+63, 89, 81, 82, 85, 85, 82, 89, 88, 87.</string>
+    <string name="cipher_challenge_2008_8A">E C X D H R E G E F N Z X O D L P H L O X E R E B Y C G W O O Q Z E C W R L V V L\n
+Y O E F Y N Y O I D Y L O D H X F R W B B R D O R N O O L C L O O Q Y K V G V V C\n
+W O Q W C N N E L O C X B E C K O E I R W X P C N E E I E X E H X O Z V O O I D B\n
+K E O O U C W C B N E R E R R W C Q R E L E F D R Q Q O S Y I L F N O Y E X O Y D\n
+B Y I B Y O O Y L Y D D Y W E Y R Y E L D Q R L E R L O Q C O D V Y C G Q Y B Y Y\n
+O H Y W S I N Y T C E Q Y L E C V F R Z E R D X H D E X O Z E F E C F O R B C X N\n
+L C C F S K Y Z Y B Y S F I O O V E Y Z O D O B O S X Z B Q C X R E D W D Y R H V\n
+C R B S L E C D M O I Y C V X H L E X O C S B V C R Y C Y R L B W L O K I F G L R\n
+V E O Q D Q W L P O C V D O R O N Q D L W R E O O Z O O X V K O L X Y H L I O V D\n
+K O C Y R O L D L Z O V R H X C C O H C L Z Y E X Q L D V V L C E B N Y E E X U I\n
+I E W N Y N X E G S L L B Y E O R R Y D C Q P E Y O D O K R V P O Z D C E E N E Y\n
+O Y K W X C K Q O Y U I O C Q Z O C F E O O C O E C K X I Z Y C W O F U V Q C Y X\n
+V K H K O O B O W X E Y L E L C X B V Q E C O C N H Z E K Y X O O C S Q O L Y P K\n
+Y Y Y V B X L K O S Q C V Q E Y B L B L Q D L Z Y Q L O E X Q L D Q Q O R E W O Y\n
+G F C R I S K L L O R L V R X G D C W E L L E L C O E B Q L R E D L L C D H E E F\n
+O Y U N K Q D Z X C D E F X O R L R Y L G V O R E X Q N O X D Z L Z W O H O Q Q C\n
+B N L O E Q X Z B X X Y X Z H B W X D V O F N C Q R E Y V B L C P D L R Y H O O V\n
+H Y D R Q L Y C W L O C U C L O Y P E V I E N D O E Y C L I C O O Q P D X R Z C Y\n
+R F Z X O D H Y L X H N X Y X B X L S E O L O R S H R E S K W D N O X B Y V O L G\n
+N C Y E R Y E L X B S C Y G B I P X O Q O E S D L L E F U Q K D L H R Y E V X V R\n
+O C D Q X S Q S K B R Y H R B K E B C O X R E W C D D X Y R I F S L N X Q Z R Y X\n
+W O E O E S O Q Y C Z W X B O E Q C E B F Y L Y O N B L N D F C R D R O O C X X P\n
+K S W V C F Z O N Y Q H E R O Q O F L O D X X D V R O E D Y E O X X S L C O D P Q\n
+B O L L Y Z O B W G O R Y X Z O Z E R G O D B E O C E O Y H E H P Y O E D G F E F\n
+O X D D B R C E K O C E Z P V L Y Q X R B L E S D D O V Z X Q Q E E X V H L V Q D\n
+L E E E F O R Q N W E Q Q W K S C V V S E X Q F D E C K Q Q O O Q N E O R R L O I\n
+C L O N S B V O O O Q R R O W E E O K O Y B O X F R W W R L X X O F S L V V R I L\n
+W B C O E E D W V E O X V H K R F D Q D D D N X D X R L D X R Q R V R D V L E O X\n
+L G P H R Q N Y V Y L E V R D Y P D L U E R C R O E X C E B L O W V Z E I X R L B\n
+C O O W Y L L X Y C S Q R E E X F O G X L P O X Y C L O R Q W O W K Q N O B D F P\n
+K X X Y X E S D H O E O Z Q O D O N O Y C X A P N Y E E S O I X R L O Y N E W E O\n
+L E O X Y H O E Y B R N Y W C Y D N I H E L F V L B R D L H O S X H C C Y Q K R Y\n
+E F C E N Q B C N Y Y Y X L R N O Y O X V E O K D F Y S E C R C O L R L F O Q N C\n
+V C L Q L R I Y N F X C H X Y Y Z C O E R F X B W S X F R Y X K X C X V P N Y F P\n
+L O V D P S K F R I D E O K F F O E X Y X C S R L O H X Y F P Z E O L R Q C Z V O\n
+D D Q L C Q Y D S V Y H C V D C L D E E P O K D V B Y X X P F E V Y X E E O O I J\n
+E Q L X L R F N O O N Q O O S I D W Q Q O D Y E V R F R Y Q X O Y N K E I X H Y J\n
+R O D B X D C Y C W E Y Y E Y C L K H O N L N Y Z L V X N E N B D E S V F S O F J\n
+L C S E B V I C D K Q E N E B L X Y L P N C V C L W B P P L L Q D Q L O E Q D V J\n
+W O Y Q S O C E S O O F R O O G E H C C O O O E C D Q R Y P R R Y O D H R H Q O J\n
+N Y X O Q N L L L N D C X C W O D X E L S B E O E F L D G C C D N Z O Q Q R L G J\n</string>
+    <string name="cipher_challenge_2008_8B">179, 168, 205, 126, 203, 164, 140, 114, 103, 169, 200, 144, 142, 91, 102, 93, 209,
+121, 127, 198, 152, 110, 186, 105, 183, 188, 138, 80, 58, 116, 158, 207, 127, 141,
+201, 185, 167, 123, 115, 147, 163, 115, 189, 202, 37, 187, 180, 137, 195, 06, 191,
+136, 110, 118, 166, 59, 175, 154, 143, 08, 183, 166, 199, 04, 207, 126, 129, 207,
+133, 06, 211, 156, 66, 194, 50, 200, 193, 201, 188, 59, 84, 124, 148, 160, 183,
+117, 169, 100, 207, 189, 133, 211, 173, 149, 171, 138, 164, 130, 183, 209, 109, 39,
+93, 198, 193, 211, 123, 106, 159, 149, 135, 85, 10, 96, 202, 82, 165, 160, 205, 30,
+42, 76, 10, 153, 87, 129, 196, 203, 108, 92, 143, 62, 142, 170, 200, 74, 170, 158,
+157, 70, 117, 186, 58, 175, 173, 180, 202, 110, 195, 158, 201, 150, 87, 110, 150,
+167, 161, 182, 163, 185, 204, 182, 167, 207, 149, 65, 196, 146, 107, 133, 162, 48,
+169, 04, 210, 118, 153, 156, 152, 200, 124, 126, 211, 65, 119, 111, 188, 210, 67,
+174, 139, 204, 192, 182, 111, 104, 149, 198, 188, 205, 153, 172, 182, 140, 33, 94,
+04, 208, 64, 117, 205, 28, 193, 194, 38, 160, 158, 201, 116, 176, 173, 130, 210,
+187, 131, 77, 124, 207, 139, 200, 76, 150, 00, 140, 162, 188, 209, 125, 208, 62,
+104, 134, 51, 172, 209, 162, 111, 114, 131, 144, 158, 167, 102, 69, 203, 52, 50,
+208, 01, 210, 180, 127, 102, 111, 52, 181, 12, 120, 24, 186, 203, 153, 128, 111,
+191, 206, 22, 167, 117, 150, 206, 104, 193, 201, 81, 122, 163, 188, 203, 169, 51,
+205, 88, 79, 170, 133, 102, 159, 202, 117, 191, 152, 200, 112, 201, 193, 155, 108,
+177, 112, 183, 188, 199, 159, 137, 138, 139, 166, 86, 32, 107, 209, 134, 164, 113,
+65, 188, 172, 11, 123, 158, 175, 74, 111, 111, 147, 106, 72, 124, 07, 33, 72, 09,
+205, 147, 135, 82, 16, 160, 203, 70, 188, 87, 181, 141, 139, 207, 155, 211, 13, 78,
+87, 134, 187, 208, 09, 195, 182, 129, 203, 112, 204, 175, 185, 144, 155, 94, 104,
+206, 15, 123, 112, 43, 133, 188, 202, 189, 158, 207, 131, 129, 181, 121, 140, 186,
+174, 206, 138, 119, 145, 141, 63, 128, 117, 194, 85, 07, 105, 25, 157, 161, 15, 39,
+79, 188, 168, 176, 211, 158, 92, 96, 166, 94, 147, 31, 108, 91, 27, 15, 195, 208,
+109, 211, 115, 116, 129, 115, 164, 144, 04, 126, 78, 125, 160, 141, 160, 00, 196,
+146, 11, 145, 52, 161, 144, 122, 36, 106, 64, 173, 12, 201, 16, 177, 21, 135, 210,
+85, 137, 172, 194, 151, 93, 88, 189, 168, 144, 189, 121, 150, 200, 06, 130, 176,
+10, 194, 165, 07, 03, 191, 141, 129, 29, 121, 142, 84, 62, 154, 86, 156, 210, 44,
+191, 208, 104, 141, 182, 201, 165, 104, 81, 12, 152, 89, 134, 136, 202, 148, 101,
+211, 143, 155, 00, 111, 96, 158, 03, 125, 111, 45, 00, 41, 204, 165, 95, 200, 124,
+163, 149, 179, 207, 155, 05, 157, 08, 211, 183, 10, 199, 21, 48, 143, 107, 181,
+144, 133, 08, 164, 186, 158, 50, 208, 166, 59, 39, 88, 202, 171, 135, 200, 129,
+169, 206, 174, 50, 211, 64, 98, 196, 132, 85, 185, 209, 62, 116, 180, 129, 117,
+187, 96, 149, 210, 171, 63, 177, 123, 74, 200, 95, 113, 179, 154, 185, 185, 144,
+125, 182, 187, 157, 100, 132, 157, 196, 145, 09, 116, 134, 133, 102, 206, 41, 118,
+131, 29, 161, 30, 07, 69, 166, 71, 47, 93, 123, 108, 177, 131, 101, 189, 154, 118,
+120, 203, 103, 31, 200, 139, 113, 95, 207, 115, 147, 63, 102, 49, 116, 154, 167,
+208, 138, 62, 47, 159, 46, 168, 151, 129, 200, 186, 198, 119, 167, 162, 127, 34,
+40, 28, 196, 32, 191, 211, 122, 164, 171, 156, 133, 147, 146, 179, 104, 144, 143,
+146, 104, 172, 12, 119, 176, 207, 135, 78, 105, 210, 91, 59, 168, 211, 188, 186,
+120, 181, 109, 130, 76, 193, 162, 95, 204, 124, 104, 134, 178, 69, 149, 179, 120,
+133, 106, 109, 187, 109, 186, 198, 11, 23, 112, 104, 202, 111, 123, 102, 173, 120,
+66, 188, 172, 106, 168, 100, 154, 96, 204, 54, 168, 144, 117, 159, 120, 202, 145,
+09, 12, 189, 167, 191, 26, 141, 176, 114, 46, 207, 48, 80, 174, 68, 64, 173, 54,
+39, 20, 123, 06, 173, 18, 208, 100, 143, 166, 94, 175, 147, 01, 143, 209, 170, 133,
+13, 82, 210, 118, 160, 53, 125, 165, 122, 18, 205, 73, 130, 48, 177, 111, 14, 100,
+34, 150, 141, 20, 04, 178, 86, 208, 189, 193, 119, 107, 149, 75, 150, 204, 13, 121,
+56, 181, 126, 194, 118, 164, 105, 151, 151, 24, 195, 01, 77, 132, 79, 101, 205, 87,
+142, 158, 51, 175, 153, 205, 52, 88, 148, 140, 161, 122, 36, 46, 60, 145, 193, 126,
+159, 152, 23, 102, 203, 192, 182, 197, 104, 145, 203, 55, 158, 210, 59, 126, 150,
+103, 128, 137, 200, 53, 63, 152, 139, 105, 27, 186, 211, 173, 205, 141, 168, 168,
+134, 95, 13, 143, 104, 110, 186, 30, 84, 100, 130, 131, 124, 179, 159, 101, 200,
+168, 178, 187, 156, 103, 111, 210, 181, 00, 204, 154, 151, 69, 08, 211, 194, 185,
+193, 159, 205, 182, 208, 125, 05, 135, 147, 173, 42, 174, 186, 144, 174, 206, 189,
+167, 27, 188, 108, 142, 133, 24, 187, 80, 155, 173, 125, 24, 180, 123, 193, 120,
+210, 96, 49, 143, 146, 195, 134, 208, 192, 115, 149, 136, 128, 110, 179, 172, 109,
+200, 147, 147, 146, 165, 180, 207, 140, 149, 136, 169, 108, 68, 164, 98, 105, 152,
+107, 105, 142, 184, 109, 77, 120, 133, 122, 155, 150, 132, 174, 142, 145, 32, 139,
+134, 116, 10, 153, 138, 172, 108, 205, 163, 202, 135, 192, 196, 161, 146, 185, 103,
+141, 202, 148, 149, 129, 33, 32, 191, 135, 178, 143, 162, 171, 165, 177, 106, 118,
+192, 170, 41, 203, 116, 157, 155, 98, 189, 124, 142, 29, 188, 204, 116, 186, 205,
+154, 43, 207, 78, 112, 125, 174, 170, 129, 100, 164, 189, 170, 104, 26, 28, 156,
+174, 35, 00, 170, 61, 178, 196, 54, 135, 85, 192, 167, 182, 42, 129, 206, 166, 148,
+119, 202, 174, 128, 169, 112, 53, 47, 107, 202, 172, 201, 121, 201, 69, 156, 185,
+03, 121, 18, 163, 173, 141, 31, 115, 95, 13, 127, 92, 115, 10, 116, 159, 127, 166,
+205, 186, 11, 61, 103, 86, 130, 115, 116, 210, 152, 61, 127, 153, 139, 07, 37, 179,
+40, 181, 208, 109, 122, 197, 89, 122, 57, 162, 107, 46, 166, 136, 54, 169, 137,
+208, 125, 209, 29, 145, 78, 96, 106, 192, 170, 122, 127, 125, 208, 128, 182, 201,
+177, 02, 139, 105, 167, 189, 113, 150, 51, 145, 21, 157, 194, 48, 157, 13, 191,
+186, 162, 36, 178, 57, 129, 145, 113, 178, 21, 191, 93, 202, 123, 172, 188, 127,
+84, 169, 05, 48, 204, 177, 52, 114, 01, 204, 128, 188, 171, 65, 157, 188, 159, 113,
+197, 167, 163, 204, 37, 19, 146, 117, 25, 204, 139, 31, 205, 109, 158, 167, 196,
+182, 04, 123, 203, 162, 200, 25, 130, 200, 163, 103, 150, 07, 13, 157, 94, 139,
+141, 47, 185, 129, 137, 140, 133, 113, 146, 150, 189, 210, 191, 32, 192, 122, 116,
+156, 207, 102, 72, 106, 131, 194, 185, 98, 76, 208, 188, 136, 201, 156, 211, 113,
+165, 206, 111, 138, 200, 174, 170, 32, 57, 49, 194, 168, 159, 24, 91, 132, 137,
+187, 129, 205, 145, 106, 164, 12, 146, 200, 116, 179, 49, 168, 142, 44, 05, 187,
+177, 141, 111, 179, 24, 201, 168, 119, 129, 201, 15, 155, 109, 135, 15, 106, 195,
+113, 77, 152, 161, 174, 193, 196, 101, 186, 134, 180, 181, 93, 150, 178, 189, 53,
+185, 169, 78, 193, 207, 23, 101, 186, 121, 179, 94, 127, 134, 26, 194, 201, 139,
+72, 146, 111, 145, 113, 168, 209, 146, 48, 180, 179, 201, 34, 91, 122, 179, 91,
+200, 37, 186, 37, 71, 18, 155, 50, 30, 195, 58, 41, 127, 107, 146, 163, 147, 113,
+168, 173, 163, 102, 179, 193, 74, 119, 178, 08, 17, 179, 175, 88, 31, 209, 124,
+209, 102, 205, 192, 124, 200, 148, 152, 161, 106, 31, 134, 107, 142, 145, 208, 132,
+39, 209, 141, 187, 31, 104, 145, 201, 122, 139, 06, 193, 110, 60, 122, 140, 161,
+113, 200, 68, 196, 115, 129, 211, 161, 129, 81, 44, 196, 115, 156, 184, 102, 131,
+175, 185, 174, 177, 101, 210, 92, 10, 159, 166, 153, 127, 176, 161, 122, 95, 130,
+153, 197, 57, 13, 179, 191, 182, 151, 22, 174, 187, 143, 29, 123, 178, 55, 91, 117,
+184, 13, 203, 125, 39, 137, 82, 185, 10, 179, 193, 205, 114, 100, 205, 168, 202,
+121, 186, 89, 05, 27, 210, 111, 169, 130, 36, 157, 177, 146, 111, 200, 176, 161,
+103, 151, 159, 66, 127, 186, 101, 177, 202, 41, 79, 137, 204, 118, 203, 186, 134,
+177, 174, 209, 155, 163, 207, 109, 188, 155, 151, 200, 20, 141, 211, 42, 135, 102,
+115, 148, 120, 81, 113, 131, 141, 118, 184, 208, 117, 179, 205, 111, 203, 114, 109,
+125, 62, 160, 181, 209, 193, 162, 56, 166, 171, 185, 131, 187, 37, 152, 176, 137,
+194, 165, 140, 207, 170, 133, 178, 131, 101, 121, 143, 155, 171, 129, 208, 155,
+173, 186, 15, 143, 36, 182, 203, 80, 123, 107, 140, 72, 149, 137, 79, 111, 61, 113,
+15, 205, 127, 57, 134, 195, 124, 39, 182, 209, 117, 136, 128, 114, 108, 209, 31,
+75, 144, 109, 187, 168, 102, 176, 105, 85, 135, 113, 131, 189, 146, 142, 20, 137,
+136, 181, 117, 196, 109, 195, 106, 138, 114, 12, 143, 164, 130, 125, 08, 180, 202,
+101, 31, 152, 166, 192, 156, 112, 185, 178, 188, 53, 38, 196, 174, 185, 147, 19,
+187, 113, 154, 27, 129, 88, 29, 114, 210, 100, 60, 94, 141, 43, 182, 121, 201, 116,
+174, 30, 208, 187, 143, 93, 161, 115, 28, 139, 86, 21, 135, 185, 143, 205, 146,
+195, 122, 118, 28, 124, 202, 88, 165, 105, 168, 73, 202, 154, 193, 193, 108, 176,
+84, 190, 153, 146, 176, 184, 163, 173, 204, 152, 153, 168, 165, 01, 157, 208, 170,
+166, 105, 59, 94, 185, 135, 119, 208, 142, 154, 135, 109, 108, 169, 139, 130, 94,
+205, 63, 107, 108, 119, 201, 170, 145, 132, 162, 191, 195, 124, 206, 142, 182, 149,
+153, 139, 34, 187, 79, 154, 25, 170, 150, 198, 75, 201, 168, 137, 184, 202, 113,
+182, 125, 107, 126, 120, 81, 09, 142, 203, 134, 20, 130, 131, 203, 78, 202, 163,
+72, 162, 177, 158, 92, 142, 108, 185, 158, 185, 210, 149, 117, 04, 124, 187, 180,
+170, 153, 168, 136, 106, 177, 111, 10, 127, 124, 205, 37, 140, 182, 136, 160, 210,
+112, 165, 157, 186, 171, 68, 131, 144, 168, 196, 62, 170, 200, 133, 203, 112, 175,
+50, 122, 112, 184, 143, 137, 172, 25, 124, 187, 206, 143, 210, 134, 69, 156, 82,
+189, 135, 182, 125, 113, 20, 145, 141, 107, 207, 82, 14, 166, 167, 132, 136, 58,
+195, 209, 22, 118, 40, 110, 51, 102, 144, 134, 87, 166, 194, 118, 203, 166, 72,
+125, 111, 201, 118, 166, 117, 167, 192, 170, 114, 22, 75, 38, 134, 107, 182, 128,
+145, 149, 179, 179, 62, 176, 106, 168, 151, 51, 201, 140, 08, 148, 157, 149, 53,
+111, 51, 115, 143, 109, 211, 186, 198, 177, 110, 26, 202, 27, 172, 124, 140, 145,
+154, 207, 65, 110, 59, 202, 159, 113, 118, 188, 209, 79, 169, 12, 179, 102, 67,
+174, 28, 203, 51, 154, 160, 13, 159, 149, 168, 164, 109, 205, 154, 116, 157, 86,
+173, 157, 112, 194, 80, 45, 107, 22, 168, 39, 134, 179, 162, 180, 204, 134, 208,
+195, 106, 129, 133, 101, 202, 186, 204, 186, 73, 189, 121, 138, 201, 166, 147, 09,
+159, 132, 96, 196, 206, 126, 164, 101, 187, 14, 141, 205, 195, 158, 192, 194, 191,
+195, 201, 146, 195, 06, 157, 152, 123, 182, 139, 125, 162, 180, 45, 20, 121, 125,
+31, 124, 161, 105, 95, 106, 65, 166, 207, 156, 123, 117, 182, 142, 132, 200, 75,
+71, 170, 129, 166, 211, 160, 88, 172, 82, 152, 208, 61, 193, 181, 109, 164, 162,
+196, 182, 128, 145, 207, 88, 65, 147, 208, 198, 129, 137, 112, 128, 119, 153, 50,
+201, 122, 73, 149, 153, 70, 208, 81, 108, 11, 201, 152, 204, 81, 00, 163, 88, 169,
+128, 117, 159, 175, 112, 143, 112, 183, 137, 199, 161, 201, 154, 192, 155, 132,
+102, 202, 116, 75, 66, 194, 210, 180, 161, 40, 41, 93, 208, 104, 123, 101, 123, 15,
+60, 206, 161, 132, 51, 193, 56, 66, 69, 93, 173, 149, 153, 76, 117, 71, 47, 177,
+154, 92, 184, 86, 173, 117, 203, 179, 159, 182, 156, 01, 191, 151, 11, 22, 147,
+163, 186, 102, 111, 133, 74, 152, 206, 188, 195, 103, 138, 159, 188, 153, 206, 127,
+111, 114, 188, 194, 203, 39, 108, 65, 206, 143, 155, 168, 124, 152, 146, 192, 145,
+51, 211, 88, 47, 177, 34, 13, 127, 192, 114, 105, 95, 202, 13, 75, 106, 102, 165,
+84, 182, 135, 35, 78, 157, 24, 48, 201, 111, 33, 124, 128, 174, 209, 176, 140, 62,
+166, 125, 05, 125, 177, 162, 208, 70, 182, 128, 186, 205, 198, 161, 166, 89, 100,
+52, 161, 202, 112, 200, 107, 20, 123, 144, 192, 122, 131, 09, 108, 52, 161, 169,
+196, 124, 85, 47, 61, 112, 207, 92, 205, 111, 02, 48, 29, 114, 211, 101, 177, 109,
+179, 101, 74, 193, 110, 59, 172, 144, 47, 185, 211, 182, 187, 160, 129, 110, 148,
+172, 82, 104, 133, 138, 06, 180, 18, 106, 07, 64, 130, 83, 188, 118, 160, 101, 187,
+106, 118, 105, 163, 167, 123, 211, 82, 35, 204, 63, 209, 46, 67, 206, 188, 210, 87</string>
 
     <string name="cc_2009">Cipher Challenge 2009</string>
     <string name="cc_2009_0A">CC 2009 0A</string>
@@ -3066,7 +3497,13 @@ DOPSL P DHZ THPUSF AOLYL AV JOLJR AOL SLAALYZ MVY HBAOLUAPJPAF, P NVA YLHSSF PUC
 AOLU P YLJLPCLK AOL TLZZHNL HIVBA AOL ZOHKVD HYJOPCL. ZVTLVUL LSZL RULD HIVBA PA, HUK OHK DVYRLK VBA AOHA P DHZ OBUAPUN MVY PA AVV. AOL WVZAJHYK KPKU’A OLSW TBJO, IBA AOL LTHPSZ KPK. AOL MPYZA VUL OHK AOL ZBIQLJA SPUL QLRFSS HUK OFKL HUK DHZ LUJYFWALK BZPUN H ZPTWSL JHLZHY ZOPMA AV KPZJVBYHNL JHZBHS PUALYLZA. PA KPKU’A AHRL TL SVUN AV JYHJR PA, HUK AOL UHTLZ HUK KLAHPSZ PA JVUAHPULK THAJOLK AOL NYVDPUN SPZA VM TFZALYPVBZ YLMLYLUJLZ MYVT TF VDU YLZLHYJO. KVBNSHZ ISHJR DHZ JSLHYSF HU PTWVYAHUA MPNBYL, HUK P OHK H MLLSPUN AOHA OL OHK ZVTLAOPUN AV KV DPAO AOL HYJOPCL. AOHA MLLSPUN DHZ JVUMPYTLK IF AOL ZLJVUK LTHPS, ISHJR OLHYA, AOHA P YLJLPCLK SHALY AOHA DLLR. HNHPU PA DHZ LUJYFWALK IBA AOPZ APTL BZPUN HU HMMPUL ZOPMA JPWOLY. PA DHZ JSLHYSF MYVT AOL ZHTL PUKPCPKBHS - HA AOL CLYF SLHZA DOVLCLY DHZ ZLUKPUN TL AOL LTHPSZ OHK H OHIPA VM TPZZPUN AOL SLAALY Y MYVT AOL DVYK "FVBY".
 
 ZVTLVUL DHZ WSHFPUN NHTLZ DPAO TL, HUK P DHZ TVYL AOHU OHWWF AV QVPU PU.</string>
-    <string name="cipher_challenge_2018_2B">TODO</string>
+    <string name="cipher_challenge_2018_2B">GYN OFCNDAG,
+
+YZ YG EYZF NAMNAZ ZFCZ Y TYPH WQGADT YP HYGCMNAAWAPZ EYZF QIS RSHMAWAPZ. YZ YG ODACN ZI WA ZFCZ QIS CNA NYMFZ YP IPA NAMCNH, YZ YG ZYWA ZI AGZCVDYGF ZFA ITTYOA IT GAONAZ GAONAZCNQ, CPH ZI ZCKA ZFA GAONAZ ECN ZI ISN APAWYAG. IP IPA GYMPYTYOCPZ BIYPZ FIEALAN, Y HI PIZ CMNAA. ZFYG NIDA YG PIZ GSYZAH ZI MIIH WAP EYZF C NABSZCZYIP TIN FIPISN. QISN GSMMAGZYIPG EISDH VA OCBYZCD YT Y EANA DIIKYPM ZI CBBIYPZ C OFYAT IT GZCTT IN C PAE TINAYMP GAONAZCNQ, FIEALAN ZFA ZCGKG ZFCZ EA VIZF KPIE CNA PAOAGGCNQ YT EA CNA ZI BNIZAOZ CPH AXBCPH ZFA AWBYNA EYDD NAUSYNA C WCP IT CDZIMAZFAN HYTTANAPZ OFCNCOZAN. C NAH VDIIHAH WCP EYZF C VDCOK FACNZ.
+
+ZFANA YG IPA WCP EA VIZF KPIE EFI YG APZYNADQ GSYZAH ZI ZFA DAGG OIPMAPYCD CGBAOZG IT WIHANP GZCZAONCTZ, CPH Y CW GSNBNYGAH ZFCZ QIS HYH PIZ CHH FYG PCWA ZI ZFA DYGZ - QIS CWANYOCP OISGYP HISMDCG VDCOK. VDCOK YG C WCP IT GYPMSDCN ZCDAPZG CPH Y EISDH GSMMAGZ ZFCZ QIS COZ EYZF SZWIGZ GBAAH ZI VNYPM FYW ZI DIPHIP. Y VADYALA ZFCZ FA YG OSZ TNIW ZFA GCWA ODIZF CG QIS, CPH Y CW OIPTYHAPZ ZFCZ QIS EYDD VA CVDA ZI BANGSCHA FYW ZI ZCKA SB ZFA BIGZ IT GAONAZ GAONAZCNQ. Y CW NCZFAN DIIKYPM TINECNH ZI WQ TYNGZ WAAZYPM EYZF WN. VDCOK CPH Y ZNSGZ QIS EYDD PIZ HYGCBBIYPZ WA YP ZFYG, VSZ YT QIS TYPH ZFCZ FA YG PIZ CWAPCVDA ZI NACGIP ZFAP Y EYDD TYPH CPIZFAN ECQ ZI BANGSCHA FYW. C WCP DYKA VDCOK CDECQG FCG C GKADAZIP IN ZEI YP FYG ODIGAZ!
+
+L.</string>
     <string name="cipher_challenge_2018_3A">FTNPTQP RDF TGOBTLFKX HPPQ IYDI B FYTLKM HQTR DGTLI MTLVKDF GKDJH GLI B RDF KPSI RTQMPCBQV RYDI YP YDM IT MT RBIY IYP FYDMTR DCJYBOP. B STLQM FTNP ICDJPF TS YBN BQ GTFITQ QPRFWDWPC JKBWWBQVF SCTN IYP WPCBTM. IYP FITCBPF FITWWPM BQ 1873, DCTLQM IYP MDIP TS IYP KPIIPCF GPIRPPQ OBJITCBD DQM FBC JYDCKPF, FT B DFFLNP YP CPILCQPM IT PQVKDQM IYPQ, GLI B JTLKMQ’I SBQM DQX CPJTCM TS YBN BQ IYP BNNBVCDIBTQ SBKPF DQM IYPCP RDF QTIYBQV BQ IYP TSSBJBDK CPJTCM IT FLVVPFI IYDI YP NPI RBIY FBC JYDCKPF, KPI DKTQP RBIY YPC NDEPFIX. IYP ICDBK YDM VTQP JTKM DQM B NBVYI YDOP NTOPM TQ DI IYDI WTBQI, GLI IYPQ B VTI IYP IYBCM PNDBK. IYBF IBNP BI RDF D HPXRTCM JBWYPC DQM BI ITTH D KBIIKP KTQVPC IT GCPDH, IYTLVY IYP RTCM FICLJILCP YPKWPM D KTI. BI JTQSBCNPM POPCXIYBQV B YDM VLPFFPM FT SDC DGTLI GKDJH, DQM CDBFPM D RYTKP KTDM TS QPR ZLPFIBTQF! BI DKFT FLVVPFIPM IYDI B NBVYI SBQM DQFRPCF BQ IYP FYDMTR DCJYBOP, GLI SBCFI B YDM IT SBVLCP TLI RYPCP BI RDF, DQM YTR B JTLKM VPI BQ. B FIBKK JDQ’I GPKBPOP BI, GLI IYP DQFRPC JDNP SCTN D VTTVKP FPDCJY. B RDF KTTHBQV STC D KTJDIBTQ IYDI RTLKM YDOP WCTOBMPM GKDJH RBIY JTOPC STC D FICPDN TS OBFBITCF, WCPSPCDGKX BQ D JPQICDK KTQMTQ KTJDIBTQ, DQM RBIY SDJBKBIBPF STC FPJLCP FITCDVP TS TSSBJBDK CPJTCMF, DQM BI FYTLKM YDOP GPPQ TWPQPM BQ 1873 TC 1874. B FPDCJYPM STC “GKDJH, KTQMTQ, 1874” DQM B KBHPM RYDI B STLQM. DQM IYDI BF RYX B STLQM NXFPKS KXBQV TQ IYP CTTS TS IYP QTCNDQ FYDR GLBKMBQVF BQ IYP NBMMKP TS IYP QBVYI DQM BQ WTLCBQV CDBQ! B YDM IT SBVLCP TLI D RDX TS VPIIBQV BQFBMP TQP TS IYP NTFI FPJLCP KTJDIBTQF BQ PQVKDQM!</string>
     <string name="cipher_challenge_2018_3B">CTN HLETPQW DP NDBCQ, GDZT DI OJPQJI DP ARGG, ORQ IJQ ARGG TIJRBC QJ KTNPRLAT HT QCLQ UJNFDIB ZJN CTN UJRGA OT UJNQC QCT NDPF. ORQ JZ YJRNPT PCT CLA LI LIPUTN ZJN QCLQ. PCT KJDIQTA JRQ QCLQ NTQRNIDIB QJ QCT RIDQTA PQLQTP YLNNDTA DQP JUI NDPFP.
 
@@ -3249,8 +3686,8 @@ LYLOFPBBGTDDYPHQGFTIONHSESQBNQDUEFRCFYEEUROJXYP
 YTJZXOFQAWRNOZRSPUHDSMTPFYIKMZNBMCJXLVBBOJXTKBA</string>
     <string name="cipher_challenge_2019_8A">HBTUC NVBBC YRQGV THRLX UHKCU NMFPI VTSAP NMZYC IIYEY WCQEP GNNIG UIFZR MWXPP LOCTN WAUQA PNDNU ORWYU MBQOW MFHTY XZMYZ JJMMT IUFSR HPVPD SDBIV XDALM DKKDH LFUDR IIVUY EEQED GYELH OOOIM NKJPJ JTXTW AONXH SHJFL AYNKR PBEPH WLJUE GPOYF NBZUO HEINE LLNNC QDVIG WWUVZ JVWXQ EVBNC EKIVE ICYIK OUIUV JIBFZ UUGNN RDXRG AQRHR JJAPN DLZXQ DDKSB HDJDR GETQX VHKVN CRPQK DAEJA HHRWP MQIHK QEQRF QWCEM YZTTZ FTJJH IMWBV VUIRU CMMPZ DZCSY WAVUO ELLCU SKQKY NHBYB ZORGH YKYHN YNLNO EEURM YCHAQ OWPOO RAWGK ZPNQF DRUGV XXGUL JBPBY ORUDW GNAEQ RDDGQ UXMGA NUSRT GCCSV AMBVZ MYRSF FLRXV LKCSZ ZGVTJ RFDQV OOCSU SPHHY UZMAF TOROC TVSKG VNHCC FPTRH DYZMH PFDGV THLHZ LVZBQ VESGF EWXPM MYFFG CPBCG PCOPL PTNPH IKWUB VMZZI RFSKI AGAAE QMTTB VWANI LBQOD BNQTI YAIPJ HQYFE BPGXM KOQPR PDCCL UIOTM POBBS OCQLP TLMMG MPEFC MOXWG XPNFL FGSQX RIZLA CCFZS CGJLF TNZHV GSLPQ NWQOR MCRPF USGCF KMUOE ZQVIU EKIXO UBQOE MAYLU IWHPZ NIMNK FFGYW OUOCR PHBZI QXWNJ BNXBD AOFRY WHLAC QFQFG XIKZT NODBW EUTGG GQUZM MNFDV BVJYW UIDHL DEAMN RANTN BQOEQ ZDTHR LNLZP LPHSF VRSAK YICRZ GFOCT UWZLZ APWNU NKJLY ZOQWU ETRHT IKWGA DJBCQ SXQXP INHDN XZFVQ TTKZT NWQQQ HNDGW LJZHV TYAQE OIYEY MYHLB PZTVT HAFYZ CYZZE RRIES WLIHA TFDRF YHPQH LTXGK QECIX VVBUG KKJXW FPWEX LHZJC AXHGT YXZMS NKKMN NFYRY QJOIE OYAGW RUUGI YMWQG MGUJD XKGYW DDZRA CGCRD KUICB GSITC PMWGJ TNDSQ GOCAC SLNZZ XQKOO IDWNZ KQMKY PGVPJ RVWMO KQFDI NRUIX YPWWD SMGHW YJOTM VOFKO LFCFG NJLVC KNTNW CEWWO YIPPR GAUER YQJUW CRLHR PTUEX HLZOB CMBVV WLJIV UYEEQ ETXBV KMYGH XBHFG GUISZ ZBXBJ IRTDK EVMQJ RBPRI PPVSK ZOMDZ RDNRT HVHHL OSEGB HXCVA WOABN XEAQS IQZDM BZLOM BEEWU IXLVZ VYOUS MXDXL AYZHB ASRJE DPXEZ BNWZZ GVTJR FDNCA CGQSU ILZJY HKXWA DRVTD JAOYG EPRNF UJHGF HSQWQ DIVHR XXWTL VJAAN NUTRP XEZBN WDFUO IDVWW YYPLZ DHBTG ISKKN XBETR UGELF WVVOB BUOMV DKJOA TRCEE RJTHP UKCOE ZYKCP OSSSK UBNHN QCHIX VLAYM ILQSA UKFZF RCMBD SUFRD SLEXH OSXQE IMGGM SZOMB OCHVQ THVUH LYOLU DKOQZ MYCHA CRPAS TXSZS ELZYL PCBVV WLJIO QNPDK FHTCJ WGADJ BCQWI QVMLT LLRDZ RSGPO JLAYN EDLZT VTHSS OAQBK MMQQD FPGYB DOLUM WFHRY SJPLN XEUPO ASFHB YNEKQ DVFTD PROZA RYYRV ZTISG MBDJQ FDMBP XJFIA CAOCE ESREI VLUIZ XRJEO PHHDC OMAOD AZSDV KZXNZ OQQVE SGFEW XPMMY FFFCX JZKVF ZWORG AUVKM XCHAC RPAST XSZSE PZNPG NNVUH HNTAP NEASE OSUKZ XMZYL LCVFT VMTTH XYOLD RRIES WMBZO XKDDP EXQJT AJDDT FVBRB LVXXO DBRGE SORWY GAQLF LXISH EELAY GEPRN FDQPT TTLVC CEAOS RXRFZ YYWKB SHFVH QUKYI CECQT OJWVD BGDPP UDRFE LVHRL LBOGQ EOAJZ EXMRE QFZNF ZFPFS HBRYY YNFZD VPMNJ PECDI HJWCI KNZNO NQVZX DXAMF JKHQK ILGRY WYHJX DPGER TBZTX LVPBJ XASTD RLKKN XBETR HPDBL HVZIF QBOOH LKZXL LRXLZ RTUEI LMIXW RQDTS QXFQK MWADS QZWHI ZGGUG PEMTG IYHGF TAJNC FDRHW UPJXU GEPCC HPYGE SMLZX EDFUW HMRKP BZJTC OUUKW XTMLB QOCIV HWQCD MBZKQ FDRBE FMIKU BBSEU FDGUK LRWGA XPSHJ UZEXG UWCRP DQSAY SWKUO AXRSA DMRRY NLXAY RDNAL UWGNH YPECR EDQQH AKYAR YYASH WUIWI IMPFL ZBPZX RIKYB QOQXB CGRFS KXNEK KHKFU SPFIL QBEAB BGTYK ALJJO PGALF VKEYS PSNRL PFHJC SDXXV YOMRS UJHHT IBUNX ETVAH UCXTH YSXQH NWGVX NMHBR XRUGO HFRJM IADFQ BANRD MLTAW YBZHR HWQKL AYMQP QHAOU ZIWKI MQSYP GVXIJ LKCIC LDORP DOIRY ICCKE FUSKU IQEYV OQFDI TIXMQ ZFWOK XMWCG CZKCO YCBKD NUCQH NLAPN KDFEC CQLLL BVZAG DDIGZ SZRKP JFPNR SCJIA XXAKO KZNTN DYLNA MAKDU GWHJF YXNCA OUHTI VKIQK HSLRL DTSHX VOBFG XBENI OIWSU XPAXX QAEOK UIQEI ICQGL EPHFS ZXZMC RPQIW SUEUX CNOQG KLMCU KJRFK RBNGZ GIQEL BUGSB AZNEG IMSOA MUIEU RVXCK GMBZH BYJTP VKISK DAYKA QETDH VFLCX OJYSC IGGXM KAGYO HDVHT HIAUV JJXLC TZRHG MGYIL DPDVG IYTKH HCEPR XPFYU MYKYE RDSFU SXDBS GXDIM PDSTK RRXUU BQOWQ GHTHK GMBZA AGSOS DXXBK ZBRVW ONBCE KKAIR YLLBL VULZJ RFBQK ETRRX HVUMY YKOAZ RSKHH TAAIW IZRGV TIRTH NVCBY STFOS XXGUL FOSMI SCEKT XYIWY JDTPH LRIGU GXXPQ YGTMY GAUYX LRGMP VLZJG ULXZA AEHJD ZLRMJ DBGRO VTEIX ZZCBZ POGWP CEGMM PNBUD CBPHR YOYMU ICQYO MRLLP CODKM RIHPL JNIHV CSYOV RTDKK HHVLL JKOYK YXTDC QJXOI VHWCZ CXCIY RQSOE ALJJK SAUSR TGZNB VKLQJ NOGDD BDRYY ZOMAO XMVBX DXSII GHLDK IHJWA JGYMB DTXYH GOZFZ NJYOY BKUJD XTZOM AOYOV DWUIW WXJYR KDNUY HJTAU LRXXU XSHFC SVYDP EYRAW GUCXZ YIWQP MYDWQ SWMQC EZFHT IKQOR AZBKO DUTBX VZUTH OXRRH CBPWU ZOAMB OPTBK IESJX UFEQW DTOQZ XMGAB QOYMF OREDH NNDJD CWPFT WWMGC MVYCQ GWBUZ SFBJL FLFTI CWAJY OWDVO NROQB VLHXZ YFNGE SKWES JAPJD TFJWA BJZXX NKJCL OSGOM LNAWW WTWRG IXZFD CICJM QEJOS SWZHV CVJUG AXWYL MYGHR QVHBV HPXKP NJXJF UWCWY WAUYL IYMNF FPIL</string>
     <string name="cipher_challenge_2019_8B">FBGAIAGCFEKEFEKCIAGCFCGAFCIBHDHEFCFAFBFAGDFCHDFEKCIAKCIBGBGCIAHAFEKCFAKAIAGCFBFAGBFBIAFBHEIAGCKCIAFCIBHDFEGAGAFCHDIAHEIAFCKDFCFAIAKCFBFAIAGCFEHEFCICFBFEIAHEFDKAHBHDFCIEKAIDKCHDHEFBHEKEFCFCHAFEKEKCHEHAKAGEFCKCIAGCFBFAGBFCGAIAGCFEHEFCICFBFEIAFEHAHBFBHDFEIDKCHEHEIAFCGDFEKEFDKAGCFBHEKEFEKCIAGCIAGCFEIBHEHEHDGAFEFEKEHEFCFAIAGCFEKCFAGBFEHDIAGCKCIAIDFEHEIAFBHDIBHBIDFBIAGCFEKCKDGCIDKCHDIDFEGAFBGBGCIAFBFAFBIAHEHBIBHBHBFEIAHEIAKCIAFEHEIDFEGCKCICFEIAHDFBFEKEIAFCKDFCFAIAKCFBFAFBIAFDIBIAFBFAFCIDHDFEKCGEFBHEFEIAGCKCIAIDFEKDKCFAFCFAGEKAKEFEGAFEKCIAFBIAIAGCFEIDKCKAIDFEGAFCIBGBGCIAGAKCHEKDFBHEHAFDKAIAKCGDFBFAGBFCFAFBIAHEHAFBGBGCIAFBFAFCHBFEFAIDKCHDFCIBHDHBFCGEFBIAFBKDFBKCFAHEGCKCICFEHEGCHDIBFAGDGAHDFCHAIAGCFEKDFCFAGAGEFBKDIAKCFAKEIAGCFEKAFAFEFEKEKCHDFEKCHEFCFAIAFCKDFCFAGAHDFCFAIAIAGCFEFEICFBGEFEICFEFAIAGCFEIAGCHDFEKCIAFCGAFAIBKDGEFEKCHDHAFBHEHEFBGEFEHEFDKCHEFEKEFBFAKDIBFDKCKEFBKEFAFCIAGBFBICFEIAGCFEHAIAGCFEHAFEIAIAGEFEIAFCGAFBGBGCIAFBFAHEIAFEKCKEIAGCFEKAGCKCICFEKDFCFAICFBFAKDFEKEIAGCFEHAHEFEGEICFEHEIAGCKCIAIAGCFEHAKCKEKEFCKDIAHDFBFAFEFCGAHAIBIAIBKCGEGEKAKCHEHEIBHDFEKEKEFEHEIAHDIBKDIAFBFCFAIDFBGEGEHBHDFCIAFEKDIAIBHEKCFAKEIAGCKCIAHBFEKCKDFEKDKCFAFDFEHAKCFBFAIAKCFBFAFEKEIBFAKEFEHDIAGCFEHEGCFEGEIAFEHDFCGAIAGCFEFAIBKDGEFEKCHDIBHAFDHDFEGEGEKCIAGCFEKAKEFCFAFCIAHEFEFEHAIAFCHEFEFEIAGCKCIAIAGCFEGEFCFAGBFEHDIDFEKDFCIDFEHDFBFAIAGCFBHEHEGCKCKEFCIDIAGCFEHAFCHDFEIAGCFEIAIDFCHEFBKEFEHEIDFBGEGEFBFAICFEHEIAFBFAIAGCFEHEFEKCIDGAIBGEIDFEKCHBFCFAHEFDFEGAFCHDFEGEFCFAGBFBIAIDFBGEGEFDFEFBHAHBFCHEHEFBFDGEFEIAFCGAFBGBGCIAKCIAKCGEGEIDFBIAGCFCIBIAIAGCFEIAGCHDFEKCIAFCGAIAFCIAKCGEKCFAFAFBGCFBGEKCIAFBFCFAKCFAKEIDGCFEFAIAGCKCIAKEKCKAKDFCHAFEHEIDFEIDFBGEGEKCGEGEFDFEFEFAHEGEKCICFEKEFDKAIDGCFCFEICFEHDFBHEHAFCHDFEHDIBIAGCGEFEHEHEGEFCHEFEKCFAKEIDFEIDFBGEGEFDFEIAGCFEHEGEKCICFEHEIAGCFEHBHDFBKDFEFCGAIDFBFAFAFBFAGBHAFBGBGCIAFDFEIDFCHDHEFEKCIAGAFBHDHEIAFBGCFCHBFEKEIAGCKCIAIAGCFEHEHBKCKDFEHDKCKDFEIDFCIBGEKEGCFEGEHBIBHEIAIBHDFAFBFAGBIAGCFEHAFBHEHEFBGEFEHEGAHDFCHAIDFEKCHBFCFAHEFCGAIDKCHDIAFCKDKCHDHDFBFEHDHEFCGAHBFEKCKDFEKCFAKEGDFEFAFAFEKEKAHEFEFEHAFEKEIAFCGCKCICFEIAGCKCIAFBFAHAFBFAKEIDGCFEFAGCFEHEFEIAGCFBHEHBHDFCGBHDKCHAIAFCGEKCFAKEFCFAIAGCFEHAFCFCFAFDKAIDFBFAFAFBFAGBIAGCFEHEHBKCKDFEHDKCKDFEIAGCFEKCKEHAFBFAFBHEIAHDKCIAFBFCFAGCFCHBFEKEIAFCFEHEIAKCFDGEFBHEGCIAGCFEHEIBHBHDFEHAKCKDKAFCGAIAGCFEKDKCHBFBIAKCGEFBHEIAHEKAHEIAFEHAFCICFEHDKDFCHAHAIBFAFBHEHAKDFCIDFBFAGBFCIBHDFEFAFEHAFBFEHEKCFAKEHEFEIAIAFBFAGBFCIBHDGCFEKCHDIAHEKCFAKEHAFBFAKEHEFCFAIAGCFEKDFCFAHCIBFEHEIAFCGAKCFAFEIDGAHDFCFAIAFBFEHDFDIBIAFDHDFEKBGCFAFEICHEFEFEHAHEIBFAKEFEIAFEHDHDFEKEKCFAKEFEICFEFAFDFEGAFCHDFEIAGCFEGEKCIBFAKDGCFCGAKCHBFCGEGEFCIEFBIAGCFEKCHAFEHDFBKDKCFAHBIBFDGEFBKDFBHEFDFEGBFBFAFAFBFAGBIAFCGBFEIAFDFCHDFEKEIAGCFEIAGCHDFEKCIAFCGAFAIBKDGEFEKCHDIDKCHDFBHEHDFBHEFBFAGBKCFAKEIAGCFEHBFEKCKDFEHBHDFCIAFEHEIAHEIDGCFBKDGCKCHDFEFBFAIAFEFAKEFEKEIAFCHBHDFEICFEFAIAFBIAKCHDFEFEFAKDFCIBHDKCGBFBFAGBFCIBHDFEFAFEHAFBFEHEIAFCFDFEGEFBFEICFEIAGCKCIAIAGCFEKAKDKCFAIDFBFAIDKCHDFBHEIBFAKCICFCFBKEKCFDGEFEIAFCHEIBHDICFBICFEFBIAIDFEHAIBHEIAGAFBGBGCIAFBIAFAFCIDFCFAFCIBHDFCIDFAIAFEHDHAHEFDFEGAFCHDFEIAGCFEFAIBKDGEFEKCHDKCHDHEFEFAKCGEHEGBHDFCIDIAFCFCHBFCIDFEHDGAIBGEFBGAFCIBHDGEFEKCKEFEHDHEIDFBGEGEFAFCIAKCKDIAFCGAIAGCFEFBHDFCIDFAICFCGEFBIAFBFCFAIAGCFEFAFBIDFBGEGEHBHDFCICFCGDFEIAGCFEHDFEHCIBFBHDFEKEKDFCFAGAHDFCFAIAKCIAFBFCFAFBIDFBGEGEKDFCFAICFBFAKDFEIAGCFEHAIAGCKCIAIAGCFEHDIBHEHEFBKCFAHEGCKCICFEHEKCFDFCIAKCGBFEKEIAGCFEGEIBFAKCHDHBHDFCGBHDKCHAKCFAKEGDFBGEGEFEKEFCHDKCIAIAFEHAHBIAFEKEIAFCGDFBGEGEFCIBHDKCHEIAHDFCFAKCIBIAHEIAGCFEHDIBHEHEFBKCFAHEIDFBGEGEFAFEICFEHDFDFEKCFDGEFEIAFCHBHDFCICFEIAGCKCIAIAGCFEKAKCHDFEFBFAFAFCKDFEFAIAKCFAKEFCIBHDHBFCGEFBIAFBKDFBKCFAHEKCFAKEGBFEFAFEHDKCGEHEIDFBGEGEFDFEGAFCHDKDFEKEIAFCHEIAHDFBGDFEFDKCKDGDIAGCFEHDIBHEHEFBKCFAHEIDFBGEGEFEHEKDKCGEKCIAFEFBFAFCHDKEFEHDIAFCFAFCIAGEFCFCGDIDFEKCGDKCFAKEFCFAKDFEIAGCFEKAGCKCICFEKDFCHAHAFBIAIAFEKEIAGCFEHAHEFEGEICFEHEIAGCFEHDFEIDFBGEGEFDFEFAFCIAIBHDFAFBFAGBFDKCKDGDIAGCFEIBFAKCICFCFBKEKCFDGEFEIDKCHDIDFBGEGEGCKCICFEIAFCFDFEGAFCIBGBGCIAIAFCFBIAHEKDFCFAKDGEIBHEFBFCFA</string>
-    <string name="cipher_challenge_2019_9A">TODO</string>
-    <string name="cipher_challenge_2019_9B">TODO</string>
+    <string name="cipher_challenge_2019_9A">VXZAT CEALG YPEVM XJTIN XYOXG NJNDI FAWXS TWAPY GXMTI UHCMY XZEFU DVBTS EPFWR HKYRB HNEEK OYAPF EEPSR SQYNT ANXVK CMTYL CAIXS XBXRF PAGNW YIIZT WKMZO NUXXU UXMIH YGSIK LGTDA XJNPH FGXFB TPTLA TNQNX LBPJB QDLEY GVSFP FPWBG SAOIP OTTXZ EEUNG KNGGA IJXRR PZEVG HYKFZ CAIYR VFPLG PWBTV OEPWG IFSPV OHGVC CIDIW BNFMN WUHXA WWCPP YSXRJ PHCLF RFQCW RYXQM SSEMQ LWLGA AGTMV RKXIU HDIFG DDIQJ IUHUI AZGXT VUHRK IMMMZ STUOO POGCX YTPIM RMSSC SLAPC ETLXH PGEAZ IYAKO VGQTP XVYLT DGTCI HEJTE YOZZR BQTGG SOTUS ZXVKH MIWUB RXJIK WUHGS OYUAX HAOBE LEYBE VUXHP APTVP VCMJG RJPHI HKNFW YWPWH WTDNV EQJKE SWTSO GNSCX SQCAP HHLCE YGLZC GFIXT PTINX FMTOZ FTDUP WPOAP RGDEY AMXIJ GTPBX PSTUA MKCAL SATUT QCHRH PMVGD DAEWP VTSEV PIZAB KLGTD IFVPO NUEIE HPHXD WEOKK VRQXZ KWDOE FAHRT DLMLK GALTY BTXCM ACFCQ KVVSW TXTWH AWZRV YREUW XOEXD EPMTH XZLFT PMMYT GEGMW PHFZX VKSAL PPFMM RFBFE IALEF ONSQR VIDIO GVMMX IACTQ HKLDA ZLEZO TTDFR BSWRP BDPIA LXZRR DPNQP KSZMV NWJRB ZBSKX ECOBW VRVID IGBRC MXMES IJTFZ ZSWMI UHIFI WXUSB GLGFT XYSYZ OEVRN RTKSG XESIC IPBPV TWWNY FAVHQ TSVPA FRMTK VOEQT UPNAQ HLGWL GRTMR EUJIG FPXLV YLAQJ SXBXD ITWAO AXIUF TXYSE QEXWL FCISI QBAAU KLGBX WXACC OIWLG VIIAJ EGCML VRDHX BXSNI TOIEK PYXTK BHBAE FBDTT WHNIY GXNYJ ELEAG IEMRV YGSPW OLRFJ IURTN VLXYE PYCYH CEVAQ TNSAW FHWGM WYBLT UTNFT MEJLP ETLRB KPSIH XTABU FNGUS MJZDE TLXHC VNMJK EAKLS RZQEI SNPTU MUFOL OLHKR EVOKA SCELS HPHEW QQZDT CPAGD VGOHS WXGAP NIHJI FMIIV FVRSM NXBHT OHHDT TZWAR VHEVP AJSEU RXSCS HFOYA DWLAS TSXZG RVINC RVICT KPOIE WXNHH SIGBG ATKVE SWXNT ZRAEJ ERMCE ZPERS ICXNV ICEAX LFXSR VUXRS CXURI KRRPD XLWEL TEWLG CIKGL UTNQB SZGPA XZDXE TLHYC IELDR EEDUG RFLSE KLPKU DHRAT EWETU WZKXS OHATD YTRQZ LGWLE ZTEBT BTIJS WWLMP STALO POQDI GHZES OQASW AWFLO EUVRB GGELC XGFIT ABRZE XJMLD MZIUG NAWDW AEQXJ ESWIF ELCGA JTSCV NMWER PANWV ZVRXW SESQK YBHHE JTGNM MNXQB PLLAW RNQGW YOHII QBJSM QMZSU MPKPV IYLYB PPSIT KVUYT IRRPQ WFLWO BJIGB XHXTP UCCUX AWISZ AZDEP AVCFT HVZYR GVKZR FCMLV ZRETL CORTL PTDRR MCWAC HILGS HNQWY DSWTW LLHOU GJFOL IAKOL IXAIU HCIIM HVNBA SOOTX HJHCE YGLES GAIWV RLBZM YOIIZ GEYAS WFFUC ILEXO OQTVR VEMVG EDERA RNATH XCHSD ZUALS ZIALS EIIJI UHTGS EMNHB MRVHI YIVPT RDSQF OLEOT FGAPZ IZRTH GAXPR QNEUR AUSHM VPWZI UHIEG GDCUA WWNFW PISMQ EKOXB BTZTZ OWUAZ WVGTU PNKBF GRPHT TVTUP COYFM NUPTM OTRRQ SMUMQ RXLET RIKEJ CISIQ BAAUK LGYCM ALEYO PASFS COJZX FOXYM QCIIF AEPKU EIIWV TROBQ EEJRN SSMAG EJKXM FQBPG MMHBT AOVRH XVPWA JTMJI UHXEW PGVHK GQNGP RXZEQ OKFEU QIAQE GBDWZ WRTXR TEPST ZGIPO UETJM QNIQR VSWXX KLNYZ SRVRC AQTAE ONKTL HDXRJ LEEDU IFOSA LPARR MNXXF DAMSY PVQJI GWGWI ARGRM NXBBP RHETS YNFIG HXRAR GVHBE RNRCM YLYOL GGGGI QSIWB SEPZL TIDVA LOPKA GPVFT TMCPR PGZWR YXQGG OPCGV SEDIO RDTJO BYISW CEFWS EEHAW HZRNS NXEAA ZPHGT VXZED TEWXR VINYC HGMMN XGCVH GSJPL SFEYC IRIGH GIBTI FWTOT LDTMQ ZXQSH IPLXE IAGRB CHWTL TVCQZ GBHTN SPFBS SYEBH ISZJZ QIFSL GHCEX YHPSB OKAWH CESYL DZSVR VEIGP AGGVO OPOGG ALTHP GFIXO IOWDT JIAYI HUXXG WXFCA VIUHC OWNBF NMXSS HJSWW TCRMU VRJTN IHMHB BOHRG HMFWH HOTOS AYINS OBXOW RVRVI SGSVZ OFVRN CISIQ BAAUK LGHJS ZMOTE DWLGH DGMYX UWWYW ESIVT MBOAQ ZSGYR AFJTJ EPZRB HXXNG MLYDJ SJCID IFGVT VUGVH JFPWT GRQLR VSWTJ ZMHOM XSZUC MALJY AFWKG BSIHT ZAIPZ IZCHK GAOTH ESARV VNMWX RFMNX GCVMW FLNIB GXRVI FJZXZ RMKXF CIHKS SRNUQ VGMAE XTGVF MJWNK TLMMM EIFMS OOLER VXJWM TORVD WMJFZ CZAXH CSAIC GREJJ EUHXS MKPQI ZSQRV ITYZU NMQNH RYHEW FLCEP JEURT SWPKC IAYIE DTLMG ECEFL IYSWT XYXFE PYXVA SEXZS RUAZX FHCEH TVPAM NXQSA PTUPS TMZAU HXWSO HGGVO LGCCH TZPSS YAEYQ ALMEL RHMXI UHHEP AJSWF MSRFJ GMQHG GVUPZ WWIDS EENPA HGWSN EENBB IQPNH DXMGW LEHSL GBSIH PPGUJ YVBHX WBNJY AYKXR UTHOY BUTBT SQWTQ XWDZT PWWNS APHPF REAKL NGPRM SRYIW JSJZA IXDLN WMNRR VLOVS MYOUL SZBXG RTAGE UUWGS HIOSS ENPDY BQTHX LAGTV KHVTC SVQWP TQDTZ CRTSY LNWQO MILDP EGALN AEIYP DRTYH VTIFM EIHWX JAVNM LIUHG EXQTF UZUJF SHMKH CFSDW ZBHUE PJGNE DGLGB SMWWS PRGKI XOBDR LXXIU NXVKC MDUPS CALER RXDSZ ZNEJJ PHCLX BLSRU AZXVD JGRTF BCVUM FGXQS MJZSA DPBDP ELEYB HKTYN ZTLMZ ETWKJ VNV</string>
+    <string name="cipher_challenge_2019_9B">11101 00101 00001 21122 10001 10111 00101 10001 01111 00210 11011 11111 01011 01001 01011 21001 11000 01011 01000 00012 21222 10011 11010 01000 01001 10201 00000 11101 10010 01011 00012 00212 00011 01000 01101 01110 00000 20021 10010 00100 11010 11011 00002 10000 10000 11010 00001 00022 00110 00101 10101 10001 01100 00210 01111 10010 01001 00000 10111 02020 00101 00101 01001 11000 01022 21210 00001 00110 10101 00010 21020 02111 00100 00110 11101 10000 21012 01110 11001 10011 00000 10021 10011 01101 01100 00011 00002 10011 11100 10010 01001 00101 10020 00021 00001 01010 01010 01001 10002 21011 00011 10111 10000 00120 12102 01001 10001 10010 10110 01021 02011 01111 00101 00000 10001 10022 20000 00100 01010 01100 01110 21021 00101 00100 11101 10000 21002 12111 10100 01100 01011 10002 01202 01010 11001 00010 01111 00011 00101 00010 11110 10000 00012 01122 00111 00001 11110 10000 00021 12210 01001 10100 10100 10010 22002 00001 10000 01101 11101 00100 21001 01000 11110 10000 00001 01202 20200 00011 10110 01000 01002 22100 21101 11000 00100 01110 00200 12011 00000 11010 10010 00111 10221 00100 01010 11110 10001 00102 21220 10000 00110 10100 10000 02100 22101 00000 11010 10001 01012 00200 00100 00001 11101 10100 01021 10001 00010 11000 11010 01101 02111 10001 01110 11001 00000 01002 11002 10110 11110 10011 11011 01000 00210 00010 11101 00110 00001 22221 20000 11010 00110 11100 00100 02210 01101 10000 01100 01011 11122 10001 01101 01000 00110 10021 10021 10101 11100 11101 10110 01021 20010 10010 01110 11101 00100 21220 01010 00011 00010 00100 11010 12201 00100 10011 10000 11000 21112 00111 00011 10010 00100 00001 20010 11101 00011 10000 11001 01112 00211 10011 01011 01011 10001 10200 21100 10000 11010 00001 00020 20010 01111 00111 11001 11011 20112 10101 00111 11010 00100 01001 12202 11100 10100 00100 01001 10002 11010 11110 11010 01100 00002 00202 00100 00110 01011 01000 01200 02111 11101 01001 10000 00100 20001 20001 11101 00011 10000 11001 01112 10011 10000 01110 10010 10021 10101 11111 11001 01000 01011 11002 11110 11110 10101 10110 00021 02220 11100 11010 11000 01000 00202 01100 00100 11011 00111 10021 00200 11000 10100 11000 00001 12020 20100 01110 11001 01100 01011 11002 11110 11111 11011 10101 01001 10220 11100 01010 00100 01001 02002 11101 11110 10011 00100 00021 12122 11101 00001 00011 00000 00100 02211 10110 01001 01101 00101 20020 21011 00010 10000 01101 00211 00211 01011 11000 11011 10000 10002 11101 10110 10110 10101 11000 21000 01110 00001 10011 10100 10021 01101 00011 00000 01101 11000 20001 20101 01100 01110 10000 10002 22221 10000 00100 10101 00100 21022 12110 10001 10000 01001 11020 20000 01010 11111 01100 00100 12100 20000 10010 00000 00101 01100 21001 21000 10010 00111 00001 10012 21001 00110 11100 10110 10000 11002 10111 10010 00011 01000 11000 02102 10111 00011 00110 11100 02100 02111 01101 00101 10001 01111 00210 01011 10010 01111 01101 00000 21100 01000 10100 00110 01100 02200 02001 01101 10100 01001 11010 21002 01110 10000 00101 01100 01001 20100 10010 11111 00101 00011 21122 00000 00100 00000 01000 01120 20001 01101 10110 01000 00010 02110 02101 10111 10100 11110 11010 00002 10000 10110 01111 01101 01000 21101 00000 00101 01000 10001 22002 20100 10010 01001 01100 00000 00021 11101 01001 00001 00110 10020 02111 00100 00001 01011 00010 01201 00100 10001 10100 01100 02210 00201 10010 00100 01000 11002 22000 20100 11010 11010 00000 01111 01000 11001 10010 00000 01100 00202 02010 00110 01000 00010 01000 22112 01001 11111 01010 00000 01200 02110 11101 10100 00100 11102 22001 20000 00010 01000 01010 10202 00000 11011 00111 00001 10010 11120 02111 00110 11100 10100 11011 12022 11001 00110 01000 11001 12100 20201 11010 00110 10011 00001 02002 01001 00001 10001 00011 01202 00100 11111 01001 00001 00010 20022 22011 00010 00010 11010 00000 00200 11110 01100 01011 11000 02012 21001 00001 00010 00100 01100 00202 01010 00100 00110 00001 00200 12221 01100 01011 00001 00100 00211 22110 10011 10011 01110 00010 00211 10110 11010 11110 10111 00021 01001 11001 10100 01100 11001 12112 21100 10000 10111 10010 10002 02221 10000 00100 10000 00110 22121 00011 00111 10010 10000 10121 10021 01101 11110 10001 01101 00211 00201 01011 01001 10011 00001 10020 01111 00001 00000 01101 10110 20011 10101 11101 00100 01010 22200 00101 01110 00011 10101 00100 21201 01110 11110 10010 00101 11220 00210 10110 10000 10011 01000 00212 01001 10100 10000 00111 01110 02201 11001 10111 01000 10000 00121 20111 00000 00010 11000 00002 20011 10101 01000 10100 01001 12212 21001 10110 01001 10100 00000 01121 11100 01110 11010 10100 01111 21201 11011 10101 00000 00100 02100 00100 11011 01110 00101 00020 01101 00111 00001 10000 10000 01021 11110 01011 10110 10100 00012 00112 00010 00000 11100 00110 01011 12000 11100 10110 01101 11001 21000 21110 11001 10010 00000 00120 00000 01011 01001 00010 10000 12120 11011 01111 01010 11001 00010 00000 11101 01001 10101 01000 10122 20021 00011 01110 01101 00001 11200 01100 01110 01000 00111 00020 12020 10001 10011 01000 10000 00222 21210 00110 10000 01110 11011 02001 20011 01011 01111 01011 01212 10010 11101 11001 00101 01010 10200 02111 01101 01100 01011 00012 10012 11100 10010 10110 01101 02202 11100 00111 01100 01011 00012 10011 01101 11100 10011 10010 01012 00220 11110 01000 01101 10100 00021 21100 11010 01011 00010 11110 02100 10111 00100 11100 11010 00002 10200 10010 10110 00000 11102 00201 20010 10011 11100 00000 01211 00000 10010 10010 00101 00001 21201 10110 11110 11001 11000 01002 00020 00101 01000 01001 10100 00021 20100 11011 01010 10010 01011 00000 01111 01001 01011 10010 01000 01221 10111 00100 11100 00000 22110 12000 11101 11000 00000 01011 21112 10000 11001 01000 00110 01120 22200 00001 11010 00111 10011 00221 11000 01101 01111 00011 00212 10011 11101 11101 00100 01010 22212 02011 11101 00011 00000 00021 20221 11000 11000 11000 10000 02002 11001 10110 10110 10101 10110 21021 01110 11110 11011 00000 01222 00220 01100 00100 11000 00000 22110 12000 11111 10011 01110 00010 00211 10110 11010 11010 10110 10021 02101 11011 01011 01100 00000 22200 21001 10001 10000 10001 00020 12210 01001 00100 00101 00100 12211 21000 11111 10100 00100 11122 22001 00000 00010 10110 00110 12221 02000 11100 00010 10001 00012 20012 00110 11101 10010 00000 10021 10021 01101 11101 01011 01100 10210 22101 11001 10100 00000 11020 02000 11000 11000 01000 10011 02001 10210 01101 00001 00111 00110 00120 20101 11000 01011 00010 01101 10211 01100 10000 00110 00010 02202 11101 00001 10001 10000 01112 22210 00001 10011 00011 00010 10201 01100 10011 11000 10000 01012 00000 00101 00001 11111 10101 00021 01101 00111 11110 00110 10000 10101 12011 11000 00100 00010 00101 12220 01100 10001 10001 10010 01021 01000 01110 00010 01001 01001 10200 20100 11000 11011 10011 00020 10221 01101 00001 11001 11100 20111 21010 11000 10010 10010 01112 00202 11110 00101 00110 00000 00020 20210 00011 00100 00100 10000 00000 11111 01000 10111 00101 10100 21001 01110 11101 00010 11000 11111 10110 10101 01100 11011 01102 10201 11101 00110 10010 11000 00110 11011 01000 11010 01100 00012 22212 10001 10011 11001 00001 00211 00020 10011 00010 00000 01010 02222 02000 01110 01101 11100 00000 20121 00010 01111 11000 00100 01001 20000 10001 11001 00010 11100 12012 01110 00100 00101 00000 10200 00001 01110 11000 01001 01000 21200 22100 11001 01001 00010 10022 00020 01011 00011 00000 01100 00210 22000 11010 01000 10001 00011 00002 00110 10000 10111 10010 00002 02121 10000 00110 01101 10011 21001 11110 01111 00110 00010 01020 02122 00101 01001 10001 00000 00020 00111 01011 00101 11100 00010 02210 11100 00011 10010 00110 00201 01200 11011 00001 10100 10000 11021 00010 01011 01001 10000 01111 20111 00001 11100 00100 01001 12002 11000 11111 01100 10000 00100 21100 21011 01111 01001 11101 10100 00021 00001 01001 10010 10110 12022 12010 01011 11100 01100 10122 21220 00010 11010 10110 00001 00010 21011 01001 11110 10101 01001 11202 21100 10001 00110 10110 11000 02120 00100 00000 10000 00100 02002 21110 10010 01101 01000 10012 12021 11101 00111 00100 10100 12120 20000 01001 00010 00010 01001 00200 21110 01110 11100 11010 10200 11010 01111 11000 11010 01100 02111 10001 01100 10000 00110 00011 02112 11101 01100 11111 11010 01000 11010 11111 01011 01000 10002 11222 00110 00100 01101 10010 01021 10111 11110 00110 11000 01100 11211 11110 01110 10110 00101 10100 21020 01110 10110 10011 00000 12222 12100 01100 11110 10000 00002 11022 10100 00011 01010 00100 01200 21200 10011 10110 00000 00101 02000 21101 01111 01101 00110 00020 20020 00010 00011 00110 00100 12020 00201 11010 00010 10110 00010 12210 01000 01100 10111 00010 10002 00110 10011 10011 11010 01000 00211 01110 10011 11011 01010 11122 12100 00111 01010 00000 01101 00200 21010 01000 00010 10110 00010 12210 01000 01100 00010 00000 11000 11000 11111 00111 01000 10001 22120 20111 00000 10101 11000 11000 20111 01000 11001 01100 01011 01002 10010 11100 11111 10010 01000 11222 21100 00010 01111 00010 00212 12111 10001 01001 11001 00101 00022 00011 00100 00101 11010 11002 12020 01100 01010 01100 00000 10202 02000 00111 11010 11000 00001 02212 00000 00100 11001 10111 00021 00020 11011 01011 10000 00101 11101 11011 00101 01101 01100 00110 21100 11010 11001 01110 00101 00020 01101 00111 01110 11010 10111 22121 01001 11000 10000 10011 01002 00211 10010 00000 10101 10000 00122 10010 00010 00110 01001 01100 02000 10101 00001 00010 10000 12120 11011 01111 00110 10111 00000 02002 00001 00001 10011 00011 01202 00220 11100 01010 00100 01001 02002 11101 11110 01101 00110 00020 22221 10000 11011 11100 10000 12121 10000 01000 10011 00100 11102 22100 00011 01100 00100 01110 01210 02200 00100 00111 10010 11010 00112 02000 00100 01001 00000 00020 01101 10100 00001 01100 00100 01000 21110 11011 10010 00110 01101 00200 21110 01000 00010 10110 00100 12010 01001 00011 00100 11100 22100 12011 00111 00001 00010 10111 00000 01110 00011 01101 01100 10210 02010 00111 10001 01001 00002 20021 00011 00100 01001 10001 00000 20221 01000 00110 10000 01010 12002 00001 00111 10010 00100 10022 22102 00011 01101 10111 00000 02121 22200 01111 10110 11000 10002 22102 10001 00010 01110 01100 11202 22100 10001 10100 00000 01110 02210 02100 00011 11110 00101 01101 01110 11111 00100 10110 00101 11100 21011 01110 01001 11101 10100 00021 10001 00110 01100 01011 10202 01000 01010 01111 01101 00100 01120 22110 00001 01001 11011 00112 10020 11111 00001 10011 00000 11212 22101 10011 10100 11110 11010 00002 10000 10001 00110 11001 01111 20200 10110 10100 00000 01110 02210 02100 00011 11010 00100 00101 21200 11000 01001 10010 01000 02112 00001 00011 10010 10100 00001 20011 11101 01101 01101 01011 10002 10000 11100 00011 11011 01010 00210 21010 01010 00001 10000 10111 12022 00110 01001 11101 01100 11222 21201 00010 00011 10010 01002 00012 11111 10010 00001 00100 00200 22010 01010 10001 00000 10100 22122 02011 00110 00010 00011 01000 10200 01000 00110 10010 00000 10112 01110 00011 11000 01100 10011 20021 11001 11100 00001 11010 01001 02200 11101 01100 01010 01000 02200 21000 11001 00010 10100 01000 00200 11010 01100 01011 01000 01100 22211 11000 00110 01110 11000 02102 00001 11101 01110 00000 00112 22220 11110 01101 00001 00011 21022 00010 01010 10000 00001 11002 21002 10000 01111 11010 10100 10121 22011 00000 11010 10010 00002 10022 10100 00011 01010 00101 01200 20000 10000 00111 00110 10010 02122 00100 00011 10101 10001 11110 00122 01010 00000 01110 01000 02112 12101 11101 11110 01001 00001 02021 10000 01000 00100 00110 11110 00001 01011 11001 10000 00010 00021 01101 01111 10011 00000 10120 00200 01010 10000 11111 01001 00212 01101 10111 10000 10001 01000 00212 01011 10100 10000 00110 00110 20201 11011 00011 01000 10001 01222 00110 00111 00111 00101 10120 21200 00110 10000 11011 01010 00212 11101 10011 11111 00001 01002 01122 10111 00100 11010 10001 10121 20221 11000 01000 01000 10000 00020 01101 10100 10100 10001 11010 21000 00110 11101 11001 10100 11001 21111 11010 00110 01111 00010 11110 00011 10101 10100 01101 10210 21001 10111 11101 10000 10110 22121 01001 01111 10100 10010 11020 00002 11000 10111 01011 10001 11101 21100 10101 00001 00010 01000 02111 20111 11010 00111 00000 01000 21211 00110 10011 01010 10000 01111 02111 01101 01100 10010 00011 12121 11101 00000 01000 10001 01001 20011 11111 11001 11000 01002 11002 10110 10101 10100 11000 00020 02020 01000 01100 00000 11011 02002 01111 01101 00010 00100 11000 21102 11111 01100 00001 10000 11202 00010 11011 01100 10000 01100 22201 21000 00110 01101 10100 01000 12210 11001 10001 01101 00100 20200 21111 11010 10001 10100 10021 01112 11000 10001 00100 11001 12110 11010 10111 00001 11000 00002 11121 20100 01100 10010 00000 01222 12221 00100 11000 00110 01001 21102 11001 01110 11010 10100 00011 11021 11011 01011 01000 10001 01121 20011 01111 10110 10011 00002 02002 00001 00001 10100 00010 10202 01120 11110 00111 00101 10001 21011 00110 11011 10110 10001 00021 12220 01100 01000 10001 00110 00211 02211 11011 11000 01000 01002 02112 21110 00001 00110 00100 00120 02111 11101 10101 10001 01100 00210 01011 10011 00000 11100 01010 21100 11010 00001 11011 10110 00021 22201 00000 01100 11101 10111 21021 01011 11000 11110 11010 00000 11020 11111 01010 11000 00001 12212 00100 00101 01101 00010 00121 22200 01000 11001 00010 01000 02112 22011 11111 00000 11110 11000 02011 21111 01000 10000 00110 00011 02110 11101 01100 00100 00100 20211 22111 00000 10001 10000 11112 12112 11100 10011 11110 01100 01011 21201 11011 00011 01000 11012 22101 11011 01101 10010 01000 00112 12111 10100 10001 10110 11000 00020 02110 01000 01100 10000 10102 02021 00111 10100 01101 01011 02102 10001 01101 01000 01010 11002 00002 21010 10000 10010 11010 11002 01100 00011 10110 01000 00010 02110 02101 10111 11100 11110 00010 12000 10000 11100 10001 01110 01201 20211 00011 01001 10001 00001 20022 20011 00001 00001 11001 00022 11210 00111 11011 11101 01000 20012 22001 10111 00001 10010 10020 02121 00111 00101 01100 01110 00001 22110 10011 01110 11001 00102 21220 20000 00010 10000 10010 11100 02011 00011 01000 10001 00111 00211 00111 11000 10010 00110 01021 11002 10001 11010 11100 11010 11100 11011 01111 10000 10011 10112 00011 00010 11101 00100 00011 11020 11001 01011 00000 11010 00000 12112 11110 00110 10110 10101 11000 21002 01110 10001 11001 10001 00012 10001 00101 00001 00011 00111 20000 01011 11101 11110 00000 00022 22201 00110 00001 11010 10101 02121 20111 01000 01001 11001 00101 20022 01111 00100 01000 00100 00210 20000 11001 10010 00100 00011 20111 01100 10100 01000 10100 00020 00220 10100 10001 00010 00001 02001 20110 10100 01000 11101 00101 20111 00011 10000 10101 00011 01002 22100 10100 00001 00010 10001 02120 11011 00100 10100 10000 11111 00100 01010 01000 00000 00100 20220 20000 11101 01111 10000 10101 10100 10110 10100 00110 10100 12010 02201 11100 01000 01001 11002 20012 20000 00001 10010 10001 00020 10020 01001 00011 00101 10100 11110 02101 11100 10000 00010 01000 00020 11101 01001 00000 00100 02120 11110 01110 00001 01011 00002 00120 01110 00110 11010 10001 01112 01201 00110 10101 10100 11000 02020 02100 01000 01101 00000 10102 02000 00111 11010 01101 00000 10000 21211 01010 00011 11010 00012 00010 11111 11011 11110 01001 00002 11201 00100 00110 01000 10111 00120 10111 10010 11000 10000 11002 22020 10000 01011 00111 00101 10120 20101 00101 11100 01000 00012 12121 20111 01010 10001 00010 01220 02110 01111 10100 00101 11101 11100 21110 00000 00001 00110 01120 02110 10011 10111 00000 10011 00112 00011 11011 10110 01000 00002 22212 20001 10000 11100 11100 10011 21011 01011 10010 00010 01101 00200 21110 01000 00010 00110 00000 12010 01001 00010 00100 11100 01100 20211 01011 10001 00111 01101 00110 01101 11110 00010 01010 01201 12200 01110 11010 10010 01000 21002 12001 11101 00101 01101 00110 21020 00110 01010 10000 00010 00210 00010 01101 10101 10010 00002 00222 10010 00010 00011 00100 10200 21100 01010 11110 00011 01000 01202 01010 11011 00100 11100 11110 00002 11111 00101 00110 00000 00020 20210 00011 00011 10110 00000 00200 21110 01010 10010 00011 10212 00220 00000 00110 01101 01000 11201 10110 11111 11101 11010 11010 02111 01000 11100 01010 01000 02212 12000 11001 00011 01100 10000 21101 21111 10100 01000 00001 10120 20001 00001 11100 00101 01000 21101 20001 11011 10110 11000 00011 00112 11010 00110 01101 00001 01200 01200 01111 01001 10111 10000 11021 10000 01110 01110 11000 10100 20211 11010 10001 01000 01001 11121 00001 00111 00100 10001 01121 21201 11001 00001 00010 00110 11221 11110 01001 10110 10000 00012 20112 00010 00100 00011 01000 10100 10001 01101 11101 11010 11000 11111 22110 11000 10010 10001 00102 20021 00011 11010 00011 01100 10200 01110 01011 10000 10001 00111 20211 01111 11001 01111 00100 01000 12211 10000 10000 10010 01110 00121 01011 01111 10010 00000 00020 21211 11101 10000 01100 01011 11122 10001 01101 01000 11001 00110 20220 01010 10010 01101 00011 00222 10120 01101 10011 00010 00010 00222 01110 00011 00100 01100 10110 02011 11100 11010 11100 01010 02202 11110 10111 10011 00010 00002 00211 01110 11010 11110 10111 00021 01201 11000 00110 01000 10111 00120 10111 10000 00101 00001 10101 00201 11010 11100 00010 11000 12022 11100 01001 00010 00010 00011 01201 11111 01000 11001 01010 01202 22120 00001 01110 10001 01010 00002 00101 10110 00100 00011 01021 10000 01001 11101 00010 10011 12100 11101 10000 01011 01001 10001 20200 21100 10010 00011 01110 00110 00220 01110 10001 00100 00100 12020 00100 00011 11001 11001 00111 20201 10010 11010 00111 10110 00120 02100 11101 00000 10100 01100 02110 01101 00100 10011 10011 11002 01111 10101 11000 00100 10100 21010 02001 11101 10000 00100 00002 11111 10100 10100 01010 10001 00000 20011 01001 11010 01100 01001 12200 21111 11010 00010 00011 00111 00220 10101 10110 11100 01011 22000 11001 00001 00001 00100 00020 22001 01010 10010 00010 01001 11000 20200 11100 01010 10000 01011 00200 00100 01100 00010 00100 10120 21111 00111 00110 11000 00110 10121 01111 11011 00111 01100 10010 02120 11100 00011 00100 01011 10012 01211 11000 00000 11000 00010 20000 11101 01101 01100 11100 11110 20000 10011 10110 00100 00010 02122 12101 01100 11010 00000 01000 11202 01000 01110 01011 00100 01221 21211 11011 00101 01100 10100 02021 21100 01010 10000 11011 11102 00021 10010 00101 00000 00100 02220 02100 01110 10110 11100 10102 02111 00101 10110 10100 10110 12111 20001 11010 01010 01001 00101 10221 21000 01010 01111 01000 11100 22101 11001 00111 00001 00011 21222 02110 00001 01110 10000 00022 20112 00010 00000 10111 00010 00122 02011 00001 00010 11110 00000 00200 11110 01001 01101 00100 00120 10220 00000 01110 11010 01000 22002 11001 10101 01101 00010 00101 22200 01000 11011 00110 11100 12100 02111 01100 10011 00000 01012 00012 00011 11011 00010 10110 11111 02100 00111 10101 11000 00100 02221 02100 00111 01100 01011 11012 10021 11101 01010 10000 01011 00002 00001 00011 11100 11010 00012 12000 10000 11100 10101 01110 10201 20011 00010 01101 10100 01000 20111 22001 11001 10000 01000 10120 22220 01100 11000 01110 01110 10110 10111 01011 01001 01100 01101 01210 20101 11000 11000 01011 00212 10210 10111 11011 00011 10001 11121 20101 11010 11010 11101 00011 00210 01110 00010 01010 11001 02100 20211 11000 00001 01110 00100 21000 21010 10000 01011 11001 00000 20020 11001 11010 10101 00110 20021 02010 11100 00011 00000 10021 10001 00101 10001 01011 01001 00122 21201 00010 10110 01110 01001 02100 21101 11001 00010 00100 00000 00221 11011 00111 01101 00011 11122 10100 01100 11111 00101 00112 21212 10010 10000 00000 00000 10200 01111 01010 01111 10001 01001 11002 20101 10101 01100 10000 00012 22201 11111 00001 00010 10001 11021 20001 11010 11000 00001 10002 00021 10101 01110 00001 01111 01010 00111 01011 01001 00000 00010 02201 10100 01001 01101 10110 00000 20021 10010 00101 00110 01100 20100 12010 11100 10001 01001 10122 01020 10001 01010 11000 00011 00222 21210 00101 01101 11000 00102 21222 00010 00100 01000 00011 00222 10021 01111 10010 10010 01001 00002 20001 00110 00011 01010 01021 11111 01001 11011 00110 10000 02101 10100 10000 11000 01010 11002 21002 10010 01001 10000 00000 10122 12000 01101 11100 00100 11001 20002 11010 10111 00000 10111 10101 00011 10101 10110 10010 11000 00110 11011 01000 01101 01010 00101 22200 21000 11000 11110 10010 10002 10101 10011 10010 10000 00010 11210 00100 01100 10111 00010 00002 01012 10000 11010 01111 01101 00000 21101 00000 00111 11001 10101 21001 10110 11100 10110 11010 11011 02210 00001 01100 11001 10001 21010 00011 00100 11100 11010 00102 11121 00000 11100 10101 10000 10002 00001 10111 00000 10000 01000 00112 20101 10000 01010 00101 00012 21221 10010 00100 10100 10000 22002 10111 10010 00011 11000 11100 02101 10111 00100 11000 00010 12000 12000 11110 10010 11110 01001 00012 10011 10011 10011 00111 00221 01220 01001 10001 10000 00110 20221 01101 01101 11111 10001 01001 01002 01101 00111 00110 00100 11100 02210 01100 10010 00000 00010 21111 00010 10100 00010 11001 10000 20120 11100 11001 00010 11001 00022 11011 00111 10001 10000 11020 22000 01010 10010 00110 11001 01202 11010 11111 11000 01100 10101 12020 21111 10001 11000 10110 11121 21001 01010 00101 00100 00100 21120 00100 01110 00100 01100 00100 02011 11100 11100 10000 00010 02210 00000 01101 10000 01011 01002 02111 10001 00111 00000 00001 00202 10121 11011 01001 00101 00011 20200 01010 10101 10100 10110 00001 10110 11010 00010 10111 00010 02200 12000 11101 01111 01110 01100 02121 20101 10011 00111 01110 01210 02010 10101 00001 11110 10100 01000 20111 11010 00110 00001 01111 10000 01111 11000 11100 01010 10200 11011 01110 01100 00000 11100 20001 21010 00010 11001 01101 00201 20000 00011 10001 10111 00000 00020 00111 00011 00000 01100 10110 12020 10101 11000 00100 11100 01100 02010 10101 10000 11011 00100 02120 21001 01010 11000 00110 11111 11001 11010 10100 11100 10001 12002 02111 10100 00010 00000 10111 11120 10010 10000 11101 00100 10211 12001 11100 01101 11011 10012 01020 11011 01000 00111 11000 11001 20120 01110 00100 10000 11000 22000 01001 10011 10111 01000 01112 21210 11110 11001 00011 00110 00000 00211 11010 01111 11001 10100 01100 20110 11000 01101 11000 10012 22120 00001 00100 01100 10011 20002 10001 11100 00110 00101 00020 10212 10111 10000 00111 00101 00020 11211 10110</string>
 
     <!-- list of possible ciphers -->
     <string-array name="cipher_array">

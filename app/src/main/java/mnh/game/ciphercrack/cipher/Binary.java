@@ -159,7 +159,8 @@ public class Binary extends Cipher {
 
     // we don't add any extra controls, but we allow change of cribs
     @Override
-    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String cipherText,
+                                    Language language, String alphabet, String paddingChars) {
         return true;
     }
 
@@ -238,8 +239,13 @@ public class Binary extends Cipher {
                     cipherText = "";
                 }
             } else {
-                seq = cipherText.substring(0, numberSize);
-                cipherText = cipherText.substring(numberSize);
+                if (cipherText.length() >= numberSize) {
+                    seq = cipherText.substring(0, numberSize);
+                    cipherText = cipherText.substring(numberSize);
+                } else {
+                    seq = cipherText;
+                    cipherText = "";
+                }
             }
             // replace the text digits (could be A/B) with 0/1
             for(int digitPos=0; digitPos < digits.length(); digitPos++) {

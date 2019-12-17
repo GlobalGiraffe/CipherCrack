@@ -50,7 +50,7 @@ public class CrackService extends IntentService {
      * @see IntentService
      */
     public static void startActionCrack(Context context, Cipher cipher, String inputText, Directives dirs) {
-        CrackResult cr = new CrackResult(dirs.getCrackMethod(), cipher, inputText, "Not yet complete", CrackState.QUEUED);
+        CrackResult cr = new CrackResult(dirs.getCrackMethod(), cipher, dirs, inputText, "Not yet complete", CrackState.QUEUED);
         cr.setProgress("Not yet running");
         CrackResults.crackResults.addFirst(cr);
 

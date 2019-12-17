@@ -32,6 +32,9 @@ import mnh.game.ciphercrack.util.Directives;
  */
 public class Hill extends Cipher {
 
+    // maximum length of a Hill keyword
+    private static final int MAX_KEYWORD_LENGTH = 50;
+
     // only allow A-Z, 0-9 and ',' in the keyword field
     private static final InputFilter MATRIX_INPUT_FILTER = new InputFilter() {
         public CharSequence filter(CharSequence source, int start, int end,
@@ -108,7 +111,7 @@ public class Hill extends Cipher {
 
     /**
      * Given a keyword, convert to a square matrix, e.g. BETA => [1,4,19,0]
-     * @param keyword the keyword to convert to columns permutation, e.g. ZEBR => [25,4,1,17]
+     * @param keyword the keyword to convert to matrix, e.g. ZEBR => [25,4,1,17]
      * @param alphabet gives the ordinal number of each letter
      * @param across if true then fill across the matrix, else fill down
      * @return the matrix represented by the keyword, or null if any errors
@@ -210,7 +213,7 @@ public class Hill extends Cipher {
                 int detC = getDeterminant(sub);
                 return m[0] * detA - m[1] * detB + m[2] * detC;
             } else {
-                // TODO: calculate determinant of 5z5 matrix
+                // TODO: calculate determinant of 5x5 matrix
                 return 0;
             }
         }
@@ -366,7 +369,7 @@ public class Hill extends Cipher {
         String reason = super.canParametersBeSet(dirs);
         if (reason != null)
             return reason;
-        int[] matrix = dirs.getPermutation();
+        int[] matrix = dirs.getMatrix();
         String alphabet = dirs.getAlphabet();
         CrackMethod crackMethod = dirs.getCrackMethod();
         if (crackMethod == null || crackMethod == CrackMethod.NONE) {
@@ -440,15 +443,8 @@ public class Hill extends Cipher {
         // this extracts the layout from the XML resource
         super.addExtraControls(context, layout, R.layout.extra_hill);
 
-        EditText keywordOrColumns = layout.findViewById(R.id.extra_hill_keyword);
-        // ensure input is in capitals, and "A-Z0-9,"
-        InputFilter[] editFilters = keywordOrColumns.getFilters();
-        InputFilter[] newFilters = new InputFilter[editFilters.length + 3];
-        System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
-        newFilters[editFilters.length] = new InputFilter.AllCaps();   // ensures capitals
-        newFilters[editFilters.length+1] = new InputFilter.LengthFilter(200); // limits text length
-        newFilters[editFilters.length+2] = MATRIX_INPUT_FILTER;
-        keywordOrColumns.setFilters(newFilters);
+        // ensure caps, max size and is suitable for a matrix
+        Cipher.addInputFilters(layout, R.id.extra_hill_keyword, true, MAX_KEYWORD_LENGTH, MATRIX_INPUT_FILTER);
 
         // ensure we 'delete' the keyword text when the delete button is pressed
         Button keywordDelete = layout.findViewById(R.id.extra_hill_keyword_delete);
@@ -459,30 +455,34 @@ public class Hill extends Cipher {
     public void fetchExtraControls(LinearLayout layout, Directives dirs) {
         EditText keywordView = layout.findViewById(R.id.extra_hill_keyword);
         String entry = keywordView.getText().toString();
-        int[] columns;
+        int[] matrix;
         if (entry.contains(",")) {
             String[] entries = entry.split(",");
-            columns = new int[entries.length];
+            matrix = new int[entries.length];
             int i = 0;
             for(String element : entries) {
                 try {
-                    columns[i++] = Integer.valueOf(element);
+                    matrix[i++] = Integer.valueOf(element);
                 } catch (NumberFormatException ex) {
-                    columns = new int[0];
+                    matrix = new int[0];
                     break;
                 }
             }
         } else {
-            columns = convertKeywordToMatrix(entry, dirs.getAlphabet(), true);
+            matrix = convertKeywordToMatrix(entry, dirs.getAlphabet(), true);
         }
-        dirs.setPermutation(columns);
+        dirs.setMatrix(matrix);
     }
 
     // add 3 buttons, one for dictionary crack, one for brute-force, one for crib-drag
     @Override
-    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String cipherText,
+                                    Language language, String alphabet, String paddingChars) {
         // this extracts the layout from the XML resource
         super.addExtraControls(context, layout, R.layout.extra_hill_crack);
+
+        // ensure drag crib is in capitals
+        Cipher.addInputFilters(layout, R.id.extra_hill_crack_crib_drag, true, 0);
 
         // ensure we 'delete' the field when the delete button is pressed
         Button sizeDelete = layout.findViewById(R.id.extra_hill_crack_rows_cols_delete);
@@ -496,7 +496,7 @@ public class Hill extends Cipher {
             RadioButton button = (RadioButton)group.getChildAt(child);
             button.setOnClickListener(CRACK_METHOD_ASSESSOR);
         }
-        CRACK_METHOD_ASSESSOR.onClick(layout.findViewById(R.id.crack_button_dictionary));
+        CRACK_METHOD_ASSESSOR.onClick(layout.findViewById(group.getCheckedRadioButtonId()));
         return true;
     }
 
@@ -567,12 +567,12 @@ public class Hill extends Cipher {
     /**
      * Encode a text using Hill cipher with the given key matrix
      * @param plainText the text to be encoded
-     * @param dirs a group of directives, we need PERMUTATION (int[]) only
+     * @param dirs a group of directives, we need MATRIX (int[]) only
      * @return the encoded string
      */
     @Override
     public String encode(String plainText, Directives dirs) {
-        int[] matrix = dirs.getPermutation();
+        int[] matrix = dirs.getMatrix();
 
         // do the char sequencing, matrix multiply, modulus and convert back to chars
         return applyHill(plainText, matrix, dirs.getAlphabet());
@@ -581,12 +581,12 @@ public class Hill extends Cipher {
     /**
      * Decode a cipher text using Hill cipher by inverting the matrix and applying same algorithm
      * @param cipherText the text to be decoded
-     * @param dirs a group of directives, we need PERMUTATION (int[]) only
+     * @param dirs a group of directives, we need MATRIX (int[]) only
      * @return the decoded string, or error message if inverse matrix does not exist
      */
     @Override
     public String decode(String cipherText, Directives dirs) {
-        int[] matrix = dirs.getPermutation();
+        int[] matrix = dirs.getMatrix();
         String alphabet = dirs.getAlphabet();
 
         // calculate the inverse matrix
@@ -656,11 +656,17 @@ public class Hill extends Cipher {
         int[] decryptMatrix = new int[rows*cols];
         int[] encryptMatrix = new int[rows*cols];
 
-        StringBuilder explain = new StringBuilder();
-        String foundPlainText = null, foundKeyword = null;
-        int[] foundMatrix = null;
         int attempts = 0, matchesFound = 0;
         int modulus = alphabet.length();
+        StringBuilder successResult = new StringBuilder()
+                .append("Success: Crib Drag scan: tried dragging the supplied crib (")
+                .append(cribDragText)
+                .append(") and look for cribs [")
+                .append(cribString)
+                .append("] in the decoded text.\n");
+        String foundPlainText = "";
+        String foundKeyword = null;
+        int[] foundMatrix = null;
         for (int textPos=0; textPos < cipherText.length()-sizeOfCribToUse-rows; textPos += rows) {
             if (CrackResults.isCancelled(crackId))
                 return new CrackResult(crackMethod, this, cipherText, "Crack cancelled", CrackState.CANCELLED);
@@ -680,22 +686,17 @@ public class Hill extends Cipher {
                     multiply(cribMatrix, inverseCipherTextMatrix, modulus, decryptMatrix);
 
                     // we 'encrypt' since we've calculated the decrypt matrix, not the original encrypt one
-                    crackDirs.setPermutation(decryptMatrix);
+                    crackDirs.setMatrix(decryptMatrix);
                     String plainText = encode(cipherText, crackDirs);
                     if (containsAllCribs(plainText, cribSet)) {
                         if (invertMatrix(decryptMatrix, modulus, encryptMatrix, true)) {
-                            matchesFound++;
                             foundKeyword = matrixToKeyword(encryptMatrix, alphabet);
-                            foundMatrix = Arrays.copyOf(encryptMatrix, encryptMatrix.length);
-                            foundPlainText = plainText;
-                            explain.append("Success: Crib Drag scan: tried ")
+                            successResult.append("After ")
                                     .append(attempts)
-                                    .append(" times to position the supplied crib (")
+                                    .append(" attempts, positioned drag-crib (")
                                     .append(cribToUse)
                                     .append(")")
-                                    .append(" and look for cribs [")
-                                    .append(cribString)
-                                    .append("] in the decoded text and found them at position ")
+                                    .append(" and found cribs at position ")
                                     .append((textPos + 2) / 2)
                                     .append(" with inverse [")
                                     .append(matrixToString(decryptMatrix))
@@ -704,23 +705,32 @@ public class Hill extends Cipher {
                                     .append("], which is keyword ")
                                     .append(foundKeyword)
                                     .append(".\n");
+                            if (dirs.stopAtFirst()) {
+                                return new CrackResult(crackMethod, this, dirs, cipherText, plainText, successResult.toString());
+                            } else {
+                                foundPlainText = plainText;
+                                foundMatrix = Arrays.copyOf(encryptMatrix, encryptMatrix.length);
+                                matchesFound++;
+                            }
                         }
                     }
                 }
             }
         }
         // see if we found anything
-        if (foundPlainText != null) {
+        if (foundPlainText.length() > 0) {
             this.matrix = foundMatrix;
             dirs.setKeyword(foundKeyword);
-            dirs.setPermutation(foundMatrix);
-            return new CrackResult(crackMethod, this, dirs, cipherText, foundPlainText, explain.toString());
+            dirs.setMatrix(foundMatrix);
+            return new CrackResult(crackMethod, this, dirs, cipherText, foundPlainText, successResult.toString());
         } else {
-            dirs.setPermutation(null);
             matrix = null;
+            dirs.setMatrix(null);
             String explainFailed = "Fail: Crib Drag scan: tried using "
                     + attempts
-                    + " positions and matrices to locate inverse and look for cribs ["
+                    + " positions and matrix inverses with drag-crib ("
+                    + cribDragText
+                    + "), looking for cribs ["
                     + cribString
                     + "] in the decoded text but did not find them.\n";
             return new CrackResult(crackMethod, this, cipherText, explainFailed);
@@ -728,7 +738,7 @@ public class Hill extends Cipher {
     }
 
     /**
-     * Crack a Hill cipher by using words in the dictionary as possible permutations
+     * Crack a Hill cipher by using words in the dictionary as possible inputs to for the matrix
      * @param cipherText the text to try to crack
      * @param dirs the directives with alphabet and cribs
      * @return the result of the crack attempt
@@ -739,11 +749,15 @@ public class Hill extends Cipher {
         Set<String> cribSet = Cipher.getCribSet(cribString);
         Dictionary dict = dirs.getLanguage().getDictionary();
         String alphabet = dirs.getAlphabet();
+        StringBuilder reverser = new StringBuilder(cipherText.length());
         CrackMethod crackMethod = dirs.getCrackMethod();
-        StringBuilder explain = new StringBuilder();
         int wordsChecked = 0, wordsRead = 0, matchesFound = 0;
-        String foundWord = null, foundPlainText = null;
+        String foundWord = null, foundPlainText = "";
         int[] foundMatrix = null;
+        StringBuilder successResult = new StringBuilder()
+                .append("Success: Dictionary scan: tried using acceptable words in the dictionary as keys to form matrices and look for cribs [")
+                .append(cribString)
+                .append("] in the decoded text.\n");
         for (String word : dict) {
             if (wordsRead++ % 500 == 499) {
                 if (CrackResults.isCancelled(crackId))
@@ -757,36 +771,66 @@ public class Hill extends Cipher {
                 int[] possibleMatrix = convertKeywordToMatrix(wordUpper, alphabet, true);
                 if (possibleMatrix != null) {
                     wordsChecked++;
-                    dirs.setPermutation(possibleMatrix);
+                    dirs.setMatrix(possibleMatrix);
                     String plainText = decode(cipherText, dirs);
                     if (containsAllCribs(plainText, cribSet)) {
-                        matchesFound++;
-                        explain.append("Success: Dictionary scan: tried using acceptable words in the dictionary as keys to form matrices and look for cribs [")
-                                .append(cribString)
-                                .append("] in the decoded text and found them with word ")
+                        successResult.append("Found cribs with word ")
                                 .append(wordsChecked)
                                 .append("=")
                                 .append(wordUpper)
                                 .append(", matrix: [")
                                 .append(matrixToString(possibleMatrix))
-                                .append("].\n");
-                        foundWord = wordUpper;
-                        foundMatrix = Arrays.copyOf(possibleMatrix, possibleMatrix.length);
-                        foundPlainText = plainText;
+                                .append("], giving: ")
+                                .append(plainText.substring(0, Math.min(Cipher.CRACK_PLAIN_LENGTH, plainText.length())))
+                                .append("\n");
+                        if (dirs.stopAtFirst()) {
+                            matrix = possibleMatrix;
+                            dirs.setKeyword(wordUpper);
+                            return new CrackResult(crackMethod, this, dirs, cipherText, plainText, successResult.toString());
+                        } else {
+                            matchesFound++;
+                            foundWord = wordUpper;
+                            foundMatrix = Arrays.copyOf(possibleMatrix, possibleMatrix.length);
+                            foundPlainText = plainText;
+                        }
+                    }
+                    if (dirs.considerReverse()) {
+                        reverser.setLength(0);
+                        String reversePlainText = reverser.append(plainText).reverse().toString();
+                        if (containsAllCribs(reversePlainText, cribSet)) {
+                            successResult.append("Found cribs with word ")
+                                    .append(wordsChecked)
+                                    .append("=")
+                                    .append(wordUpper)
+                                    .append(", matrix: [")
+                                    .append(matrixToString(possibleMatrix))
+                                    .append("], in REVERSE decoded text giving: ")
+                                    .append(reversePlainText.substring(0, Math.min(Cipher.CRACK_PLAIN_LENGTH, reversePlainText.length())))
+                                    .append("\n");
+                            if (dirs.stopAtFirst()) {
+                                matrix = possibleMatrix;
+                                dirs.setKeyword(wordUpper);
+                                return new CrackResult(crackMethod, this, dirs, cipherText, reversePlainText, successResult.toString());
+                            } else {
+                                matchesFound++;
+                                foundWord = wordUpper;
+                                foundMatrix = Arrays.copyOf(possibleMatrix, possibleMatrix.length);
+                                foundPlainText = reversePlainText;
+                            }
+                        }
                     }
                 }
             }
         }
-
         // see if we found anything
-        if (foundWord != null) {
-            this.matrix = foundMatrix;
+        if (foundPlainText.length() > 0) {
+            matrix = foundMatrix;
             dirs.setKeyword(foundWord);
-            dirs.setPermutation(foundMatrix);
-            return new CrackResult(crackMethod, this, dirs, cipherText, foundPlainText, explain.toString());
+            dirs.setMatrix(foundMatrix);
+            return new CrackResult(crackMethod, this, dirs, cipherText, foundPlainText, successResult.toString());
         } else {
-            dirs.setPermutation(null);
             matrix = null;
+            dirs.setMatrix(null);
             String explainFailed = "Fail: Dictionary scan: tried using "
                     + wordsChecked
                     + " acceptable words in the dictionary of "
@@ -816,9 +860,12 @@ public class Hill extends Cipher {
         int triesCompleted = 0;
         int validMatrices = 0;
         int matchesFound = 0;
-        String plainTextFound = null;
         int[] matrixFound = null;
-        StringBuilder explain = new StringBuilder();
+        StringBuilder successResult = new StringBuilder()
+                .append("Success: Brute Force: tried all possible matrices looking for cribs [")
+                .append(cribString)
+                .append("] in the decoded text\n");
+        String plainTextFound = "";
         int[] m = new int[4];
         for (int a = 0; a < alphabet.length(); a++) {
             m[0] = a;
@@ -840,53 +887,59 @@ public class Hill extends Cipher {
                         int determinant = getDeterminant(m, modulus);
                         if (determinant != 0 && areCoPrimes(determinant, modulus)) {
                             validMatrices++;
-                            dirs.setPermutation(m);
+                            dirs.setMatrix(m);
                             String plainText = decode(cipherText, dirs);
                             if (containsAllCribs(plainText, cribSet)) {
-                                matchesFound++;
-                                matrixFound = Arrays.copyOf(m, m.length);
-                                plainTextFound = plainText;
-                                explain.append("Success: Brute Force: tried all possible matrices looking for cribs [")
-                                        .append(cribString)
-                                        .append("] in the decoded text and found them after ")
+                                successResult.append("Found cribs after ")
                                         .append(triesCompleted)
-                                        .append(" scanned (")
+                                        .append(" matrices scanned (")
                                         .append(validMatrices)
                                         .append(" invertible) with matrix: [")
                                         .append(matrixToString(m))
                                         .append("], keyword ")
                                         .append(matrixToKeyword(m, alphabet))
                                         .append(".\n");
+                                if (dirs.stopAtFirst()) {
+                                    return new CrackResult(crackMethod, this, dirs, cipherText, plainText, successResult.toString());
+                                } else {
+                                    matchesFound++;
+                                    matrixFound = Arrays.copyOf(m, m.length);
+                                    plainTextFound = plainText;
+                                }
                             }
-                            plainText = decode(reverseCipherText, dirs);
-                            if (containsAllCribs(plainText, cribSet)) {
-                                matchesFound++;
-                                matrixFound = Arrays.copyOf(m, m.length);
-                                plainTextFound = plainText;
-                                explain.append("Success: Brute Force REVERSE: tried all possible matrices looking for cribs [")
-                                        .append(cribString)
-                                        .append("] in the decoded REVERSE text and found them after ")
-                                        .append(triesCompleted)
-                                        .append(" scanned (")
-                                        .append(validMatrices)
-                                        .append(" invertible) with matrix: [")
-                                        .append(matrixToString(m))
-                                        .append("], keyword ")
-                                        .append(matrixToKeyword(m, alphabet))
-                                        .append(".\n");
+                            if (dirs.considerReverse()) {
+                                plainText = decode(reverseCipherText, dirs);
+                                if (containsAllCribs(plainText, cribSet)) {
+                                    successResult.append("Found cribs in REVERSE text after ")
+                                            .append(triesCompleted)
+                                            .append(" matrices scanned (")
+                                            .append(validMatrices)
+                                            .append(" invertible) with matrix: [")
+                                            .append(matrixToString(m))
+                                            .append("], keyword ")
+                                            .append(matrixToKeyword(m, alphabet))
+                                            .append(".\n");
+                                    if (dirs.stopAtFirst()) {
+                                        return new CrackResult(crackMethod, this, dirs, cipherText, plainText, successResult.toString());
+                                    } else {
+                                        matchesFound++;
+                                        matrixFound = Arrays.copyOf(m, m.length);
+                                        plainTextFound = plainText;
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
         }
-        if (matchesFound > 0) {
+        if (plainTextFound.length() > 0) {
             matrix = matrixFound;
-            dirs.setPermutation(matrix);
-            return new CrackResult(crackMethod, this, dirs, cipherText, plainTextFound, explain.toString());
+            dirs.setMatrix(matrix);
+            return new CrackResult(crackMethod, this, dirs, cipherText, plainTextFound, successResult.toString());
         }
-        dirs.setPermutation(null);
         matrix = null;
+        dirs.setMatrix(null);
         String explainFail = "Fail: Brute Force: tried using "
                 + triesCompleted
                 + " matrices of which "
@@ -899,6 +952,7 @@ public class Hill extends Cipher {
 
     /**
      * Crack a Hill cipher by using all possible permutations of 3x3 matrices
+     * TAKES A VERY LONG TIME TO RUN
      * @param cipherText the text to try to crack
      * @param dirs the directives with alphabet and cribs
      * @return the result of the crack attempt
@@ -947,7 +1001,7 @@ public class Hill extends Cipher {
                                             // else 2 symbols could encode to the same char and so not be decode-able
                                             int determinant = getDeterminant(x, modulus);
                                             if (determinant != 0 && areCoPrimes(determinant, modulus)) {
-                                                dirs.setPermutation(x);
+                                                dirs.setMatrix(x);
                                                 String plainText = decode(cipherText, dirs);
                                                 if (containsAllCribs(plainText, cribSet)) {
                                                     matrix = x;
@@ -986,7 +1040,7 @@ public class Hill extends Cipher {
                 }
             }
         }
-        dirs.setPermutation(null);
+        dirs.setMatrix(null);
         matrix = null;
         String explain = "Fail: Brute Force: tried using "
                 + triesCompleted

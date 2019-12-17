@@ -3,6 +3,8 @@ package mnh.game.ciphercrack.cipher;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -25,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import mnh.game.ciphercrack.R;
 import mnh.game.ciphercrack.language.Dictionary;
+import mnh.game.ciphercrack.language.Language;
 import mnh.game.ciphercrack.util.CrackMethod;
 import mnh.game.ciphercrack.util.CrackResult;
 import mnh.game.ciphercrack.util.Directives;
@@ -39,9 +42,35 @@ import mnh.game.ciphercrack.util.Settings;
  */
 abstract public class Cipher implements Parcelable {
 
-    // some ciphers remove padding, etc - need to know what padding is there, what alpha is, etc
-    final Context context;
-    private final String cipherName;
+    // filter to avoid dupes in the input fields
+    static final InputFilter NO_DUPE_FILTER = new InputFilter() {
+        public CharSequence filter(CharSequence source, int start, int end,
+                                   Spanned dest, int dstart, int dend) {
+            // if adding (rather than removing) chars
+            if (end-start > 0) {
+                // only allow chars if not already in dest
+                String destStr = dest.toString();
+                String s = "";
+                for (int i = start; i < end; i++) {
+                    char c = source.charAt(i);
+
+                    // if already in dest, but not the bit being replaced, we will discard this letter
+                    int posInDest = destStr.indexOf(c);
+                    boolean inPartOfDestWeAreNotReplacing = (posInDest >= 0 && (posInDest < dstart || posInDest >= dend));
+                    // if already in the source (already scanned and accepted), ignore it
+                    if (s.indexOf(c) < 0 && !inPartOfDestWeAreNotReplacing)
+                        s += c;
+                }
+                // if all chars between start and end are now in S, then the source is fine as is
+                // if not all there, then return the shorter S string
+                return (s.length() == (end-start)) ? null : s ;
+            }
+            return null;
+        }
+    };
+
+    // how much text of possible solutions to show when cracking
+    public static final int CRACK_PLAIN_LENGTH = 60;
 
     // build a cipher from a parcel
     public static Cipher instanceOf(Parcel parcel, Context context) {
@@ -116,6 +145,10 @@ abstract public class Cipher implements Parcelable {
         }
         return cipher;
     }
+
+    // some ciphers remove padding, etc - need to know what padding is there, what alpha is, etc
+    final Context context;
+    private final String cipherName;
 
     Cipher(Context context, String name) { cipherName = name; this.context = context; }
 
@@ -259,10 +292,14 @@ abstract public class Cipher implements Parcelable {
      * Default: There are no crack controls for this cipher, can be overridden
      * @param context the context
      * @param layout the layout to add any crack controls to
+     * @param cipherText the text to be decoded - used by some ciphers to prepopulate some fields
+     * @param language the expected language of the plain text
      * @param alphabet the current alphabet
+     * @param paddingChars the currently configured padding chars
      * @return true if controls should be shown, else false
      */
-    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String alphabet) {
+    public boolean addCrackControls(AppCompatActivity context, LinearLayout layout, String cipherText,
+                                    Language language, String alphabet, String paddingChars) {
         return false;
     }
 
@@ -302,8 +339,12 @@ abstract public class Cipher implements Parcelable {
     public static boolean containsAllCribs(String text, Set<String> cribs) {
         // may use 5-char blocks so we have to remove the whitespace (cr/tab/space)
         String textUpper = text.toUpperCase().replaceAll("\\s", "");
+        return normalisedTextHasCribs(textUpper, cribs);
+    }
+
+    private static boolean normalisedTextHasCribs(String normalisedText, Set<String> cribs) {
         for (String crib : cribs) {
-            if (!textUpper.contains(crib)) {
+            if (!normalisedText.contains(crib)) {
                 return false;
             }
         }
@@ -433,5 +474,41 @@ abstract public class Cipher implements Parcelable {
             }
         }
         return (double)lettersFound;
+    }
+
+    /**
+     * Add some extra filters to an Edit Text field, can be Caps, Max Length and/or custom
+     * @param layout the layout containing the field
+     * @param fieldId the field ID
+     * @param useCaps whether the field should be all Caps
+     * @param maxLength whether the filed should have a max length
+     * @param extraFilter any custom InputFilter
+     */
+    static void addInputFilters(LinearLayout layout, int fieldId, boolean useCaps, int maxLength,
+                                InputFilter ... extraFilter) {
+        int filterCount = 0;
+        if (useCaps) filterCount++;
+        if (maxLength > 0) filterCount++;
+        if (extraFilter != null) filterCount += extraFilter.length;
+        if (filterCount == 0) return;
+
+        // find the field and get current filters
+        EditText field = layout.findViewById(fieldId);
+        InputFilter[] editFilters = field.getFilters();
+
+        // set up array to hold the new filters
+        InputFilter[] newFilters = new InputFilter[editFilters.length + filterCount];
+        System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
+        int next = editFilters.length;
+        if (useCaps)
+            newFilters[next++] = new InputFilter.AllCaps();   // ensures capitals
+        if (maxLength > 0)
+            newFilters[next++] = new InputFilter.LengthFilter(maxLength); // sets max length
+        if (extraFilter != null) {
+            for (InputFilter filter : extraFilter) {
+                newFilters[next++] = filter;
+            }
+        }
+        field.setFilters(newFilters);
     }
 }
