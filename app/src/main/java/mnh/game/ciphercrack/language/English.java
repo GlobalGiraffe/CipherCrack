@@ -83,7 +83,7 @@ public class English extends Language {
         freqTrigrams20.put("EST", 0.28f);
         freqTrigrams20.put("ERS", 0.28f);
         freqTrigrams20.put("ATI", 0.26f);
-        freqTrigrams20.put("HATs", 0.26f);
+        freqTrigrams20.put("HAT", 0.26f);
         freqTrigrams20.put("ATE", 0.25f);
         freqTrigrams20.put("ALL", 0.25f);
         freqTrigrams20.put("ETH", 0.24f);

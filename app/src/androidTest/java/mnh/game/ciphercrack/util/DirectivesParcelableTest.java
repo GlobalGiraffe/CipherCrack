@@ -42,6 +42,7 @@ public class DirectivesParcelableTest {
         dir1.setSeparator("^");
         dir1.setNumberSize(5);
         dir1.setPermutation(new int[] {1,3,4,2,0});
+        dir1.setCharsPerCell(new int[] {2,1});
         dir1.setReadAcross(true);
         dir1.setStopAtFirst(true);
         dir1.setConsiderReverse(true);
@@ -72,6 +73,9 @@ public class DirectivesParcelableTest {
         assertEquals("ParcelDir Permutation 2",dir1.getPermutation()[2], dir2.getPermutation()[2]);
         assertEquals("ParcelDir Permutation 3",dir1.getPermutation()[3], dir2.getPermutation()[3]);
         assertEquals("ParcelDir Permutation 4",dir1.getPermutation()[4], dir2.getPermutation()[4]);
+        assertEquals("ParcelDir CharsPerCell len",dir1.getCharsPerCell().length, dir2.getCharsPerCell().length);
+        assertEquals("ParcelDir CharsPerCell 0",dir1.getCharsPerCell()[0], dir2.getCharsPerCell()[0]);
+        assertEquals("ParcelDir CharsPerCell 1",dir1.getCharsPerCell()[1], dir2.getCharsPerCell()[1]);
         assertEquals("ParcelDir ReadAcross",dir1.isReadAcross(), dir2.isReadAcross());
         assertEquals("ParcelDir StopAtFirst",dir1.stopAtFirst(), dir2.stopAtFirst());
         assertEquals("ParcelDir ConsiderReverse",dir1.considerReverse(), dir2.considerReverse());

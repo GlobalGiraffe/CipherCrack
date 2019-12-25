@@ -33,6 +33,8 @@ public class Directives implements Parcelable {
     private int numberSize;             // used for binary, number of digits making a letter = 5
     private int[] permutation;          // use for permutation cipher as the sequence of columns
                                         // also for matrix used by the hill cipher
+                                        // also for column ordering by the Amsco cipher
+    private int[] charsPerCell;         // use for Amsco cipher, e.g. 1,2 or 2,1
     private boolean readAcross;         // read final answer across columns or down (permutation)
     private boolean stopAtFirst;        // when cracking, stop at first match
     private boolean considerReverse;    // when cracking, look at the reverse cipherText too
@@ -81,6 +83,9 @@ public class Directives implements Parcelable {
         int permutationSize = in.readInt();
         permutation = new int[permutationSize];
         in.readIntArray(permutation);
+        int charsPerCellSize = in.readInt();
+        charsPerCell = new int[charsPerCellSize];
+        in.readIntArray(charsPerCell);
         readAcross = in.readInt() == 1;
         stopAtFirst = in.readInt() == 1;
         considerReverse = in.readInt() == 1;
@@ -113,6 +118,13 @@ public class Directives implements Parcelable {
         } else {
             p.writeInt(permutation.length);
             p.writeIntArray(permutation);
+        }
+        if (charsPerCell == null) {
+            p.writeInt(0);
+            p.writeInt(0);
+        } else {
+            p.writeInt(charsPerCell.length);
+            p.writeIntArray(charsPerCell);
         }
         p.writeInt(readAcross?1:0);
         p.writeInt(stopAtFirst?1:0);
@@ -149,6 +161,8 @@ public class Directives implements Parcelable {
     public void setPermutation(int[] permutation) { this.permutation = permutation; }
 
     public void setMatrix(int[] matrix) { this.permutation = matrix; }
+
+    public void setCharsPerCell(int[] charsPerCell) { this.charsPerCell = charsPerCell; }
 
     public void setKeyword(String keyword) { this.keyword = keyword; }
 
@@ -202,6 +216,8 @@ public class Directives implements Parcelable {
 
     public int[] getMatrix() { return permutation; }
 
+    public int[] getCharsPerCell() { return charsPerCell; }
+
     public String getKeyword() { return keyword; }
 
     public int getKeywordLength() { return keywordLength; }
@@ -221,5 +237,4 @@ public class Directives implements Parcelable {
     public int getNumberSize() { return numberSize; }
 
     public boolean isReadAcross() { return readAcross; }
-
 }

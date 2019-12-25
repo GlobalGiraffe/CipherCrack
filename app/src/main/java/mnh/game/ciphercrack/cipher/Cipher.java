@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NavigableSet;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.SortedSet;
@@ -41,6 +42,36 @@ import mnh.game.ciphercrack.util.Settings;
  *    and some cracks (e.g. Vigenere IOC) need specific values, like keywordLength
  */
 abstract public class Cipher implements Parcelable {
+
+    // only allow A-Z, 0-9 and ',' in the keyword field
+    static final InputFilter PERM_INPUT_FILTER = new InputFilter() {
+        public CharSequence filter(CharSequence source, int start, int end,
+                                   Spanned dest, int dstart, int dend) {
+            boolean hasAlpha = false;
+            boolean hasDigit = false;
+            boolean hasComma = false;
+            // check what chars the buffer to be added has
+            for (int i = start; i < end; i++) {
+                char c = source.charAt(i);
+                if (!Character.isLetterOrDigit(c) && c != ',') {
+                    return "";
+                }
+                hasAlpha = (hasAlpha || Character.isAlphabetic(c));
+                hasDigit = (hasDigit || Character.isDigit(c));
+                hasComma = (hasComma || c == ',');
+            }
+            // if we are adding alpha and the dest already contains digit or ',', don't allow add
+            if (hasAlpha && dest.length() > 0
+                    && (Character.isDigit(dest.charAt(dest.length()-1))
+                    || dest.charAt(dest.length()-1) == ','))
+                return "";
+            // if we're adding digit or comma and dest already has alpha, don't allow the add
+            if ((hasDigit || hasComma) && dest.length() > 0
+                    && Character.isAlphabetic(dest.charAt(dest.length()-1)))
+                return "";
+            return null;
+        }
+    };
 
     // filter to avoid dupes in the input fields
     static final InputFilter NO_DUPE_FILTER = new InputFilter() {
@@ -130,11 +161,11 @@ abstract public class Cipher implements Parcelable {
             case "Morse":
                 cipher = new Morse(context);
                 break;
+            case "Amsco":
+                cipher = new Amsco(context);
+                break;
             case "Porta":
                 // TODO cipher = new Porta(context);
-                break;
-            case "Amsco":
-                // TODO cipher = new Amsco(context);
                 break;
             case "Bifid":
                 // TODO cipher = new Bifid(context);
@@ -393,6 +424,65 @@ abstract public class Cipher implements Parcelable {
             return false;
         BigInteger gcf = BigInteger.valueOf(a).gcd(BigInteger.valueOf(b));
         return gcf.equals(BigInteger.ONE);
+    }
+
+    /**
+     * Given a keyword or sequence of integers, check and return set of integers
+     * e.g. "BETA" => [3,0,1,2] or "3,2,1,0" => [3,2,1,0]
+     * For an alphabetic keyword, remove duplicate letters and then scan them in order, building the
+     * integer sequence of ordered distinct columns the keyword represents, e.g. BETA => 3,0,1,2
+     * @param entry the text to convert to columns permutation, e.g. ZEBRA => 4,2,1,3,0
+     * @param min the min value of the column, can be 0 or 1
+     * @return the column permutation represented by the keyword or integers, or null of problem found
+     */
+    static int[] convertKeywordToColumns(String entry, int min) {
+        if (entry == null)
+            return null;
+        int[] columns;
+        if (entry.contains(",")) {
+            String[] entries = entry.split(",");
+            columns = new int[entries.length];
+            int i = 0;
+            Set<Integer> integersInKey = new HashSet<>();
+            for(String element : entries) {
+                try {
+                    Integer intValue = Integer.valueOf(element);
+                    // check not repeated
+                    if (integersInKey.contains(intValue))
+                        return null;
+                    // check there will be no gaps
+                    if (intValue < min || intValue >= entries.length+min)
+                        return null;
+                    integersInKey.add(intValue);
+                    columns[i++] = intValue;
+                } catch (NumberFormatException ex) {
+                    return null;
+                }
+            }
+        } else {
+            // example BETA => 3,0,1,2, ZEBRA => 4,2,1,3,0
+            // collect all distinct letters into a Set that we can later navigate
+            entry = entry.toUpperCase();
+            NavigableSet<Character> charsInKey = new TreeSet<>();
+            for (int i = 0; i < entry.length(); i++) {
+                char keyChar = entry.charAt(i);
+                if (!Character.isAlphabetic(keyChar)) // not a letter
+                    return null;
+                charsInKey.add(keyChar);
+            }
+            // means there are repeated letters in the keyword, or keyword is empty
+            if (charsInKey.size() == 0 || charsInKey.size() != entry.length())
+                return null;
+
+            // now build the resulting list of columns by traversing the tree in alphabetical order
+            columns = new int[charsInKey.size()];
+            int i = 0;
+            for (Character keyChar : charsInKey) {
+                int posInEntry = entry.indexOf(keyChar)+min;
+                columns[i++] = posInEntry;
+            }
+        }
+        return columns;
     }
 
     /**

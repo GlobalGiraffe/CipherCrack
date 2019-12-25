@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import mnh.game.ciphercrack.staticanalysis.FrequencyEntry;
 import mnh.game.ciphercrack.util.Settings;
 
 public abstract class Language {
@@ -55,12 +56,11 @@ public abstract class Language {
     }
 
     // the name of the dictionary raw resource, e.g. "english_dictionary"
-    abstract protected Map<String, Float> getLetterFrequencies();
-    abstract protected Map<String, Float> getBigramFrequencies();
-    abstract protected Map<String, Float> getTrigramFrequencies();
+    abstract public Map<String, Float> getLetterFrequencies();
+    abstract public Map<String, Float> getBigramFrequencies();
+    abstract public Map<String, Float> getTrigramFrequencies();
     abstract public double getExpectedIOC();
     abstract public String getInfrequentLetters();
-
 
     // some languages with other letters may override this
     public String getAlphabet() {
@@ -73,6 +73,28 @@ public abstract class Language {
 
     // default is "no dictionary available", language subclasses will override
     String getDictionaryResourceName() { return Language.NO_DICTIONARY; }
+
+    /**
+     * Determine which is the most frequent gram in a list
+     * @param grams the map of grams, e.g. from a Language
+     * @return the entry that has the highest percentage
+     */
+    public static String mostFrequentGram(Map<String, Float> grams) {
+        Float mostFrequentPercent = null;
+        String mostFrequentGram = null;
+        for (Map.Entry<String, Float> gram : grams.entrySet()) {
+            if (mostFrequentPercent == null) {
+                mostFrequentPercent = gram.getValue();
+                mostFrequentGram = gram.getKey();
+            } else {
+                if (gram.getValue() > mostFrequentPercent) {
+                    mostFrequentPercent = gram.getValue();
+                    mostFrequentGram = gram.getKey();
+                }
+            }
+        }
+        return mostFrequentGram;
+    }
 
     /**
      * Compute the sorted list of letters based on their frequency, low to high

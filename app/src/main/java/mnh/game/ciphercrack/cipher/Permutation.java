@@ -42,36 +42,6 @@ public class Permutation extends Cipher {
 
     private static final String TAG = "CrackPermutation";
 
-    // only allow A-Z, 0-9 and ',' in the keyword field
-    private static final InputFilter PERM_INPUT_FILTER = new InputFilter() {
-        public CharSequence filter(CharSequence source, int start, int end,
-        Spanned dest, int dstart, int dend) {
-            boolean hasAlpha = false;
-            boolean hasDigit = false;
-            boolean hasComma = false;
-            // check what chars the buffer to be added has
-            for (int i = start; i < end; i++) {
-                char c = source.charAt(i);
-                if (!Character.isLetterOrDigit(c) && c != ',') {
-                    return "";
-                }
-                hasAlpha = (hasAlpha || Character.isAlphabetic(c));
-                hasDigit = (hasDigit || Character.isDigit(c));
-                hasComma = (hasComma || c == ',');
-            }
-            // if we are adding alpha and the dest already contains digit or ',', don't allow add
-            if (hasAlpha && dest.length() > 0
-                    && (Character.isDigit(dest.charAt(dest.length()-1))
-                     || dest.charAt(dest.length()-1) == ','))
-                return "";
-            // if we're adding digit or comma and dest already has alpha, don't allow the add
-            if ((hasDigit || hasComma) && dest.length() > 0
-                    && Character.isAlphabetic(dest.charAt(dest.length()-1)))
-                return "";
-            return null;
-        }
-    };
-
     // delete the keyword if 'X' is pressed
     private static final View.OnClickListener PERM_ON_CLICK_DELETE = new View.OnClickListener() {
         @Override
@@ -80,39 +50,6 @@ public class Permutation extends Cipher {
             k.setText("");
         }
     };
-
-    /**
-     * Given a keyword, remove duplicate letters and then scan then in order building the
-     * integer sequence of ordered distinct columns the keyword represents, e.g. BETA => 3,0,1,2
-     * @param keyword the keyword to convert to columns permutation, e.g. ZEBRA => 4,2,1,3,0
-     * @return the column permutation represented by the keyword
-     */
-    static int[] convertKeywordToColumns(String keyword) {
-        // example BETA => 3,0,1,2, ZEBRA => 4,2,1,3,0
-        if (keyword == null)
-            return null;
-        // collect all distinct letters into a Set that we can later navigate
-        keyword = keyword.toUpperCase();
-        NavigableSet<Character> charsInKey = new TreeSet<>();
-        for (int i=0; i<keyword.length(); i++) {
-            char keyChar = keyword.charAt(i);
-            if (!Character.isAlphabetic(keyChar)) // not a letter
-                return null;
-            charsInKey.add(keyChar);
-        }
-        // means there are repeated letters in the keyword, or keyword is empty
-        if (charsInKey.size() == 0 || charsInKey.size() != keyword.length())
-            return null;
-
-        // now build the resulting list of columns by traversing the tree in alphabetical order
-        int[] columns = new int[charsInKey.size()];
-        int i = 0;
-        for (Character keyChar : charsInKey) {
-            int posInEntry = keyword.indexOf(keyChar);
-            columns[i++] = posInEntry;
-        }
-        return columns;
-    }
 
     /**
      * Static method to convert a permutation array to a string
@@ -252,22 +189,7 @@ public class Permutation extends Cipher {
     public void fetchExtraControls(LinearLayout layout, Directives dirs) {
         EditText keywordView = layout.findViewById(R.id.extra_permutation_keyword);
         String entry = keywordView.getText().toString();
-        int[] columns;
-        if (entry.contains(",")) {
-            String[] entries = entry.split(",");
-            columns = new int[entries.length];
-            int i = 0;
-            for(String element : entries) {
-                try {
-                    columns[i++] = Integer.valueOf(element);
-                } catch (NumberFormatException ex) {
-                    columns = new int[0];
-                    break;
-                }
-            }
-        } else {
-            columns = convertKeywordToColumns(entry);
-        }
+        int[] columns = convertKeywordToColumns(entry,0);
         dirs.setPermutation(columns);
         CheckBox useReadAcross = layout.findViewById(R.id.extra_permutation_read_across);
         dirs.setReadAcross(useReadAcross.isChecked());
@@ -468,16 +390,17 @@ public class Permutation extends Cipher {
         String foundPlainText = null;
         boolean foundReadAcross = false;
         int[] foundPermutation = null;
+        int foundCount = 0;
         StringBuilder explain = new StringBuilder();
         for (String word : dict) {
             if (wordsRead++ % 500 == 499) {
                 if (CrackResults.isCancelled(crackId))
                     return new CrackResult(crackMethod, this, cipherText,"Crack cancelled", CrackState.CANCELLED);
                 Log.i("CipherCrack", "Cracking Permutation Dict: " + wordsRead + " words tried");
-                CrackResults.updateProgressDirectly(crackId, wordsRead+" words of "+dict.size()+": "+100*wordsRead/dict.size()+"% complete");
+                CrackResults.updateProgressDirectly(crackId, wordsRead+" words of "+dict.size()+": "+100*wordsRead/dict.size()+"% complete, found="+foundCount);
             }
             String keyword = word.toUpperCase();
-            int[] possiblePerm = convertKeywordToColumns(keyword);
+            int[] possiblePerm = convertKeywordToColumns(keyword,0);
             if (possiblePerm != null) {
                 wordsChecked++;
                 dirs.setPermutation(possiblePerm);
@@ -487,6 +410,7 @@ public class Permutation extends Cipher {
                     String plainText = decode(cipherText, dirs);
                     if (containsAllCribs(plainText, cribSet)) {
                         reportDictSuccess(dirs, explain, false, cribString, keyword, plainText);
+                        foundCount++;
                         foundReadAcross = dirs.isReadAcross();
                         foundPermutation = Arrays.copyOf(possiblePerm, possiblePerm.length);
                         foundPlainText = plainText;
@@ -495,6 +419,7 @@ public class Permutation extends Cipher {
                         plainText = decode(reverseCipherText, dirs);
                         if (containsAllCribs(plainText, cribSet)) {
                             reportDictSuccess(dirs, explain, true, cribString, keyword, plainText);
+                            foundCount++;
                             foundReadAcross = dirs.isReadAcross();
                             foundPermutation = Arrays.copyOf(possiblePerm, possiblePerm.length);
                             foundPlainText = plainText;

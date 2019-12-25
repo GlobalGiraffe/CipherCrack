@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/CrackTheme"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/extra_amsco_keyword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="15"
+            android:hint="@string/keyword_or_columns"
+            android:importantForAutofill="no"
+            android:maxWidth="50dp"
+            android:singleLine="true"
+            android:inputType="textNoSuggestions"
+            android:padding="3dp"
+            android:layout_gravity="center"
+            android:textColor="@color/entry_text_text"
+            android:background="@drawable/entry_text_border" />
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:id="@+id/extra_amsco_keyword_delete"
+            android:background="@android:drawable/ic_delete"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/extra_amsco_chars_per_cell"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="15"
+            android:hint="@string/chars_per_cell"
+            android:importantForAutofill="no"
+            android:maxWidth="50dp"
+            android:singleLine="true"
+            android:inputType="textNoSuggestions"
+            android:padding="3dp"
+            android:layout_gravity="center"
+            android:textColor="@color/entry_text_text"
+            android:background="@drawable/entry_text_border" />
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:id="@+id/extra_amsco_chars_per_cell_delete"
+            android:background="@android:drawable/ic_delete"/>
+    </LinearLayout>
+
+</LinearLayout>

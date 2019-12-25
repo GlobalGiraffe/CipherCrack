@@ -17,10 +17,10 @@ public class FrequencyEntry implements Comparable<FrequencyEntry> {
         this.normal = normal;
     }
 
-    String getGram() { return gram; }
-    int getCount() { return count; }
-    float getPercent() { return percent; }
-    float getNormal() { return normal; }
+    public String getGram() { return gram; }
+    public int getCount() { return count; }
+    public float getPercent() { return percent; }
+    public float getNormal() { return normal; }
 
     public int compareTo(FrequencyEntry other) {
         return 0;

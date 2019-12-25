@@ -537,6 +537,8 @@ public class KeywordSubstitution extends Cipher {
                                         .append(plainText.substring(0, Math.min(Cipher.CRACK_PLAIN_LENGTH, plainText.length())))
                                         .append(".\n");
                                 if (dirs.stopAtFirst()) {
+                                    this.keyword = keyword;
+                                    dirs.setKeyword(keyword);
                                     return new CrackResult(crackMethod, this, dirs, cipherText, plainText, successResult.toString());
                                 } else {
                                     foundCount++;
@@ -556,6 +558,8 @@ public class KeywordSubstitution extends Cipher {
                                             .append(plainText.substring(0, Math.min(Cipher.CRACK_PLAIN_LENGTH, plainText.length())))
                                             .append(".\n");
                                     if (dirs.stopAtFirst()) {
+                                        this.keyword = keyword;
+                                        dirs.setKeyword(keyword);
                                         return new CrackResult(crackMethod, this, dirs, cipherText, plainText, successResult.toString());
                                     } else {
                                         foundCount++;

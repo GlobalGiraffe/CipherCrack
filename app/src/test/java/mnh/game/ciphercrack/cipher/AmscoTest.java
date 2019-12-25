@@ -1,5 +1,6 @@
 package mnh.game.ciphercrack.cipher;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -17,18 +18,18 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Test out the Permutation Cipher code
+ * Test out the Amsco Cipher code
  */
 @RunWith(JUnit4.class)
-public class PermutationTest {
+public class AmscoTest {
 
-    private final Permutation cipher = new Permutation(null);
+    private final Amsco cipher = new Amsco(null);
 
     @Test
     public void testConvertKeywordToColumnsGood() {
-        String keyword = "ZEBRA";
-        int[] expected = new int[]{4, 2, 1, 3, 0};
-        int[] result = Permutation.convertKeywordToColumns(keyword,0);
+        String keyword = "BETA";
+        int[] expected = new int[]{3,0,1,2};
+        int[] result = Amsco.convertKeywordToColumns(keyword,0);
         assertEquals("Convert Keyword Len", expected.length, result.length);
         for (int i = 0; i < result.length; i++) {
             assertEquals("Convert Keyword " + i, expected[i], result[i]);
@@ -36,55 +37,66 @@ public class PermutationTest {
     }
 
     @Test
+    public void testConvertNumbersToColumnsGood() {
+        String integers = "0,2,1,4,3";
+        int[] expected = new int[]{0,2,1,4,3};
+        int[] result = Amsco.convertKeywordToColumns(integers,0);
+        assertEquals("Convert Integers Len", expected.length, result.length);
+        for (int i = 0; i < result.length; i++) {
+            assertEquals("Convert Integers " + i, expected[i], result[i]);
+        }
+    }
+
+    @Test
     public void testConvertKeywordToColumnsBad() {
-        int[] result = Permutation.convertKeywordToColumns(null,0);
+        int[] result = Amsco.convertKeywordToColumns(null,0);
         assertNull("ConvertBad Null", result);
-        result = Permutation.convertKeywordToColumns("",0);
+        result = Amsco.convertKeywordToColumns("",0);
         assertNull("ConvertBad Empty", result);
-        result = Permutation.convertKeywordToColumns("A1BD0",0);
+        result = Amsco.convertKeywordToColumns("A1BD0",0);
         assertNull("ConvertBad Non-alpha", result);
+        result = Amsco.convertKeywordToColumns("1,2,1,0",0);
+        assertNull("ConvertBad Repeat", result);
+        result = Amsco.convertKeywordToColumns("0,3,2",0);
+        assertNull("ConvertBad Gap", result);
+        result = Amsco.convertKeywordToColumns("-1,1,0",0);
+        assertNull("ConvertBad Negative", result);
     }
 
     @Test
     public void testConvertKeywordToColumnsRepeat() {
-        int[] result = Permutation.convertKeywordToColumns("FLIPPER",0);
+        int[] result = Amsco.convertKeywordToColumns("FLIPPER",0);
         assertNull("ConvertRepeat", result);
     }
 
     @Test
-    public void testEncodeDecodeKeyword() {
-        // example from http://practicalcryptography.com/ciphers/columnar-transposition-cipher/
-        String plainText = "defendtheeastwallofthecastle";
-        String key = "GERMAN";
-        String expectedCipherText = "nededfahteselwtloactfeahXtseXl";
+    public void testEncodeDecodeKeyword_1_2() {
+        // example from https://www.thonky.com/kryptos/amsco-cipher
+        String plainText = "Whoever has made a voyage up the Hudson must remember the Kaatskill mountains.".toUpperCase();
+        String key = "2,4,0,3,1";
+        String expectedCipherText = "EMAAEHUMBALMNREAUDSRRTSUNWHAVPTOEMHKITVEDGEUSTEATOSHOSOYHNMEEKLAI";
         Directives p = new Directives();
-        int[] perm = Permutation.convertKeywordToColumns(key,0);
+        int[] perm = Amsco.convertKeywordToColumns(key,0);
         p.setPermutation(perm);
-        p.setReadAcross(true);
+        p.setCharsPerCell(new int[] {1,2});
         String reason = cipher.canParametersBeSet(p);
         assertNull("Encode: params okay", reason);
         String encoded = cipher.encode(plainText, p);
         assertEquals("Encoding Classic", expectedCipherText, encoded);
         String decoded = cipher.decode(encoded, p);
-        assertEquals("Decoding Classic", plainText.replaceAll("\\W","")+"XX", decoded);
+        assertEquals("Decoding Classic", plainText.replaceAll("\\W",""), decoded);
     }
 
     @Test
-    public void testEncodeDecodeIntsAcross() {
+    public void testEncodeDecodeIncomplete_2_1() {
         // encode and then decode a mixed case cipher
-        int[] perm = new int[] {3,0,1,2};
-        String plainText = "DEFENDTHEEASTWALLOFTHECASTLE";
-        // DEFE
-        // NDTH
-        // EEAS
-        // TWAL
-        // LOFT
-        // HECA
-        // STLE
-        String expectedCipherText = "EDEFHNDTSEEALTWATLOFAHECESTL";
+        // https://www.cryptogram.org/downloads/aca.info/ciphers/Amsco.pdf
+        int[] perm = new int[] {1,3,2,0,4};
+        String plainText = "Incomplete columnar with alternating single letters and digraphs.".replaceAll("[ .]","");
+        String expectedCipherText = "cecrteglenphplutnanteiomowirsitddsIntnalinesaalemhatglrgr";
         Directives p = new Directives();
         p.setPermutation(perm);
-        p.setReadAcross(true);
+        p.setCharsPerCell(new int[]{2,1});
         String reason = cipher.canParametersBeSet(p);
         assertNull("Encode: params okay", reason);
         String encoded = cipher.encode(plainText, p);
@@ -94,27 +106,14 @@ public class PermutationTest {
     }
 
     @Test
-    public void testEncodeDecodeIntsDown() {
-        // encode and then decode a mixed case cipher
-        int[] perm = new int[] {3,0,1,2};
-        String plainText = "DEFENDTHEEASTWALLOFTHECASTLE";
-        // DEFE
-        // NDTH
-        // EEAS
-        // TWAL
-        // LOFT
-        // HECA
-        // STLE
-        // encoded is then:
-        // EHSLTAE
-        // DNETLHS
-        // EDEWOET
-        // FTAAFCL
-        // inverse would be 1,2,3,0, giving
-        String expectedCipherText = "EHSLTAEDNETLHSEDEWOETFTAAFCL";
+    public void testCipherChallenge2014_7B() {
+        String plainText = "phasesevenweapproachedthecablejunctionundercoverofnightwithnautilusatanelevationofthreefeettowingseahorsetostarboardcommsinterceptionshowedthatweremainedundetectedandseahorsewasdeployedatoperatingdepththevariouslayersofarmouredprotectionwereremovedfromthecableandasexpectedoncethesteeljacketwasremovedtheotherlayersprovidedlittleresistancethediversenteredthewaterandcutintothecoretoinserttheopticalrepeaterslinkingthembacktothemaninthemiddleunitwhichwaspoweredupandfullytestedinitialtestsshowedthatitwasoperatingasexpectedandthreekeyshavealreadybeenrecoveredfromtheomanitransmissionswithdaylightapproachingtheremainingtestswerepostponedforthefollowingnightandtheshipreturnedtodeeperwaterswhereitremainedatlowdeckheightthediverswereleftatseahorsetodecompressslowlyandwillberecoveredtomorrowoncethefinaltestshavebeenconcluded".toUpperCase();
+        String expectedCipherText = "ANWAE CNNDR TWTAN IREOA HSRDN TIEER DCTEW AYERE VAAAR PIOER OBSED ESCRE HLAOI TITHS DTRIN OSEPE PLTHT NIDTW SDULE DLHOT PEATE RHAAR EDEOA IODTA HREGE ROTHW HTSUR ETEEI NWIGI RESET POWIC OOONI TSEUD SEECH ACTEO FIILE ONEWI OTACT EODTE UNEAH SEDAP TRYEM RONMO MLEXO NTKEM EOYVI TSTEE NHANT RERTI EINEO TNDLH POPLY ITEWI TRSED EEVDY CFRMN SNAYP INMTE ENEEI NAHIN EPRIT EDEHV ELEAO RELLL VMOCN AHNCE PHERO HJUUV EHAUT ATHTT ETOAS IPOWW NEEDS ELOPG DESLF EDTER FCAAT EHJAS DTRPR LESEE RETET ECNEO RRSGC KAMII WAEFU TIASH AONGC THSRE NREHT RSTHH ACEIN WTPRL OGHET ODAER ALOEE DEATS OMLDW EDTWE FSBEL EVPDT EONOI GNSAV FTEGS EBOMC EHATI ETNRS PTONT HUSOR ECRED ENDCE TLWAE HESED RNCVE RACUH OIHAL EINAE MEUNH ERDES TTSTA SIPED EYLEE EMTII SIIGO THNTS SFOLN ITRET RWHEM TKHHS WTORC SSNER EROHT EENCS APEBL IRCNT HULEO FENRS ROMRN SHMAD DAODE ATIHI OROUT WEVTH APECE ETOVT ERDLE ADITE WDOTT TTCAT KMBHT HEICW ANTNI SEDWA TXANK EABOV OANMS WLPRG AISPO DFOGN DPEDE SWRDA CTTRE FHDES YABER RETLA VOD".replaceAll("\\W","");
+        String key = "1,2,0,4,3";
         Directives p = new Directives();
+        int[] perm = Amsco.convertKeywordToColumns(key,0);
         p.setPermutation(perm);
-        p.setReadAcross(false); // read down the columns
+        p.setCharsPerCell(new int[] {2,1});
         String reason = cipher.canParametersBeSet(p);
         assertNull("Encode: params okay", reason);
         String encoded = cipher.encode(plainText, p);
@@ -153,16 +152,26 @@ public class PermutationTest {
         p.setPermutation(new int[] {3,1,2});  // missing 0, 3 should not be there
         reason = cipher.canParametersBeSet(p);
         assertEquals("BadParam: too big #1", "Permutation element 3 is too large", reason);
-
-        p.setPermutation(new int[] {3,1,2,0,9});    // 9 should not be there
+        p.setPermutation(new int[] {3,1,2,0,5});    // 5 should not be there
         reason = cipher.canParametersBeSet(p);
-        assertEquals("BadParam: too big #2", "Permutation element 9 is too large", reason);
+        assertEquals("BadParam: too big #2", "Permutation element 5 is too large", reason);
 
-        p.setPermutation(new int[] {2,3,1,0});
+        p.setPermutation(new int[] {3,1,2,0,4});
+        reason = cipher.canParametersBeSet(p);
+        assertEquals("BadParam: too big #2", "Chars per Cell is not valid", reason);
+
+        p.setCharsPerCell(new int[] {1,-1});
+        reason = cipher.canParametersBeSet(p);
+        assertEquals("BadParam: too big #2", "Chars per Cell element -1 is too small", reason);
+        p.setCharsPerCell(new int[] {1,1});
+        reason = cipher.canParametersBeSet(p);
+        assertEquals("BadParam: too big #2", "Chars per Cell element 1 is repeated", reason);
+
+        p.setCharsPerCell(new int[] {3,1});
         reason = cipher.canParametersBeSet(p); // now all good for encode/decode
         assertNull("BadParam: encode okay", reason);
 
-        p.setCrackMethod(CrackMethod.IOC);
+        p.setCrackMethod(CrackMethod.DICTIONARY);
         reason = cipher.canParametersBeSet(p); // Crack: still missing cribs
         assertEquals("BadParam: cribs missing", "Some cribs must be provided", reason);
         p.setCribs("");
@@ -171,15 +180,16 @@ public class PermutationTest {
         p.setCribs("vostok,sputnik,saturn");
         reason = cipher.canParametersBeSet(p);
         assertEquals("Bad Param Method", "Invalid crack method", reason);
-        p.setCrackMethod(CrackMethod.BRUTE_FORCE);
+        p.setCrackMethod(CrackMethod.WORD_COUNT);
         reason = cipher.canParametersBeSet(p);
-        assertNull("BadParam: crack okay", reason);
-        p.setCrackMethod(CrackMethod.DICTIONARY);
+        assertEquals("Bad Param Method", "Invalid crack method", reason);
+        p.setCrackMethod(CrackMethod.BRUTE_FORCE);
         reason = cipher.canParametersBeSet(p);
         assertNull("BadParam: crack dict okay", reason);
     }
 
     @Test
+    @Ignore("Not yet implemented Crack")
     public void testCrackBruteSuccess() {
         // attempt Brute Force crack of Permutation cipher looking for cribs in all permutations (up to 9)
         int[] perm = new int[] { 0, 2, 4, 3, 1 };
@@ -203,7 +213,7 @@ public class PermutationTest {
         System.out.println("Decoded "+result.getPlainText());
         String explain = result.getExplain();
         System.out.println("Explain "+explain);
-        String decodeKeyword = Permutation.permutationToString(result.getDirectives().getPermutation());
+        String decodeKeyword = Cipher.numbersToString(result.getDirectives().getPermutation());
         System.out.println("Keyword "+decodeKeyword);
         assertTrue("Crack Success", result.isSuccess());
         assertEquals("Crack Cipher", cipherText, result.getCipherText());
@@ -214,6 +224,7 @@ public class PermutationTest {
     }
 
     @Test
+    @Ignore("Not yet implemented Crack")
     public void testCrackBruteReverseSuccess() {
         // attempt Brute Force crack of Permutation cipher looking for cribs in all permutations (up to 9)
         int[] perm = new int[] { 0, 2, 4, 3, 1 };
@@ -240,7 +251,7 @@ public class PermutationTest {
         System.out.println("Decoded "+result.getPlainText());
         String explain = result.getExplain();
         System.out.println("Explain "+explain);
-        String decodeKeyword = Permutation.permutationToString(result.getDirectives().getPermutation());
+        String decodeKeyword = Amsco.numbersToString(result.getDirectives().getPermutation());
         System.out.println("Keyword "+decodeKeyword);
         assertTrue("Crack Success", result.isSuccess());
         assertEquals("Crack Cipher", reverseText, result.getCipherText());
@@ -253,6 +264,7 @@ public class PermutationTest {
 
     // this one takes around 32 seconds with max column permutations = 9
     @Test
+    @Ignore("Not yet implemented Crack")
     public void testCrackBruteFail() {
         // attempt Brute Force crack of Permutation cipher looking for cribs in all permutations (up to 9)
         // but fails as cribs are wrong
@@ -285,6 +297,7 @@ public class PermutationTest {
     }
 
     @Test
+    @Ignore("Not yet implemented Crack")
     public void testCrackDictSuccess() {
         // attempt dictionary crack of Permutation cipher and succeeds with good cribs
         String keyword = "DISCOUNTER";
@@ -292,7 +305,7 @@ public class PermutationTest {
         String plainText = "Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much. " +
                 "They were the last people you'd expect to be involved in anything strange or mysterious, because they just didn't hold with such nonsense.";
         Directives p = new Directives();
-        int[] encodePerm = Permutation.convertKeywordToColumns(keyword,0);
+        int[] encodePerm = Cipher.convertKeywordToColumns(keyword,0);
         p.setPermutation(encodePerm);
         p.setReadAcross(true);
         String reason = cipher.canParametersBeSet(p);
@@ -315,25 +328,26 @@ public class PermutationTest {
         String decodeKeyword = result.getDirectives().getKeyword();
         System.out.println("Keyword "+decodeKeyword);
         int[] decodePermutation = result.getDirectives().getPermutation();
-        System.out.println("Permutation "+Permutation.permutationToString(decodePermutation));
+        System.out.println("Permutation "+Amsco.numbersToString(decodePermutation));
         assertTrue("CrackDict success", result.isSuccess());
         assertEquals("CrackDict Cipher", cipherText, result.getCipherText());
         assertEquals("CrackDict Text", plainText+"XXXXXXXX", result.getPlainText());
         assertEquals("CrackDict Keyword", keyword, decodeKeyword);
-        assertEquals("CrackDict Permutation", expectedPermutation, Permutation.permutationToString(decodePermutation));
+        assertEquals("CrackDict Permutation", expectedPermutation, Cipher.numbersToString(decodePermutation));
         assertNotNull("CrackDict Explain", explain);
         assertTrue("CrackDict Explain start", explain.startsWith("Success"));
         assertEquals("CrackDict cipher name", "Permutation cipher (3,0,8,1,6,4,9,2,7,5:across)", result.getCipher().getInstanceDescription());
     }
 
     @Test
+    @Ignore("Not yet implemented Crack")
     public void testCrackDictFail() {
         // attempt dictionary crack of Permutation cipher and fails with bad cribs
         String keyword = "TUMOR";
         String plainText = "Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much. " +
                 "They were the last people you'd expect to be involved in anything strange or mysterious, because they just didn't hold with such nonsense.";
         Directives p = new Directives();
-        int[] encodePerm = Permutation.convertKeywordToColumns(keyword,0);
+        int[] encodePerm = Cipher.convertKeywordToColumns(keyword,0);
         p.setPermutation(encodePerm);
         String reason = cipher.canParametersBeSet(p);
         assertNull("CrackDictSuccess: encode param okay", reason);
@@ -366,24 +380,18 @@ public class PermutationTest {
     public void testDescription() {
         String desc = cipher.getCipherDescription();
         assertNotNull("Description", desc);
-        assertTrue("Description content", desc.contains("permutation"));
+        assertTrue("Description content", desc.contains("Amsco"));
     }
 
     @Test
     public void testInstanceDescription() {
         Directives p = new Directives();
-        p.setPermutation(new int[] {1,3,2,0});
-        p.setReadAcross(true);
+        p.setPermutation(new int[] {3,1,2,0});
+        p.setCharsPerCell(new int[] {1,3,2});
         String reason = cipher.canParametersBeSet(p);
         assertNull("Null reason", reason);
         String desc = cipher.getInstanceDescription();
         assertNotNull("Instance Description across", desc);
-        assertEquals("Instance Description across", "Permutation cipher (1,3,2,0:across)", desc);
-        p.setReadAcross(false);
-        reason = cipher.canParametersBeSet(p);
-        assertNull("Null reason", reason);
-        desc = cipher.getInstanceDescription();
-        assertNotNull("Instance Description down", desc);
-        assertEquals("Instance Description down", "Permutation cipher (1,3,2,0:down)", desc);
+        assertEquals("Instance Description across", "Amsco cipher (3,1,2,0:1,3,2)", desc);
     }
 }

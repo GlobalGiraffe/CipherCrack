@@ -35,36 +35,6 @@ public class Hill extends Cipher {
     // maximum length of a Hill keyword
     private static final int MAX_KEYWORD_LENGTH = 50;
 
-    // only allow A-Z, 0-9 and ',' in the keyword field
-    private static final InputFilter MATRIX_INPUT_FILTER = new InputFilter() {
-        public CharSequence filter(CharSequence source, int start, int end,
-                                   Spanned dest, int dstart, int dend) {
-            boolean hasAlpha = false;
-            boolean hasDigit = false;
-            boolean hasComma = false;
-            // check what chars the buffer to be added has
-            for (int i = start; i < end; i++) {
-                char c = source.charAt(i);
-                if (!Character.isLetterOrDigit(c) && c != ',') {
-                    return "";
-                }
-                hasAlpha = (hasAlpha || Character.isAlphabetic(c));
-                hasDigit = (hasDigit || Character.isDigit(c));
-                hasComma = (hasComma || c == ',');
-            }
-            // if we are adding alpha and the dest already contains digit or ',', don't allow add
-            if (hasAlpha && dest.length() > 0
-                    && (Character.isDigit(dest.charAt(dest.length()-1))
-                    || dest.charAt(dest.length()-1) == ','))
-                return "";
-            // if we're adding digit or comma and dest already has alpha, don't allow the add
-            if ((hasDigit || hasComma) && dest.length() > 0
-                    && Character.isAlphabetic(dest.charAt(dest.length()-1)))
-                return "";
-            return null;
-        }
-    };
-
     // delete the relevant field if 'X' is pressed
     private static final View.OnClickListener MATRIX_ON_CLICK_DELETE = new View.OnClickListener() {
         @Override
@@ -444,7 +414,7 @@ public class Hill extends Cipher {
         super.addExtraControls(context, layout, R.layout.extra_hill);
 
         // ensure caps, max size and is suitable for a matrix
-        Cipher.addInputFilters(layout, R.id.extra_hill_keyword, true, MAX_KEYWORD_LENGTH, MATRIX_INPUT_FILTER);
+        Cipher.addInputFilters(layout, R.id.extra_hill_keyword, true, MAX_KEYWORD_LENGTH, PERM_INPUT_FILTER);
 
         // ensure we 'delete' the keyword text when the delete button is pressed
         Button keywordDelete = layout.findViewById(R.id.extra_hill_keyword_delete);

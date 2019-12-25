@@ -490,7 +490,7 @@ s     */
                                     .append(String.format(Locale.getDefault(), "%4.2f%%", highFreqPercent * 100.0));
                             int likelyTransposition = 0;
                             if (lowFreqPercent < 0.045 && highFreqPercent > 0.4) {  // 4.5% for low, 40% for high
-                                sb.append(" which indicates a Transposition cipher, such as Railfence, Permutation, Route or Skytale.\n");
+                                sb.append(" which indicates a Transposition cipher, such as Railfence, Permutation, Amsco, Route or Skytale.\n");
                                 likelyTransposition++;
                             } else {
                                 sb.append(" which is more evenly spread than a Transposition cipher would have.\n");
@@ -612,6 +612,24 @@ s     */
                                 }
                                 if (analysis.getCountAlphabetic() % 25 == 0) {
                                     sb.append("The length is a multiple of 25 which is a requirement of a Cadenus cipher.\n");
+                                }
+
+                                // if most common bigram (TH in English) is common in text (>1.1%)
+                                // then cipher could be Amsco
+                                Map<String, Float> bigrams = language.getBigramFrequencies();
+                                String mostFrequentBigram = Language.mostFrequentGram(bigrams);
+                                List<FrequencyEntry> digraphs = analysis.getBigramFrequency();
+                                for (FrequencyEntry entry : digraphs) {
+                                    if (mostFrequentBigram.equals(entry.getGram())) {
+                                        if (entry.getPercent() > 1.1f) {
+                                            sb.append("The cipher text has a high percentage (")
+                                                    .append(String.format(Locale.getDefault(), "%4.2f%%", entry.getPercent()))
+                                                    .append(") of most common bigram '")
+                                                    .append(mostFrequentBigram)
+                                                    .append("', which could indicate an Amsco cipher.\n");
+                                            break;
+                                        }
+                                    }
                                 }
 
                             } else { // not transposition
